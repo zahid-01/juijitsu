@@ -1,0 +1,121 @@
+.navbar {
+  width: calc(100% - 250px);
+  height: 60px;
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: 250px;
+
+  transition: left 0.3s ease, width 0.3s ease;
+  background-color: white;
+}
+
+.search-input {
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+  position: relative;
+}
+
+.search-icon {
+  color: #aaa;
+
+  height: 44px;
+}
+
+.navbar-input {
+  width: 100%;
+  padding-left: 35px;
+  /* height: 100%; */
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 400;
+  border: 1px solid #7e8c9c;
+}
+
+input::placeholder {
+  color: rgba(158, 158, 158, 1);
+  font-size: 18px;
+  opacity: 1;
+}
+
+.navbar.collapsed {
+  width: calc(100% - 80px);
+  left: 80px;
+}
+
+.navbar-item:hover {
+  color: #ddd;
+}
+
+.profile-bar {
+  overflow-y: scroll;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 20rem;
+  min-height: 100vh;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  transition: transform 0.5s ease;
+  z-index: 1000;
+}
+
+.profile-bar.open {
+  transform: translateX(0);
+}
+
+.profile-picture-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-picture {
+  object-fit: cover;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+  /* height: 3rem; */
+  /* width: 3rem; */
+}
+
+.completion-bar {
+  position: absolute;
+  top: -8px;
+  left: -7px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+
+  border: 2px solid transparent;
+  z-index: 0;
+}
+.cart-container {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-icon {
+  width: 3rem;
+  height: 3rem;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 0;
+  left: 81px;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transform: translate(-50%, -50%);
+}
