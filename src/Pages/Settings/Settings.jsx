@@ -66,12 +66,13 @@ export default function Settings() {
     e.preventDefault();
     setIsLoading(true);
     const formData = new FormData();
+
     formData.append(
       "profile_picture",
       profilePicture ? profilePicture : profile_picture
     );
-    formData.append("name", userData.users.name);
-
+    formData.append("name", userData?.users?.name);
+    console.log(formData);
     try {
       const response = await axios.patch(
         `${BASE_URI}/api/v1/users/profile`,
