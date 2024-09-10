@@ -10,7 +10,6 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-
 import { useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
@@ -155,6 +154,24 @@ const UserPurchasedCourse = () => {
     // refetch();
   };
   // console.log(show)
+
+  const checkedLesson = async ({ chapter_id, lesson_id }) => {
+    
+    const checkResponse = await axios({
+      method: 'PATCH',
+      url: `${BASE_URI}/api/v1/lessons/markLessonAsRead`,
+      headers: {
+        Authorization: 'Bearer ' + token
+      },
+      data: {
+        course_id : id,
+        lesson_id : lesson_id
+      }
+    })
+    
+    window.location.reload();
+    console.log(checkResponse?.data )
+  }
 
   return (
     <>
@@ -727,7 +744,18 @@ const UserPurchasedCourse = () => {
                         </summary>
                         {chapter?.lessons.map((lesson) => (
                           <div key={lesson?.lesson_id}>
-                            <input type="checkbox" />
+                            <input type="checkbox"
+                            defaultChecked={lesson?.completed === 1}
+                            onChange={(e) => {
+        if (e.target.checked) {
+          console.log(chapter?.chapter_id, lesson?.lesson_id)
+          checkedLesson({
+            
+            lesson_id: lesson?.lesson_id,
+          });
+        }
+      }}
+      disabled={lesson?.completed === 1}/>
                             <span
                               onClick={() =>
                                 handleVideoChange(

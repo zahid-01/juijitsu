@@ -22,10 +22,13 @@ const App = () => {
   });
 
   useEffect(() => {
+    console.log(data)
     if (data) {
       setCartItemNumber(data?.cart?.length);
     }
-  }, [data]);
+  }, []);
+
+
   return (
     <BrowserRouter>
       <Toaster position="top-right" />

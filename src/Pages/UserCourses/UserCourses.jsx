@@ -46,6 +46,7 @@ const Card = ({
     e.stopPropagation();
     setIsLoading(true);
     await onAddToCart(id, setIsLoading);
+    
   };
 
   return (
