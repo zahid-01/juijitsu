@@ -149,7 +149,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           <Link to="/userCart">
             <BsFillCartFill className="primary-color fs-2 ms-5 cursor-pointer" />
           </Link>
-          <div className="cart-badge">{cartItemNumber}</div>{" "}
+          {/* <div className="cart-badge">{cartItemNumber}</div>{" "} */}
         </div>
       )}
 
