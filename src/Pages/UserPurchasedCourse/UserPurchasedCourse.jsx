@@ -169,8 +169,8 @@ const UserPurchasedCourse = () => {
       }
     })
     
-    window.location.reload();
-    console.log(checkResponse?.data )
+    // window.location.reload();
+    // console.log(checkResponse?.data )
   }
 
   return (
