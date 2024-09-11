@@ -29,15 +29,11 @@ ChartJS.register(
 );
 
 function AdminDashboard() {
-const [data, setData] = useState({});
-const [courseCompletion, setCourseCompletion] = useState({});
-const [mostBoughtCourses, setMostBoughtCourses] = useState([]);
-const [enrollments, setEnrollments] = useState([]);
-const [revenue, setRevenue] = useState([]);
-
-
-
-
+  const [data, setData] = useState({});
+  const [courseCompletion, setCourseCompletion] = useState({});
+  const [mostBoughtCourses, setMostBoughtCourses] = useState([]);
+  const [enrollments, setEnrollments] = useState([]);
+  const [revenue, setRevenue] = useState([]);
 
   const token = localStorage.getItem("token");
   // console.log(token);
@@ -53,135 +49,166 @@ const [revenue, setRevenue] = useState([]);
   // // // const coursesData = data;
   // const coursesData = useMemo(() => adminData?.data || [], [adminData]);
 
-
-
   function getCurrentWeekDates() {
     const now = new Date();
     const dayOfWeek = now.getDay(); // Sunday is 0, Monday is 1, etc.
     const startOfWeek = new Date(now); // Create a copy of the current date
     const endOfWeek = new Date(now);
-  
+
     // Adjust to the start of the week (Monday)
     startOfWeek.setDate(now.getDate() - (dayOfWeek - 1));
-    
+
     // Adjust to the end of the week (Sunday)
     endOfWeek.setDate(startOfWeek.getDate() + 6);
-  
-    const from = format(startOfWeek, 'yyyy-MM-dd');
-    const to = format(endOfWeek, 'yyyy-MM-dd');
-  
+
+    const from = format(startOfWeek, "yyyy-MM-dd");
+    const to = format(endOfWeek, "yyyy-MM-dd");
+
     return { from, to };
   }
-  
+
   // Usage
   const { from, to } = getCurrentWeekDates();
   // console.log(`From: ${from}, To: ${to}`);
-  
+
   // You can now use this in your API call
   // const url = `${BASE_URI}/api/v1/admin/adminDashboard?from=${from}&to=${to}`;
-  
-  const fetchDashboard = async()=>{
-    const reqData = formatWeekRange()
+
+  const fetchDashboard = async () => {
+    const reqData = formatWeekRange();
     console.log(reqData);
     const adminData = await axios({
-    method: 'GET',
-    url: `${BASE_URI}/api/v1/admin/adminDashboard?from=${from}&to=${to}`,
-    headers: {
-      Authorization: "Bearer " + token,
-    }
-  })
-  // console.log(adminData)
-  setData({
-    TotalStudents: {
-      value: adminData?.data?.data?.enrolls?.total_students,
-      percentage: 6.23,
-      icon: "fas fa-graduation-cap",
-      type: "increase",
-    },
-    TotalCourses: {
-      value: adminData?.data?.data?.enrolls?.total_courses,
-      percentage: 6.23,
-      icon: "fas fa-book",
-      type: "increase",
-    },
-    TotalExperts: {
-      value: adminData?.data?.data?.enrolls?.total_experts,
-      percentage: 6.23,
-      icon: "fas fa-user-tie",
-      type: "decrease",
-    },
-    TotalRevenue: {
-      value: adminData?.data?.data?.enrolls?.total_revenue,
-      percentage: 6.23,
-      icon: "fas fa-money-bill-wave",
-      type: "increase",
-    },
-    TotalCommission: {
-      value: Math.floor(adminData?.data?.data?.enrolls?.total_commission),
-      percentage: 6.23,
-      icon: "fas fa-money-bill-wave",
-      type: "increase",
-    },
-  })
-  setCourseCompletion({
-    completed: adminData?.data?.data?.total_users?.certified_user,
-    incomplete: adminData?.data?.data?.total_users?.uncertified_users,})
-    setMostBoughtCourses([
-      { name: adminData?.data?.data?.coursesInDemand[0].title, value: adminData?.data?.data?.coursesInDemand[0].enrolled, color: "#82CA9D" },
-      { name: adminData?.data?.data?.coursesInDemand[1].title, value: adminData?.data?.data?.coursesInDemand[1].enrolled, color: "#00AEEF" },
-      { name: adminData?.data?.data?.coursesInDemand[2].title, value: adminData?.data?.data?.coursesInDemand[2].enrolled, color: "#88929D" },
-      { name: adminData?.data?.data?.coursesInDemand[3].title, value: adminData?.data?.data?.coursesInDemand[3].enrolled, color: "#A4A7AD" },
-    ])
-  }
-  const fetchGraphDashboard = async()=>{
+      method: "GET",
+      url: `${BASE_URI}/api/v1/admin/adminDashboard?from=${from}&to=${to}`,
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+    // console.log(adminData)
+    setData({
+      TotalStudents: {
+        value: adminData?.data?.data?.enrolls?.total_students,
+        percentage: 6.23,
+        icon: "fas fa-graduation-cap",
+        type: "increase",
+      },
+      TotalCourses: {
+        value: adminData?.data?.data?.enrolls?.total_courses,
+        percentage: 6.23,
+        icon: "fas fa-book",
+        type: "increase",
+      },
+      TotalExperts: {
+        value: adminData?.data?.data?.enrolls?.total_experts,
+        percentage: 6.23,
+        icon: "fas fa-user-tie",
+        type: "decrease",
+      },
+      TotalRevenue: {
+        value: adminData?.data?.data?.enrolls?.total_revenue,
+        percentage: 6.23,
+        icon: "fas fa-money-bill-wave",
+        type: "increase",
+      },
+      TotalCommission: {
+        value: Math.floor(adminData?.data?.data?.enrolls?.total_commission),
+        percentage: 6.23,
+        icon: "fas fa-money-bill-wave",
+        type: "increase",
+      },
+    });
+    setCourseCompletion({
+      completed: adminData?.data?.data?.total_users?.certified_user,
+      incomplete: adminData?.data?.data?.total_users?.uncertified_users,
+    });
 
+    const colors = ["#82CA9D", "#00AEEF", "#88929D", "#A4A7AD"];
+    setMostBoughtCourses(
+      adminData?.data?.data?.coursesInDemand
+        ?.slice(0, 4)
+        .map((course, index) => ({
+          name: course.title,
+          value: course.enrolled,
+          color: colors[index],
+        }))
+    );
+  };
+  const fetchGraphDashboard = async () => {
     const adminGraphData = await axios({
-    method: 'GET',
-    url: `${BASE_URI}/api/v1/admin/adminDashboardGraphs?from=${from}&to=${to}&type=week`,
-    headers: {
-      Authorization: "Bearer " + token,
-    }
-  })
-  // console.log(adminGraphData?.data?.data?.Enrolled[0]?.monthly_enrolled)
-  setEnrollments([
-    
-    { day: "Mon", value: adminGraphData?.data?.data?.Enrolled[0]?.daily_enrolled},
-    { day: "Tue", value: adminGraphData?.data?.data?.Enrolled[1]?.daily_enrolled },
-    { day: "Wed", value: adminGraphData?.data?.data?.Enrolled[2]?.daily_enrolled },
-    { day: "Thu", value: adminGraphData?.data?.data?.Enrolled[3]?.daily_enrolled},
-    { day: "Fri", value: adminGraphData?.data?.data?.Enrolled[4]?.daily_enrolled },
-    { day: "Sat", value: adminGraphData?.data?.data?.Enrolled[5]?.daily_enrolled },
-    { day: "Sun", value: adminGraphData?.data?.data?.Enrolled[6]?.daily_enrolled },
-  ])
-  setRevenue([
-    
-    { day: "Mon", value: adminGraphData?.data?.data?.Revenue[0]?.daily_revenue },
-    { day: "Tue", value: adminGraphData?.data?.data?.Revenue[1]?.daily_revenue },
-    { day: "Wed", value: adminGraphData?.data?.data?.Revenue[2]?.daily_revenue },
-    { day: "Thu", value: adminGraphData?.data?.data?.Revenue[3]?.daily_revenue },
-    { day: "Fri", value: adminGraphData?.data?.data?.Revenue[4]?.daily_revenue },
-    { day: "Sat", value: adminGraphData?.data?.data?.Revenue[5]?.daily_revenue},
-    { day: "Sun", value: adminGraphData?.data?.data?.Revenue[6]?.daily_revenue },
-  
-  ])
-  // console.log( adminGraphData?.data?.data?.Enrolled[0]?.daily_enrolled)
-  
-  }
-  
-  useEffect(()=>{
+      method: "GET",
+      url: `${BASE_URI}/api/v1/admin/adminDashboardGraphs?from=${from}&to=${to}&type=week`,
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+    // console.log(adminGraphData?.data?.data?.Enrolled[0]?.monthly_enrolled)
+    setEnrollments([
+      {
+        day: "Mon",
+        value: adminGraphData?.data?.data?.Enrolled[0]?.daily_enrolled,
+      },
+      {
+        day: "Tue",
+        value: adminGraphData?.data?.data?.Enrolled[1]?.daily_enrolled,
+      },
+      {
+        day: "Wed",
+        value: adminGraphData?.data?.data?.Enrolled[2]?.daily_enrolled,
+      },
+      {
+        day: "Thu",
+        value: adminGraphData?.data?.data?.Enrolled[3]?.daily_enrolled,
+      },
+      {
+        day: "Fri",
+        value: adminGraphData?.data?.data?.Enrolled[4]?.daily_enrolled,
+      },
+      {
+        day: "Sat",
+        value: adminGraphData?.data?.data?.Enrolled[5]?.daily_enrolled,
+      },
+      {
+        day: "Sun",
+        value: adminGraphData?.data?.data?.Enrolled[6]?.daily_enrolled,
+      },
+    ]);
+    setRevenue([
+      {
+        day: "Mon",
+        value: adminGraphData?.data?.data?.Revenue[0]?.daily_revenue,
+      },
+      {
+        day: "Tue",
+        value: adminGraphData?.data?.data?.Revenue[1]?.daily_revenue,
+      },
+      {
+        day: "Wed",
+        value: adminGraphData?.data?.data?.Revenue[2]?.daily_revenue,
+      },
+      {
+        day: "Thu",
+        value: adminGraphData?.data?.data?.Revenue[3]?.daily_revenue,
+      },
+      {
+        day: "Fri",
+        value: adminGraphData?.data?.data?.Revenue[4]?.daily_revenue,
+      },
+      {
+        day: "Sat",
+        value: adminGraphData?.data?.data?.Revenue[5]?.daily_revenue,
+      },
+      {
+        day: "Sun",
+        value: adminGraphData?.data?.data?.Revenue[6]?.daily_revenue,
+      },
+    ]);
+    // console.log( adminGraphData?.data?.data?.Enrolled[0]?.daily_enrolled)
+  };
+
+  useEffect(() => {
     fetchDashboard();
     fetchGraphDashboard();
-  },[])
-
-  
-
-  
-
- 
-
-  
-
-  
+  }, []);
 
   // Enrollment and revenue chart data
   const enrollmentData = {
@@ -218,7 +245,6 @@ const [revenue, setRevenue] = useState([]);
     );
     return `${format(startDate, "MMM-d")} - ${format(endOfWeek, "MMM-d")}`;
   };
-
 
   const revenueData = {
     labels: revenue.map((r) => r.day),
@@ -266,9 +292,9 @@ const [revenue, setRevenue] = useState([]);
           <p>Track & Manage your Platform</p>
         </div>
         {/* <div className="d-flex align-items-center gap-3 border shadow-sm rounded-3 px-3 py-2"> */}
-          {/* <FaCalendar className="fs-4" /> */}
+        {/* <FaCalendar className="fs-4" /> */}
 
-          {/* <DatePicker
+        {/* <DatePicker
             selected={startDate}
             onChange={handleWeekChange}
             dateFormat="MM/yyyy"
@@ -278,7 +304,7 @@ const [revenue, setRevenue] = useState([]);
             highlightDates
             calendarStartDay={0}
           /> */}
-          {/* <h5 className="fw-normal">{formatWeekRange()}</h5> */}
+        {/* <h5 className="fw-normal">{formatWeekRange()}</h5> */}
         {/* </div> */}
       </div>
       <div className="row">

@@ -66,6 +66,7 @@ export default function Settings() {
     e.preventDefault();
     setIsLoading(true);
     const formData = new FormData();
+
     formData.append(
       "profile_picture",
       profilePicture ? profilePicture : profile_picture

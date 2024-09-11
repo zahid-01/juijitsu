@@ -33,7 +33,7 @@ export const SignUp = () => {
         email: email,
         password: password,
         confirmPassword: confirmPassword,
-        user_type: "expert",
+        user_type: "user",
       },
     }).then(
       () => {
