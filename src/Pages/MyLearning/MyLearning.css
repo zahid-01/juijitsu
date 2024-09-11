@@ -4,6 +4,10 @@
     position: absolute;
     left: 50%;
     top: 600%;
+
+}
+.wrapper-myLearning{
+  width: 100%;
 }
 .bottom-myLearning {
   /* padding: 0 2vw 0 2vw; */
@@ -14,14 +18,17 @@
   margin-bottom: 4vh;
 }
 .card-bottom-myLearning {
-  height: 45vh;
-  width: 17vw;
+  height: 50vh;
+  width: 100%;
   background-color: white;
   border-radius: 0.5vw;
   padding: 3%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .card-bottom-myLearning:hover {
   transform: translateY(-10px);
@@ -102,9 +109,14 @@
 
 .no-courses-courses div h5 {
   font-weight: 100;
+  font-size: 1rem;
+  text-align: center;
 }
 .no-courses-courses div h1 {
   font-weight: 400;
+  font-size: 2rem;
+  /* margin: 0; */
+  text-align: center;
 }
 .bottom-card-usermyLearning {
   height: 16%;
@@ -112,7 +124,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-top: 2vh;
+  margin-bottom: 2vh;
   padding: 2% 0;
 }
 .bottom-card-usermyLearning span {

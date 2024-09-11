@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 import { useEffect, useMemo, useState } from "react";
 import "./MyLearning.css";
 import cardImage from "../../assets/coursesCard.png";
@@ -48,18 +40,7 @@ const Card = ({
       </div>
       <p>{expert}</p>
       <h4 style={{fontSize:15}}>{title}</h4>
-      <h4
-      dangerouslySetInnerHTML={{
-          
-        __html: description?.split(" ").slice(0, 6).join(" ") + "..."
-        
-      }}
-      >
-       
-          
-          
-   
-      </h4>
+      
       <div className="bottom-card-usermyLearning">
         <span><span style={{width:`${completed}%`}}></span></span>
         <div><p>{completed}% complete</p> <p>Add rating</p></div>
@@ -145,7 +126,7 @@ id="myLearningLoader"
               {error?.response?.data?.message === "No courses found" ? (
                 <div className="no-courses-userCourses">
                 <div >
-                  <h1 style={{marginLeft:"41%"}}>No Courses Purchased Yet!</h1>
+                  <h1>No Courses Purchased Yet!</h1>
                   <h5>
                     Purchase a course and join the world of athletes!
                   </h5>

@@ -372,7 +372,7 @@
   align-items: center;
   gap: 1.5vw;
 }
-.bottom-userCourseview span h3 {
+.bottom-userCourseview h3 {
   font-size: 1.6vw;
   font-weight: 400;
 }
@@ -443,11 +443,11 @@
   z-index: 900;
 }
 .cards-userCourseview {
-  padding: 0 2vw 0 2vw;
+  padding: 0 1vw 0 1vw;
   margin-top: 2vh;
   display: flex;
   height: 100%;
-  gap: 1.5vw; /* Adjust the gap between items */
+  gap: 1vw; /* Adjust the gap between items */
   margin-bottom: 4vh;
   overflow-x: auto;
   width: 100%;
@@ -458,13 +458,16 @@
 }
 .card-bottom-userCourseview {
   height: 55vh;
-  max-width: 19vw;
+  min-width: 19vw;
   background-color: white;
   border-radius: 0.5vw;
-  padding: 0.5vw;
+  padding: 1vw;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .card-bottom-userCourseview:hover {
   transform: translateY(-5px);
@@ -482,7 +485,7 @@
   border-radius: 0.5vw;
 }
 .middle-sec-card-userCourseview {
-  height: 10%;
+  height: 7%;
   display: flex;
   justify-content: space-between;
   margin-top: 3%;
@@ -495,7 +498,8 @@
 }
 .addCourse-card-userCourseview {
   height: 100%;
-  width: 35%;
+  width: max-content;
+  padding: 0 0.5rem;
   background: linear-gradient(97.89deg, #0c243c 0%, #7e8c9c 95.36%);
   border-radius: 0.26vw;
   color: white;
@@ -503,6 +507,7 @@
 .card-bottom-userCourseview h6 {
   font-weight: 300;
   font-size: 1vw;
+  width: max-content;
 }
 
 .pricing-card-userCourseview h5:first-child {
@@ -573,8 +578,9 @@
 }
 .bottom-card-useruserCourseview span h5:first-child {
   text-decoration: line-through;
-  font-size: 1.2vw;
+  font-size: 1vw;
   color: #7e8c9c;
+  font-weight: 500;
 }
 
 .bottom-card-useruserCourseview div {

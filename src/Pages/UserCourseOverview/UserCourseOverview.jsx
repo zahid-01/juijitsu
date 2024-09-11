@@ -374,7 +374,7 @@ const UserCourseOverview = () => {
 
                     <div className="middle-sec-card-userCourseview">
                       <div className="addCourse-card-userCourseview">
-                        <h6 className="text-uppercase">
+                        <h6>
                           {course?.category || "No title available"}
                         </h6>
                       </div>
@@ -383,18 +383,9 @@ const UserCourseOverview = () => {
                         {/* <h5>$10.99</h5> */}
                       </div>
                     </div>
-                    <p className="text-uppercase">{course?.name}</p>
-                    <h5 className="text-uppercase">{course?.title}</h5>
-                    <h4
-                      dangerouslySetInnerHTML={{
-                        __html: course?.description
-                          ? course?.description
-                              .split(" ")
-                              .slice(0, 7)
-                              .join(" ") + "..."
-                          : "No description available",
-                      }}
-                    ></h4>
+                    <p >{course?.name}</p>
+                    <h5 >{course?.title}</h5>
+                    
                     <div className="bottom-card-useruserCourseview">
                       <span>
                         <h5>${course?.price}</h5>
