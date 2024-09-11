@@ -34,15 +34,15 @@ const Card = ({
 
     <div className="middle-sec-card-courses">
       <div className="addCourse-card-courses">
-        <h6 className="text-uppercase">{category}</h6>
+        <h6>{category}</h6>
       </div>
       <div className="pricing-card-courses">
         <h5>${price}</h5>
         <h5>${price - (price * discount) / 100}</h5>
       </div>
     </div>
-    <p className="text-uppercase">{name}</p>
-    <h5 className="text-uppercase">{title}</h5>
+    
+    <h5>{title}</h5>
     <h4
       dangerouslySetInnerHTML={{
         __html: description?.split(" ").slice(0, 6).join(" ") + "...",

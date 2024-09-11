@@ -73,21 +73,21 @@ const Card = ({
 
       <div className="middle-sec-card-userCourses">
         <div className="addCourse-card-userCourses">
-          <h6 className="text-uppercase">{category}</h6>
+          <h6 >{category}</h6>
         </div>
         <div className="pricing-card-userCourses">
           <h5>{tags}</h5>
         </div>
       </div>
-      <p className="text-uppercase">{expert}</p>
-      <h5 className="text-uppercase" style={{fontSize:'1.2vw'}}>{title}</h5>
-      <h4
+      <p>{expert}</p>
+      <h5  style={{fontSize:'1.2vw', fontWeight:"600"}}>{title}</h5>
+      {/* <h4
         dangerouslySetInnerHTML={{
           __html: description
             ? description.split(" ").slice(0, 5.5).join(" ") + "..."
             : "No description found",
         }}
-      ></h4>
+      ></h4> */}
       <div className="bottom-card-useruserCourses">
         <span>
           <h5>{`$${price}`}</h5>

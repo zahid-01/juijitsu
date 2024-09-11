@@ -293,27 +293,19 @@ const UserCart = () => {
 
                         <div className="middle-sec-card-usercart">
                           <div className="addCourse-card-usercart">
-                            <h6 className="text-uppercase">
+                            <h6 >
                               {items?.category}
                             </h6>
                           </div>
                           <div className="pricing-card-usercart">
-                            <h5>Tag1 Tag2 Tag3</h5>
+                            <h5>{items?.tags}</h5>
                           </div>
                         </div>
-                        <p className="text-uppercase">{items?.name}</p>
-                        <h5 className="text-uppercase">
+                        <p>{items?.name}</p>
+                        <h5>
                           {items?.title?.split(" ").slice(0, 3).join(" ")}
                         </h5>
-                        <h4
-                          dangerouslySetInnerHTML={{
-                            __html:
-                              items?.description
-                                ?.split(" ")
-                                .slice(0, 7)
-                                .join(" ") + "...",
-                          }}
-                        ></h4>
+                        
                         <div className="bottom-card-userusercart">
                           <span>
                             <h5>${items?.price}</h5>

@@ -316,7 +316,7 @@
   margin-top: 2vh;
   display: flex;
   height: 100%;
-  gap: 1.5vw; /* Adjust the gap between items */
+  gap: 1vw; /* Adjust the gap between items */
   margin-bottom: 4vh;
   overflow-x: auto;
   width: 100%;
@@ -327,13 +327,16 @@
 }
 .card-bottom-usercart {
   height: 55vh;
-  max-width: 19vw;
+  min-width: 19vw;
   background-color: white;
   border-radius: 0.5vw;
   padding: 0.5vw;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .card-bottom-usercart:hover {
   transform: translateY(-5px);
@@ -350,7 +353,7 @@
   border-radius: 0.5vw;
 }
 .middle-sec-card-usercart {
-  height: 10%;
+  height: 7%;
   display: flex;
   justify-content: space-between;
   margin-top: 3%;
@@ -362,11 +365,12 @@
   gap: 0.5vw;
 }
 .addCourse-card-usercart {
-  height: 100%;
-  width: 35%;
+  /* height: 100%; */
+  width: max-content;
   background: linear-gradient(97.89deg, #0c243c 0%, #7e8c9c 95.36%);
   border-radius: 0.26vw;
   color: white;
+  padding: 0 0.5vw;
 }
 .card-bottom-usercart h6 {
   font-weight: 300;
@@ -436,7 +440,7 @@
 }
 .bottom-card-userusercart span h5:first-child {
   text-decoration: line-through;
-  /* font-size: 0.8vw; */
+  font-size: 1vw;
   color: #7e8c9c;
 }
 

@@ -234,6 +234,7 @@ const UserPurchasedCourse = () => {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
+
                 {/* {show && ( */}
 
                 {/* )} */}
@@ -250,7 +251,6 @@ const UserPurchasedCourse = () => {
                     styles={buildStyles({
                       strokeLinecap: "butt",
                       pathColor: "#112940",
-
                       backgroundColor: "white",
                       trailColor: "white",
                     })}
@@ -272,7 +272,6 @@ const UserPurchasedCourse = () => {
                   <ReactPlayer  
                     url={video_url }
                     className="tumbnail-userCourseview"
-                 
                     style={{ width: '100% !important', }}
                     controls={true}
                   />

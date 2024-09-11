@@ -1,5 +1,6 @@
 .wrapper-courses {
-  width: 100%;
+  width: 105%;
+  /* padding: 0; */
 }
 
 .top-courses {
@@ -48,22 +49,27 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.1vh;
 }
 .card-bottom-courses:hover {
   transform: translateY(-10px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 .card-bottom-courses img {
-  height: 30vh;
+  height: 20vh;
   width: 100%;
   border-radius: 0.5vw;
   object-fit: cover;
 }
 .middle-sec-card-courses {
-  height: 5vh;
+  height: 4vh;
   display: flex;
   justify-content: space-between;
   margin-top: 3%;
+  /* background-color: blue; */
 }
 .middle-sec-card-courses div {
   display: flex;
@@ -73,7 +79,8 @@
 }
 .addCourse-card-courses {
   height: 100%;
-  width: 35%;
+  width: max-content;
+  padding: 0 0.5vw;
   background: linear-gradient(97.89deg, #0c243c 0%, #7e8c9c 95.36%);
   border-radius: 0.26vw;
   color: white;
@@ -86,9 +93,14 @@
   font-weight: 400;
   font-size: 1rem; /* Converted */
 }
+.pricing-card-courses h5{
+  display: flex;
+  align-items: center;
+}
 .pricing-card-courses h5:first-child {
   text-decoration: line-through;
   color: #7e8c9c;
+  font-size: 0.7rem;
 }
 .card-bottom-courses p {
   font-size: 0.75rem; /* Converted */

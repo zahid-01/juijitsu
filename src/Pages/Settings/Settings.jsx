@@ -70,7 +70,7 @@ export default function Settings() {
       "profile_picture",
       profilePicture ? profilePicture : profile_picture
     );
-    formData.append("name", userData.users.name);
+    formData.append("name", userData?.users?.name);
 
     try {
       const response = await axios.patch(
