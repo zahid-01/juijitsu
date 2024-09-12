@@ -274,7 +274,7 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
             </motion.div>
             <motion.div variants={sidebarAnimation}>
               <Link
-                to="/"
+                to="/experts"
                 className={`menu-item d-flex align-items-center p-3 ${
                   location.pathname === "/myLearning"
                     ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
@@ -297,7 +297,7 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
             </motion.div>
             <motion.div variants={sidebarAnimation}>
               <Link
-                to="/"
+                to="/students"
                 className={`menu-item d-flex align-items-center p-3 ${
                   location.pathname === "/myCertificates"
                     ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
@@ -320,7 +320,7 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
             </motion.div>
             <motion.div variants={sidebarAnimation}>
               <Link
-                to="/"
+                to="/transactions"
                 className={`menu-item d-flex align-items-center p-3 ${
                   location.pathname === "/purchaseHistory"
                     ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
