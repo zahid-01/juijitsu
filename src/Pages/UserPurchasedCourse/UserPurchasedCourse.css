@@ -129,6 +129,7 @@
   box-shadow: 0 0 9px rgba(0, 0, 0, 0.2);
   height: max-content;
   padding: 1vh;
+  background: white;
   width: 30%;
 }
 

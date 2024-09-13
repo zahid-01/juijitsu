@@ -1,6 +1,6 @@
 * {
   box-sizing: border-box;
-  /* font-family: Inter; */
+  /* font-family: ; */
 }
 h1,
 h2,
@@ -17,6 +17,7 @@ body {
   width: 100% !important;
   margin: 0;
   padding: 0 !important;
+  /* background: #FAF9F6; */
 }
 input::placeholder {
   font-size: 0.8rem;

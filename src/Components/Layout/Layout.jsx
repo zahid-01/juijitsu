@@ -19,7 +19,7 @@ export const Layout = ({ children, search, setSearch, cartItemNumber }) => {
         <div className="responsive-md">
           <SmallerScreenNavbar />
         </div>
-        <div className="responsive-lg w-100">
+        <div className="responsive-lg w-100" style={{background: '#FAF9F6'}}>
           <Navbar
             collapsed={collapsed}
             search={search}

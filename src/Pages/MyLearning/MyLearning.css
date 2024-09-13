@@ -112,6 +112,28 @@
   font-size: 1rem;
   text-align: center;
 }
+.rating-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: 400px;
+  padding: 20px;
+}
+
+.star {
+  cursor: pointer;
+}
+
 .no-courses-courses div h1 {
   font-weight: 400;
   font-size: 2rem;

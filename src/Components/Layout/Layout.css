@@ -7,14 +7,14 @@
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
-  background-color: #ffffff;
+  background: #FAF9F6;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
 .content {
   position: absolute;
-  /* background-color: aqua; */
+  /* background: #FAF9F6; */
   padding: 1rem 1rem;
   top: 60px;
   right: 0;

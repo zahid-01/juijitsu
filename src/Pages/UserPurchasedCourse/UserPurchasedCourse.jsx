@@ -269,7 +269,7 @@ const UserPurchasedCourse = () => {
             <div className="left-bottom-purchasedCourse">
               <div className="video-container-purchasedCourse" >
                 {video_type === "youtube" ? (
-                  <ReactPlayer  
+                  <ReactPlayer
                     url={video_url }
                     className="tumbnail-userCourseview"
                     style={{ width: '100% !important', }}

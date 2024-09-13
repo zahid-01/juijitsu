@@ -7,7 +7,7 @@
   left: 250px;
 
   transition: left 0.3s ease, width 0.3s ease;
-  background-color: white;
+  background: #FAF9F6;
 }
 
 .search-input {
