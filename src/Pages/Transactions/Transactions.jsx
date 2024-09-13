@@ -168,7 +168,7 @@ const UserManagement = () => {
           ].map((tab) => (
             <h5
               key={tab}
-              className={`tab-item px-3 pb-2 fw-light cursor-pointer ${
+              className={`tab-item px-3 pb-3 py-1 fw-light cursor-pointer ${
                 activeTab === tab ? "active-tab" : "inactive-tab"
               }`}
               onClick={() => setActiveTab(tab)}
@@ -181,7 +181,7 @@ const UserManagement = () => {
         </div>
       </header>
 
-      <div className="tab-content px-3 py-2 custom-box rounded-top-0">
+      <div className="tab-content px-3 py-1 custom-box rounded-top-0">
         <div className="px-4">
           {/* Transactions */}
           {activeTab === "transactions" && (
