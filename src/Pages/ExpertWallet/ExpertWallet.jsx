@@ -125,10 +125,10 @@ export default function ExpertWallet() {
     return <div>No data available</div>;
   }
 
-  const { lastWithdrawal, ordersWithPayableAmount, payable_ammount } =
+  const { lastWithdrawal, ordersWithPayableAmount, payable_amount } =
     walletData;
   const recentPayout = lastWithdrawal[0]?.total_withdrawn_amount || "$0.00";
-  const accountBalance = `$${payable_ammount?.toFixed(2)}`;
+  const accountBalance = `$${payable_amount}`;
 
   return (
     <div className="w-100">

@@ -169,14 +169,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
       {token && (
         <div onClick={handleProfileClick} style={{ cursor: "pointer" }}>
           <div className="profile-picture-container">
-            <div
-              className="completion-bar"
-              style={{
-                background: `conic-gradient(#0c243c ${profileCompletion}%, #e0e0e0 ${profileCompletion}% 100%)`,
-                width: "4rem",
-                height: "4rem",
-              }}
-            ></div>
+          
             {profile_picture ? (
               <img
                 src={profile_picture}
