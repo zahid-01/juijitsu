@@ -341,7 +341,7 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                 {!collapsed && <span className="text">Transactions</span>}
               </Link>
             </motion.div>
-            <motion.div variants={sidebarAnimation}>
+            {/* <motion.div variants={sidebarAnimation}>
               <Link
                 to="/"
                 className={`menu-item d-flex align-items-center p-3 ${
@@ -363,7 +363,7 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                 </motion.div>
                 {!collapsed && <span className="text">Support</span>}
               </Link>
-            </motion.div>
+            </motion.div> */}
           </>
         )}
       

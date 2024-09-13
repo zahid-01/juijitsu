@@ -13,6 +13,22 @@ const UserManagement = () => {
 
   const token = localStorage.getItem("token");
   const studentsUrl = `${BASE_URI}/api/v1/admin/usersForAdmin`;
+  const fetchStudents = async () => {
+    try {
+      const response = await axios.get(studentsUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data.data.users);
+      setStudents(response.data?.data?.users || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -34,9 +50,23 @@ const UserManagement = () => {
     fetchStudents();
   }, [studentsUrl, token]);
 
-  const handleAction = (student, action) => {
+  const handleAction = async(student, action) => {
     // Handle suspend or activate action
-    console.log(`${action} user:`, student);
+    // console.log(`${action} user:`, student);
+    try {
+      const response = await axios.patch(
+        `${BASE_URI}/api/v1/admin/suspenduser/${student}`,
+        { status: action },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      fetchStudents();
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   // Function to map status values and return style
@@ -147,8 +177,8 @@ const UserManagement = () => {
                             className="btn btn-sm"
                             onClick={() =>
                               handleAction(
-                                student,
-                                statusText === "Active" ? "Suspend" : "Activate"
+                                student.id,
+                                statusText === "Active" ? 0 : 1
                               )
                             }
                           >

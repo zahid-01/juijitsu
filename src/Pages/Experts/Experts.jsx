@@ -14,6 +14,22 @@ const UserManagement = () => {
   const token = localStorage.getItem("token");
   const expertsUrl = `${BASE_URI}/api/v1/admin/expertsForAdmin`;
 
+  const fetchExperts = async () => {
+    try {
+      const response = await axios.get(expertsUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data.data.experts);
+      setExperts(response.data?.data?.experts || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchExperts = async () => {
       try {
@@ -34,9 +50,21 @@ const UserManagement = () => {
     fetchExperts();
   }, [expertsUrl, token]);
 
-  const handleAction = (user, action) => {
-    // Handle suspend or activate action
-    console.log(`${action} user:`, user);
+  const handleAction = async (user, action) => {
+    try {
+      const response = await axios.patch(
+        `${BASE_URI}/api/v1/admin/suspenduser/${user}`,
+        { status: action },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      fetchExperts();
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   // Function to map status values and return style
@@ -151,8 +179,8 @@ const UserManagement = () => {
                             className="btn btn-sm"
                             onClick={() =>
                               handleAction(
-                                user,
-                                statusText === "Active" ? "Suspend" : "Activate"
+                                user.id,
+                                statusText === "Active" ? 0 : 1
                               )
                             }
                           >
