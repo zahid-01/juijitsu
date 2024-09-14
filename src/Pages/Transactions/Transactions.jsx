@@ -39,11 +39,12 @@ const UserManagement = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setPayoutRequests(response.data?.data || []);
-      console.log(response.data.data);
+      setPayoutRequests(response?.data?.data || []);
+      console.log(response?.data?.data);
       // console.log(payoutRequests);
     } catch (err) {
-      setError(err.message);
+      setError(err?.response?.data?.message);
+      // console.log(err.response.data.message)
     } finally {
       setLoading(false);
     }
@@ -57,6 +58,7 @@ const UserManagement = () => {
         },
       });
       setTransactions(response.data?.data?.history || []);
+      // console.log(transactions)
       // console.log(response.data?.data?.history); // Log the data to check structure
     } catch (err) {
       setError(err.message);
@@ -295,6 +297,14 @@ const UserManagement = () => {
 
           {/* Payout Requests */}
           {activeTab === "payoutRequests" && (
+            
+           error === "no requests found" ? <>
+           <div style={{width:"100%", height:"20rem", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center"}}>
+            <h5>No Payment Requests Found</h5>
+            <h6>Try after some time!</h6>
+           </div>
+           
+           </> :
             <div className="tab-pane active" style={{ overflowX: "auto" }}>
               <table className="table w-md-reverse-50">
                 <thead>

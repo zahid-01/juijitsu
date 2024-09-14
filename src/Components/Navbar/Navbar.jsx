@@ -158,7 +158,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
 
         <div className="cart-container">
           <Link to="/userCart">
-            <BsBellFill className="primary-color fs-2 ms-5 cursor-pointer" />
+            <BsBellFill className="primary-color fs-4 ms-5 cursor-pointer" />
           </Link>
 
           <div className="cart-badge">{cartItemNumber}</div>{" "}
