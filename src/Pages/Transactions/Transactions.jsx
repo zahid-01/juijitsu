@@ -29,73 +29,90 @@ const UserManagement = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [payoutSuccess, setPayoutSuccess] = useState(false);
+
+  const fetchPayoutRequests = async () => {
+    // New function to fetch payout requests
+    try {
+      const response = await axios.get(payoutRequestsUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setPayoutRequests(response.data?.data || []);
+      console.log(response.data.data);
+      // console.log(payoutRequests);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchTransactions = async () => {
+    try {
+      const response = await axios.get(transactionsUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setTransactions(response.data?.data?.history || []);
+      // console.log(response.data?.data?.history); // Log the data to check structure
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchEditCommission = async () => {
+    try {
+      const response = await axios.get(getCommissionUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const commissionData = response.data.commission || {};
+      console.log(response);
+      setEditCommission(commissionData);
+      setOriginalCommission(commissionData.commission || "");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Fetch data based on the active tab
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await axios.get(transactionsUrl, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setTransactions(response.data?.data?.history || []);
-        // console.log(response.data?.data?.history); // Log the data to check structure
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchPayoutRequests = async () => {
-      // New function to fetch payout requests
-      try {
-        const response = await axios.get(payoutRequestsUrl, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setPayoutRequests(response.data?.data || []);
-        console.log(response.data.data);
-        // console.log(payoutRequests);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    const fetchEditCommission = async () => {
-      try {
-        const response = await axios.get(getCommissionUrl, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const commissionData = response.data.commission || {};
-        console.log(response);
-        setEditCommission(commissionData);
-        setOriginalCommission(commissionData.commission || "");
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (activeTab === "transactions") {
       fetchTransactions();
     } else if (activeTab === "payoutRequests") {
-      // Fetch payout requests when the tab is active
       fetchPayoutRequests();
     } else if (activeTab === "editCommission") {
-      // Fetch payout requests when the tab is active
       fetchEditCommission();
     }
-  }, [activeTab, transactionsUrl, payoutRequestsUrl, editCommissionUrl, token]);
+  }, [activeTab]);
 
-  const handleAction = (expert, action) => {
-    console.log(`${action} expert:`, expert);
+  const handleAction = async (request) => {
+    console.log(` expert:`, request, token);
+
+    try {
+      const response = await axios.post(
+        `${BASE_URI}/api/v1/payment/payout/${request}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setPayoutSuccess(true);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlesave = async () => {
@@ -134,8 +151,24 @@ const UserManagement = () => {
     setIsEditable(false);
   };
 
+  const closePopup = () => {
+    setPayoutSuccess(false);
+    setTimeout(() => {
+      fetchPayoutRequests(); // Refetch payout requests
+    }, 0);
+  };
+
   return (
     <div className="w-100">
+      {payoutSuccess && (
+        <div className="popup">
+          <div className="popup-content">
+            <p>Payout Successful!</p>
+            <button onClick={closePopup}>Close</button>
+          </div>
+        </div>
+      )}
+
       <div
         style={{
           marginBottom: "4vh",
@@ -316,7 +349,7 @@ const UserManagement = () => {
                               "linear-gradient(92.36deg, #0c243c 0%, #7e8c9c 98.67%)",
                             color: "white",
                           }}
-                          onClick={() => handleAction(request, "Pay Now")}
+                          onClick={() => handleAction(request.id)}
                         >
                           Pay Now
                         </button>
