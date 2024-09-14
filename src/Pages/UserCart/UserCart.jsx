@@ -217,11 +217,14 @@ const UserCart = () => {
 
                 <div className="mid-right-usercart">
                   <div className="mid-right-top-usercart">
+                    <div>
                     <h5>Total:</h5>
                     <span>
                       <h6>${cartItems?.totalPrice}</h6>
                       <h6>$15.99</h6>
                     </span>
+                    </div>
+                   
                     <div>
                       <p onClick={checkoutHandler} className="cursor-pointer">
                         Checkout
@@ -231,7 +234,7 @@ const UserCart = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="mid-right-bottom-usercart">
+                  {/* <div className="mid-right-bottom-usercart">
                     <p>Promotions</p>
                     <div>
                       <p>WELCOME50</p>
@@ -243,7 +246,7 @@ const UserCart = () => {
                         <p>Apply</p>
                       </span>
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -298,7 +301,7 @@ const UserCart = () => {
                             </h6>
                           </div>
                           <div className="pricing-card-usercart">
-                            <h5>{items?.tags}</h5>
+                            <h5>{items?.tags?.split(" ").slice(0, 2).join(" ") + "..."}</h5>
                           </div>
                         </div>
                         <p>{items?.name}</p>
@@ -309,7 +312,7 @@ const UserCart = () => {
                         <div className="bottom-card-userusercart">
                           <span>
                             <h5>${items?.price}</h5>
-                            <h5>${items?.discount}</h5>
+                            <h5>${items?.discounted_price}</h5>
                           </span>
                           <div
                             onClick={(e) =>
