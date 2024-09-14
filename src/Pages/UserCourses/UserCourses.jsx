@@ -157,7 +157,6 @@ const Card = ({
     </div>
   );
 };
-
 const UserCourses = ({ search }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -176,11 +175,10 @@ const UserCourses = ({ search }) => {
   });
 
   const categories = useMemo(() => data2?.data || [], [data2]);
-  // console.log(data2);
+  
   useEffect(() => {
     if (categories.length > 0) {
-      // setInitialCategory(categories[0].name);
-      setSelectedCategory("");
+      setSelectedCategory("All"); // Set to "All" by default
       refetch();
     }
   }, [categories]);
@@ -189,18 +187,23 @@ const UserCourses = ({ search }) => {
     if (category === "All") {
       setSelectedCategory("");
     } else {
-      setSelectedCategory(category);
+      setSelectedCategory(category); 
     }
   };
+  
 
-  const url = `${BASE_URI}/api/v1/courses/userDashboard/courses?category=${selectedCategory}&search=${search}`;
+  const url = `${BASE_URI}/api/v1/courses/userDashboard/courses?search=${search}${
+    selectedCategory && selectedCategory !== "All" ? `&category=${selectedCategory}` : ""
+  }`;
+
   console.log(url);
+  
   const { data, error, refetch, isLoading } = useFetch(url, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
 
   const coursesData = useMemo(() => data?.data || [], [data]);
-  console.log(coursesData);
+
   const handleNavigate = (id, status) => {
     if (!status) {
       navigate(`/userCourses/userCourseView/${id}`);
@@ -215,7 +218,6 @@ const UserCourses = ({ search }) => {
     if (!token) {
       setIsLoading(false);
       navigate(`/`);
-
       return toast.error(`Error: Please Login First!`);
     }
 
@@ -241,9 +243,11 @@ const UserCourses = ({ search }) => {
   const handlePurchase = (id) => {
     navigate(`/userPurchasedCourses/${id}`);
   };
+
   const handleCarted = () => {
     navigate(`/userCart`);
   };
+
   return (
     <>
       {isLoading2 ? (
@@ -260,22 +264,22 @@ const UserCourses = ({ search }) => {
           </div>
 
           <div className="categories-userCourses">
-            {["All", ...categories.map((category) => category.name)].map(
-              (category, index) => (
-                <div
-                  key={index}
-                  className={
-                    selectedCategory === category
-                      ? "button-categories-userCourses"
-                      : "not-button-categories-userCourses"
-                  }
-                  onClick={() => handleCategoryClick(category)}
-                >
-                  <h4>{category}</h4>
-                </div>
-              )
-            )}
-          </div>
+  {["All", ...categories.map((category) => category.name)].map(
+    (category, index) => (
+      <div
+        key={index}
+        className={
+          selectedCategory === category || (category === "All" && selectedCategory === "")
+            ? "button-categories-userCourses"
+            : "not-button-categories-userCourses"
+        }
+        onClick={() => handleCategoryClick(category)}
+      >
+        <h4>{category}</h4>
+      </div>
+    )
+  )}
+</div>
 
           <div className="bottom-userCourses">
             {error?.response?.data?.message === "No courses found" ? (
@@ -286,15 +290,6 @@ const UserCourses = ({ search }) => {
                     select the different category and join the world of
                     athletes!
                   </h5>
-                  {/* <Link
-                    to="/userCourses"
-                    className="text-decoration-none text-white"
-                  >
-                    <FontAwesomeIcon
-                      icon={faSquarePlus}
-                      className="add-icon-courses"
-                    />
-                  </Link> */}
                 </div>
               </div>
             ) : isLoading ? (
@@ -318,8 +313,6 @@ const UserCourses = ({ search }) => {
                   onAddToCart={handleCart}
                   purchase={course.is_purchased}
                   carted={course.in_cart}
-                  cartedFunc={handleCart}
-                  purchaseFunc={handlePurchase}
                   heartedAPI={course.is_favourite}
                   navigate={navigate}
                   token={token}
