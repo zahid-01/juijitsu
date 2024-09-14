@@ -292,12 +292,14 @@ if(status === 'purchased'){
 
           <div className="bottom-myLearning">
             {error?.response?.data?.message === "No courses found" ? (
-              <div className="no-courses-userCourses">
+              <div className="no-courses-myLearning">
+                <div>
                 <h1>No Courses Purchased Yet!</h1>
                 <h5>Purchase a course and join the world of athletes!</h5>
                 <Link to="/userCourses" className="text-decoration-none text-white">
                   <FontAwesomeIcon icon={faSquarePlus} className="add-icon-courses" />
                 </Link>
+                </div>
               </div>
             ) : (
               <>
