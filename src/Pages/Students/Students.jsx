@@ -29,7 +29,6 @@ const UserManagement = () => {
     }
   };
 
-
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -50,7 +49,7 @@ const UserManagement = () => {
     fetchStudents();
   }, [studentsUrl, token]);
 
-  const handleAction = async(student, action) => {
+  const handleAction = async (student, action) => {
     // Handle suspend or activate action
     // console.log(`${action} user:`, student);
     try {
@@ -97,13 +96,13 @@ const UserManagement = () => {
           </span>
           <p style={{ fontWeight: "lighter" }}>Track & manage your platform</p>
         </div>
-        <div
+        {/* <div
           className="upper-date"
           style={{ display: "flex", alignItems: "center" }}
         >
           <FaCalendar style={{ marginRight: "8px" }} />
           Sep 4, 2024
-        </div>
+        </div> */}
       </div>
 
       <div className="tab-content px-3 py-3 custom-box rounded-top-0">
@@ -141,7 +140,6 @@ const UserManagement = () => {
                       getStatusDetails(student.status);
                     return (
                       <tr key={index}>
-                        
                         <td className="align-middle fs-small py-2 text-capitalize">
                           <div
                             style={{ display: "flex", alignItems: "center" }}

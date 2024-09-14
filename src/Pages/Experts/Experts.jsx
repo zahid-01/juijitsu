@@ -95,13 +95,13 @@ const UserManagement = () => {
           </span>
           <p style={{ fontWeight: "lighter" }}>Track & manage your platform</p>
         </div>
-        <div
+        {/* <div
           className="upper-date"
           style={{ display: "flex", alignItems: "center" }}
         >
           <FaCalendar style={{ marginRight: "8px" }} />
           Sep 4, 2024
-        </div>
+        </div> */}
       </div>
 
       <div className="tab-content px-3 py-3 custom-box rounded-top-0">

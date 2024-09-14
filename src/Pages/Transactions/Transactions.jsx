@@ -150,13 +150,13 @@ const UserManagement = () => {
           </span>
           <p style={{ fontWeight: "lighter" }}>Track & manage your platform</p>
         </div>
-        <div
+        {/* <div
           className="upper-date"
           style={{ display: "flex", alignItems: "center" }}
         >
           <FaCalendar style={{ marginRight: "8px" }} />
           Sep 4, 2024
-        </div>
+        </div> */}
       </div>
       <header className="header-container p-3 pb-0 rounded-bottom-0 custom-box">
         <div className="d-flex gap-5 px-4">
