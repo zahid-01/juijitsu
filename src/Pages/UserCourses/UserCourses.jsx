@@ -43,43 +43,38 @@ const Card = ({
   title,
   heartedAPI,
   navigate,
-  token
+  token,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hearted, setHearted] = useState(heartedAPI);
-  console.log(heartedAPI)
-// const hearted = false
+  console.log(heartedAPI);
+  // const hearted = false
   const handleAddToCart = async (e) => {
     e.stopPropagation();
     setIsLoading(true);
     await onAddToCart(id, setIsLoading);
   };
-  
+
   const handleFavrouite = async (e) => {
     e.stopPropagation();
-    if(!token){
-      navigate('/')
+    if (!token) {
+      navigate("/");
     }
-    try{
-      setHearted(!hearted)
+    try {
+      setHearted(!hearted);
       await axios({
-      method: "post",
-      url: `${BASE_URI}/api/v1/courses/favouriteCourse/${id}`,
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-      
-    });
-    // console.log("ok here")
-    
-
-    }catch(err){
-      console.log(err)
-      toast.error("Failed to add to favorites")
+        method: "post",
+        url: `${BASE_URI}/api/v1/courses/favouriteCourse/${id}`,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      // console.log("ok here")
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to add to favorites");
     }
-  }
-    
-  
+  };
 
   return (
     <div
@@ -95,8 +90,16 @@ const Card = ({
       }}
     >
       <span>
-      {hearted ? <FontAwesomeIcon onClick={handleFavrouite} id="heart-userCourses" icon={faHeart} /> : <CiHeart onClick={handleFavrouite} id="unHeart-userCourses"/>}
-      
+        {hearted ? (
+          <FontAwesomeIcon
+            onClick={handleFavrouite}
+            id="heart-userCourses"
+            icon={faHeart}
+          />
+        ) : (
+          <CiHeart onClick={handleFavrouite} id="unHeart-userCourses" />
+        )}
+
         <img
           loading="lazy"
           src={thumbnail}
@@ -107,14 +110,14 @@ const Card = ({
 
       <div className="middle-sec-card-userCourses">
         <div className="addCourse-card-userCourses">
-          <h6 >{category}</h6>
+          <h6>{category}</h6>
         </div>
         <div className="pricing-card-userCourses">
           <h5>{tags?.split(" ").slice(0, 2).join(" ") + "..."}</h5>
         </div>
       </div>
       <p>{expert}</p>
-      <h5  style={{fontSize:'1.2vw', fontWeight:"600"}}>{title}</h5>
+      <h5 style={{ fontSize: "1.2vw", fontWeight: "600" }}>{title}</h5>
       {/* <h4
         dangerouslySetInnerHTML={{
           __html: description
@@ -183,7 +186,11 @@ const UserCourses = ({ search }) => {
   }, [categories]);
 
   const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
+    if (category === "All") {
+      setSelectedCategory("");
+    } else {
+      setSelectedCategory(category);
+    }
   };
 
   const url = `${BASE_URI}/api/v1/courses/userDashboard/courses?category=${selectedCategory}&search=${search}`;
@@ -193,7 +200,7 @@ const UserCourses = ({ search }) => {
   });
 
   const coursesData = useMemo(() => data?.data || [], [data]);
-  console.log(coursesData)
+  console.log(coursesData);
   const handleNavigate = (id, status) => {
     if (!status) {
       navigate(`/userCourses/userCourseView/${id}`);
@@ -301,7 +308,6 @@ const UserCourses = ({ search }) => {
                   id={course.id}
                   category={course.category}
                   title={course.title}
-                  
                   description={course.description}
                   expert={course.expert}
                   price={course.price}

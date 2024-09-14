@@ -125,8 +125,7 @@ export default function ExpertWallet() {
     return <div>No data available</div>;
   }
 
-  const { lastWithdrawal, ordersWithPayableAmount, payable_amount } =
-    walletData;
+  const { lastWithdrawal, orders, payable_amount } = walletData;
   const recentPayout = lastWithdrawal[0]?.total_withdrawn_amount || "$0.00";
   const accountBalance = `$${payable_amount}`;
 
@@ -206,7 +205,7 @@ export default function ExpertWallet() {
                 </tr>
               </thead>
               <tbody>
-                {ordersWithPayableAmount.map((order, index) => (
+                {orders.map((order, index) => (
                   <tr key={index}>
                     <td className="align-middle fs-small py-3 ps-4">
                       {index + 1}.

@@ -88,33 +88,18 @@ function AdminDashboard() {
     setData({
       TotalStudents: {
         value: adminData?.data?.data?.enrolls?.total_students,
-        percentage: 6.23,
-        icon: "fas fa-graduation-cap",
-        type: "increase",
       },
       TotalCourses: {
         value: adminData?.data?.data?.enrolls?.total_courses,
-        percentage: 6.23,
-        icon: "fas fa-book",
-        type: "increase",
       },
       TotalExperts: {
         value: adminData?.data?.data?.enrolls?.total_experts,
-        percentage: 6.23,
-        icon: "fas fa-user-tie",
-        type: "decrease",
       },
       TotalRevenue: {
         value: adminData?.data?.data?.enrolls?.total_revenue,
-        percentage: 6.23,
-        icon: "fas fa-money-bill-wave",
-        type: "increase",
       },
       TotalCommission: {
         value: Math.floor(adminData?.data?.data?.enrolls?.total_commission),
-        percentage: 6.23,
-        icon: "fas fa-money-bill-wave",
-        type: "increase",
       },
     });
     setCourseCompletion({
@@ -310,7 +295,10 @@ function AdminDashboard() {
       <div className="row">
         {Object.keys(data).map((key) => (
           <div key={key} className="col-md-4">
-            <div className="card shadow-sm mb-4">
+            <div
+              className="card shadow-sm mb-3"
+              style={{ width: "300px", margin: "auto" }}
+            >
               <div className="card-body">
                 <h5 className="card-title text-center">
                   {key.replace(/([A-Z])/g, " $1").trim()}
@@ -321,12 +309,12 @@ function AdminDashboard() {
                     style={{ color: "#007bff" }}
                   ></i>
                   <h2 className="card-text me-2">{data[key].value}</h2>
-                  <span
+                  {/* <span
                     className={`text-${
                       data[key].type === "increase" ? "success" : "danger"
                     }`}
                   >
-                    {data[key].percentage}%
+                    {data[key].percentage}
                     <i
                       className={`fas fa-${
                         data[key].type === "increase"
@@ -335,7 +323,7 @@ function AdminDashboard() {
                       }`}
                       style={{ fontSize: "0.8rem" }}
                     ></i>
-                  </span>
+                  </span> */}
                 </div>
               </div>
             </div>
@@ -368,7 +356,7 @@ function AdminDashboard() {
             <div className="card-body">
               <h5 className="card-title text-center">Course Completion Rate</h5>
               <div className="d-flex align-items-center justify-content-center">
-                <div style={{ width: "25rem", height: "25rem" }}>
+                <div style={{ width: "20rem", height: "20rem" }}>
                   <Doughnut data={courseCompletionData} />
                 </div>
               </div>
@@ -380,7 +368,7 @@ function AdminDashboard() {
             <div className="card-body">
               <h5 className="card-title text-center">Most Bought Courses</h5>
               <div className="d-flex align-items-center justify-content-center">
-                <div style={{ width: "25rem", height: "25rem" }}>
+                <div style={{ width: "20rem", height: "20rem" }}>
                   <Doughnut data={mostBoughtCoursesData} />
                 </div>
               </div>

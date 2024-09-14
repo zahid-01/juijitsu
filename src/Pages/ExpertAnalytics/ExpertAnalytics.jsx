@@ -15,16 +15,47 @@ export default function ExpertAnalytics() {
 
   const [data, setData] = useState(null);
   const user = JSON.parse(localStorage.getItem("user"));
+  const [analyticsData, setAnalyticsData] = useState(null);
+
+  // useEffect(() => {
+  //   axios
+  //     .get(`${BASE_URI}/api/v1/expert/expertDashboard`, {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       setData(response.data.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data", error);
+  //     });
+  // }, []);
 
   useEffect(() => {
-    axios
-      .get(`${BASE_URI}/api/v1/expert/expertDashboard`, {
+    const fetchUserData = axios.get(
+      `${BASE_URI}/api/v1/expert/expertDashboard`,
+      {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      })
-      .then((response) => {
-        setData(response.data.data);
+      }
+    );
+
+    const fetchAnalyticsData = axios.get(
+      `${BASE_URI}/api/v1/expert/expertGraphs?type=week`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    Promise.all([fetchUserData, fetchAnalyticsData])
+      .then(([userResponse, analyticsResponse]) => {
+        setData(userResponse.data.data);
+        setAnalyticsData(analyticsResponse.data.data); // Set analytics data
+        console.log(userResponse.data.data, analyticsResponse.data);
       })
       .catch((error) => {
         console.error("Error fetching data", error);
@@ -32,18 +63,18 @@ export default function ExpertAnalytics() {
   }, []);
 
   useEffect(() => {
-    if (data) {
+    if (analyticsData) {
       const weeklyEnrollments = Array(7).fill(0);
       const weeklyRevenue = Array(7).fill(0);
       const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
       // Populate weekly data
-      data.weeklyEnrolled.forEach((item) => {
+      analyticsData.Enrolled.forEach((item) => {
         const dayIndex = new Date(item.enrollment_date).getDay();
         weeklyEnrollments[dayIndex] = item.daily_enrolled;
       });
 
-      data.weeklyRevenue.forEach((item) => {
+      analyticsData.Revenue.forEach((item) => {
         const dayIndex = new Date(item.payment_date).getDay();
         weeklyRevenue[dayIndex] = parseFloat(item.daily_revenue);
       });
@@ -77,6 +108,7 @@ export default function ExpertAnalytics() {
         ],
       };
 
+      // Ratings data for doughnut chart
       const ratingsData = {
         labels: [
           "5 Star Rating",
@@ -146,6 +178,7 @@ export default function ExpertAnalytics() {
         },
       });
 
+      // Ratings doughnut chart
       createChart(ratingsChartRef, "doughnut", ratingsData, {
         cutout: "80%",
         plugins: {
@@ -164,7 +197,7 @@ export default function ExpertAnalytics() {
         },
       });
     }
-  }, [data]);
+  }, [analyticsData]);
 
   if (!data) {
     return (
@@ -217,36 +250,64 @@ export default function ExpertAnalytics() {
       </div>
       <div className="row mt-3 mb-5">
         <div className="col-md-3 pb-4">
-          <Card
-            title="Total Students"
-            icon={LuUsers2}
-            value={data?.enrolls?.total_students}
-            percentage="~6.32%"
-          />
+          <div className="custom-box border-0 bg-gradient-custom-div py-3 h-100">
+            <div className="px-3">
+              <div className="d-flex align-items-center justify-content-between mb-5">
+                <h5 className="fw-lightBold"> Total Students</h5>
+                <LuUsers2 className="fs-2" />
+              </div>
+              <div className="d-flex align-items-center justify-content-between">
+                <h2 className="text-center mb-0 fw-lightBold">
+                  {data?.enrolls?.total_students}
+                </h2>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="col-md-3 pb-4">
-          <Card
-            title="This month earnings"
-            icon={IoIosTimer}
-            value={`$${data?.enrolls?.current_month_revenue}`}
-            percentage="~6.32%"
-          />
+          <div className="custom-box border-0 bg-gradient-custom-div py-3 h-100">
+            <div className="px-3">
+              <div className="d-flex align-items-center justify-content-between mb-5">
+                <h5 className="fw-lightBold">This month earnings</h5>
+                <IoIosTimer className="fs-2" />
+              </div>
+              <div className="d-flex align-items-center justify-content-between">
+                <h2 className="text-center mb-0 fw-lightBold">
+                  {data?.enrolls?.current_month_revenue}
+                </h2>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="col-md-3 pb-4">
-          <Card
-            title="New Enrollments"
-            icon={FaAddressCard}
-            value={data?.enrolls?.today_enrolled}
-            percentage="~6.32%"
-          />
+          <div className="custom-box border-0 bg-gradient-custom-div py-3 h-100">
+            <div className="px-3">
+              <div className="d-flex align-items-center justify-content-between mb-5">
+                <h5 className="fw-lightBold">New Enrollments</h5>
+                <FaAddressCard className="fs-2" />
+              </div>
+              <div className="d-flex align-items-center justify-content-between">
+                <h2 className="text-center mb-0 fw-lightBold">
+                  {data?.enrolls?.today_enrolled}
+                </h2>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="col-md-3 pb-4">
-          <Card
-            title="Total Revenue"
-            icon={() => <h3>💰</h3>}
-            value={`$${data?.enrolls?.total_revenue}`}
-            percentage="~6.32%"
-          />
+          <div className="custom-box border-0 bg-gradient-custom-div py-3 h-100">
+            <div className="px-3">
+              <div className="d-flex align-items-center justify-content-between mb-5">
+                <h5 className="fw-lightBold">Total Revenue</h5>
+                <h3>💰</h3>
+              </div>
+              <div className="d-flex align-items-center justify-content-between">
+                <h2 className="text-center mb-0 fw-lightBold">
+                  {data?.enrolls?.total_revenue}
+                </h2>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div className="row mt-3 mb-5">
@@ -287,7 +348,7 @@ export default function ExpertAnalytics() {
         </div>
         <div className="col-md-6">
           <div className="d-flex align-items-center justify-content-center">
-            <div style={{ height: "25rem", width: "25rem" }}>
+            <div style={{ height: "20rem", width: "20rem" }}>
               <h5 className="mb-3">Ratings Overview</h5>
               <canvas
                 ref={ratingsChartRef}
