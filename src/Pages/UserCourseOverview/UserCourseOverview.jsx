@@ -379,7 +379,7 @@ const UserCourseOverview = () => {
                         </h6>
                       </div>
                       <div className="pricing-card-userCourseview">
-                        <h5>{course?.tags || "No tags available"}</h5>
+                        <h5>{course?.tags?.split(" ").slice(0, 2).join(" ") + "..." || "No tags available"}</h5>
                         {/* <h5>$10.99</h5> */}
                       </div>
                     </div>

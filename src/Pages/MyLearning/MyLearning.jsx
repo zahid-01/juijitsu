@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import { FaStar } from "react-icons/fa"; // For star icons
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Card = ({
   id,
@@ -21,7 +22,9 @@ const Card = ({
   rating,
   setRating,
   iscarted,
-  addtocart
+  addtocart,
+  price,
+  discountedPrice
 }) => {
   const handleAddToCart = (e) => {
     e.stopPropagation(); // Prevents the click event from bubbling up
@@ -76,8 +79,8 @@ const Card = ({
         ) : (
           <div>
             <div style={{ display: "flex", gap: "0.5rem" }}>
-              <h6 style={{ fontSize: "0.8rem", textDecoration: "line-through" }}>$233</h6>
-              <h6 style={{ fontSize: '1rem', fontWeight: "500" }}>$199</h6>
+              <h6 style={{ fontSize: "0.8rem", textDecoration: "line-through" }}>${price}</h6>
+              <h6 style={{ fontSize: '1rem', fontWeight: "500" }}>${discountedPrice}</h6>
             </div>
             <div
               style={{
@@ -193,16 +196,15 @@ if(status === 'purchased'){
   const addtocart = async(id) =>{
     // cartLoading(true);
     try{
-      axios({
-        method: 'POST',
-        url: `${BASE_URI}/api/v1/cart`,
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-        data: {
-          courseId: id
+      const response = await axios.post(
+        `${BASE_URI}/api/v1/cart`,
+        { course_id: id },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
         }
-      })
+      );
       refetch()
       toast.success("Course added to cart successfully")
     }catch(err){
@@ -325,7 +327,8 @@ if(status === 'purchased'){
                     setRating={setRating}
                     iscarted={course.in_cart}
                     addtocart={addtocart}
-                    // price={}
+                    price={course.price}
+                    discountedPrice={course.discounted_price}
                   />
                 ))}
               </>

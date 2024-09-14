@@ -110,7 +110,7 @@ const Card = ({
           <h6 >{category}</h6>
         </div>
         <div className="pricing-card-userCourses">
-          <h5>{tags}</h5>
+          <h5>{tags?.split(" ").slice(0, 2).join(" ") + "..."}</h5>
         </div>
       </div>
       <p>{expert}</p>

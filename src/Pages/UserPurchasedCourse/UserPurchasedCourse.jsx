@@ -431,7 +431,7 @@ const UserPurchasedCourse = () => {
                         <img
                           src={courseData?.course?.profile_picture || profile}
                           alt="profile"
-                          style={{ width: "7%", borderRadius: "50%" }}
+                          style={{objectFit :"cover",height:"2.5vw", width: "2.5vw", borderRadius: "100%" }}
                         />{" "}
                         <h6 className="text-uppercase">
                           {courseData?.course?.name}
