@@ -32,7 +32,7 @@
 }
 .mid-left-usercart .mid-left-cards-usercart {
   background: #f7f7f7;
-  height: 18.5vh;
+  min-height: 18.5vh;
   box-shadow: 0px 0px 4px 0.2px #00000040;
 
   width: 98%;
