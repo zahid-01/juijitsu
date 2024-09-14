@@ -106,9 +106,9 @@ input::placeholder {
 .cart-badge {
   position: absolute;
   top: 0;
-  left: 81px;
-  width: 1.5rem;
-  height: 1.5rem;
+  left: 72px;
+  width: 1rem;
+  height: 1rem;
   background-color: red;
   color: white;
   border-radius: 50%;
