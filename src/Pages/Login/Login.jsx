@@ -42,7 +42,6 @@ export default function Login() {
           } else if (parsedResponse.user.user_type === "user") {
             navigate("/userCourses");
           } else if (parsedResponse.user.user_type === "admin") {
-            console.log("admin");
             navigate("/adminDashboard");
           }
         }
@@ -114,6 +113,8 @@ export default function Login() {
       return <Navigate to="/courses" />;
     } else if (localStorage.getItem("userType") === "user") {
       return <Navigate to="/userCourses" />;
+    } else if (localStorage.getItem("userType") === "admin") {
+      return <Navigate to="/adminDashboard" />;
     }
   }
 
