@@ -180,7 +180,7 @@ const UserCourses = ({ search }) => {
   useEffect(() => {
     if (categories.length > 0) {
       // setInitialCategory(categories[0].name);
-      setSelectedCategory("All");
+      setSelectedCategory("");
       refetch();
     }
   }, [categories]);
