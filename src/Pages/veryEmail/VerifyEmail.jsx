@@ -3,6 +3,8 @@ import "./VerifyEmail.css";
 import learnImg from "../../assets/learnImg.avif";
 import { Link } from "react-router-dom";
 
+
+
 export const VerifyEmail = () => {
   return (
     <div className="container-fluid signin-container d-flex align-items-center justify-content-center px-0">

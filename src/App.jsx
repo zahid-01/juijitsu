@@ -1,6 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-
 import { Layout } from "./Components/Layout/Layout";
 import AppRoutes from "./Routes/AppRoutes";
 import ResetPassword from "./Pages/ResetPassword/ResetPassword";
@@ -27,6 +26,7 @@ const App = () => {
       setCartItemNumber(data?.cart?.length);
     }
   }, []);
+
 
 
   return (
