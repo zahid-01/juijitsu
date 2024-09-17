@@ -4,6 +4,8 @@ import Logout from "../Pages/Logout/Logout";
 import Experts from "../Pages/Experts/Experts";
 import Students from "../Pages/Students/Students";
 import Transactions from "../Pages/Transactions/Transactions";
+import Settings from "../Pages/Settings/Settings";
+
 
 
 export default function AdminRoutes() {
@@ -14,6 +16,7 @@ export default function AdminRoutes() {
       <Route path="/experts" element={<Experts />} />
       <Route path="/students" element={<Students />} />
       <Route path="/transactions" element={<Transactions />} />
+      <Route path="/settings" element={<Settings />} />
     </Routes>
   );
 }

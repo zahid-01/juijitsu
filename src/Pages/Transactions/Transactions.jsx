@@ -58,10 +58,11 @@ const UserManagement = () => {
         },
       });
       setTransactions(response.data?.data?.history || []);
-      // console.log(transactions)
+
       // console.log(response.data?.data?.history); // Log the data to check structure
     } catch (err) {
-      setError(err.message);
+      setError(err?.response?.data?.message);
+     
     } finally {
       setLoading(false);
     }
@@ -111,7 +112,8 @@ const UserManagement = () => {
       );
       setPayoutSuccess(true);
     } catch (err) {
-      setError(err);
+      setError(err?.response?.data?.message);
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -219,157 +221,180 @@ const UserManagement = () => {
       <div className="tab-content px-3 py-1 custom-box rounded-top-0">
         <div className="px-4">
           {/* Transactions */}
-          {activeTab === "transactions" && (
-            <div className="tab-pane active" style={{ overflowX: "auto" }}>
-              <table className="table w-md-reverse-50">
-                <thead>
-                  <tr>
-                    <th scope="col">
-                      Name
-                      <LuArrowUpDown style={{ marginLeft: "8px" }} />
-                    </th>
-                    <th scope="col" className="text-center">
-                      Price
-                      <LuArrowUpDown style={{ marginLeft: "8px" }} />
-                    </th>
-                    <th scope="col" className="text-center">
-                      Transaction Id
-                      <LuArrowUpDown style={{ marginLeft: "8px" }} />
-                    </th>
-                    <th scope="col" className="text-center">
-                      Transaction Date
-                      <LuArrowUpDown style={{ marginLeft: "8px" }} />
-                    </th>
-                    <th scope="col" className="text-center">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transactions.map((user, index) => (
-                    <tr key={index}>
-                      <td className="align-middle fs-small py-2 text-capitalize">
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <img
-                            src={user.profile_picture}
-                            alt={user.name}
-                            style={{
-                              width: "33px",
-                              height: "33px",
-                              borderRadius: "50%",
-                              objectFit: "cover",
-                              marginRight: "10px",
-                            }}
-                          />
-                          {user.name}
-                        </div>
-                      </td>
-                      <td className="text-center align-middle fs-small">
-                        {user.withdrawal_amount}
-                      </td>
-                      <td className="text-center align-middle fs-small">
-                        {user.transaction_id}
-                      </td>
-                      <td className="text-center align-middle fs-small">
-                        {new Date(user.withdrawal_date).toLocaleDateString()}
-                      </td>
-                      <td className="text-center align-middle fs-small">
-                        <span
-                          style={{
-                            color:
-                              user.withdrawal_status.toLowerCase() === "success"
-                                ? "green"
-                                : user.withdrawal_status.toLowerCase() ===
-                                  "failed"
-                                ? "red"
-                                : "black",
-                          }}
-                        >
-                          {user.withdrawal_status}
-                        </span>
-                      </td>
+       
+          <div className="bottom-userCourses">
+
+          {activeTab === "transactions" &&
+            (error === "no transactions found" ? (
+              <>
+                <div  className="no-courses-userCourses">
+               <div>
+               <h1>No Transactions Found</h1>
+              
+               </div>
+                </div>
+              </>
+            ) : (
+              <div className="tab-pane active" style={{ overflowX: "auto" }}>
+                <table className="table w-md-reverse-50">
+                  <thead>
+                    <tr>
+                      <th scope="col">
+                        Name
+                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                      </th>
+                      <th scope="col" className="text-center">
+                        Price
+                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                      </th>
+                      <th scope="col" className="text-center">
+                        Transaction Id
+                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                      </th>
+                      <th scope="col" className="text-center">
+                        Transaction Date
+                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                      </th>
+                      <th scope="col" className="text-center">
+                        Status
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {transactions.map((user, index) => (
+                      <tr key={index}>
+                        <td className="align-middle fs-small py-2 text-capitalize">
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <img
+                              src={user.profile_picture}
+                              alt={user.name}
+                              style={{
+                                width: "33px",
+                                height: "33px",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                                marginRight: "10px",
+                              }}
+                            />
+                            {user.name}
+                          </div>
+                        </td>
+                        <td className="text-center align-middle fs-small">
+                          {user.withdrawal_amount}
+                        </td>
+                        <td className="text-center align-middle fs-small">
+                          {user.transaction_id}
+                        </td>
+                        <td className="text-center align-middle fs-small">
+                          {new Date(user.withdrawal_date).toLocaleDateString()}
+                        </td>
+                        <td className="text-center align-middle fs-small">
+                          <span
+                            style={{
+                              color:
+                                user.withdrawal_status.toLowerCase() ===
+                                "success"
+                                  ? "green"
+                                  : user.withdrawal_status.toLowerCase() ===
+                                    "failed"
+                                  ? "red"
+                                  : "black",
+                            }}
+                          >
+                            {user.withdrawal_status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ))}
             </div>
-          )}
 
           {/* Payout Requests */}
-          {activeTab === "payoutRequests" && (
-            
-           error === "no requests found" ? <>
-           <div style={{width:"100%", height:"20rem", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center"}}>
-            <h5>No Payment Requests Found</h5>
-            <h6>Try after some time!</h6>
-           </div>
-           
-           </> :
-            <div className="tab-pane active" style={{ overflowX: "auto" }}>
-              <table className="table w-md-reverse-50">
-                <thead>
-                  <tr>
-                    <th scope="col">
-                      Name
-                      <LuArrowUpDown style={{ marginLeft: "8px" }} />
-                    </th>
-                    <th scope="col" className="text-center">
-                      Amount Requested
-                      <LuArrowUpDown style={{ marginLeft: "8px" }} />
-                    </th>
-                    <th scope="col" className="text-center">
-                      Requested On
-                      <LuArrowUpDown style={{ marginLeft: "8px" }} />
-                    </th>
-                    <th scope="col" className="text-center">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {payoutRequests.map((request, index) => (
-                    <tr key={index}>
-                      <td className="align-middle fs-small py-2 text-capitalize">
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <img
-                            src={request.profile_picture}
-                            alt={request.name}
-                            style={{
-                              width: "33px",
-                              height: "33px",
-                              borderRadius: "50%",
-                              objectFit: "cover",
-                              marginRight: "10px",
-                            }}
-                          />
-                          {request.name}
-                        </div>
-                      </td>
-                      <td className="text-center align-middle fs-small">
-                        ${request.amount}
-                      </td>
-                      <td className="text-center align-middle fs-small">
-                        {request.created_at}
-                      </td>
-                      <td className="text-center align-middle fs-small">
-                        <button
-                          className="btn"
-                          style={{
-                            background:
-                              "linear-gradient(92.36deg, #0c243c 0%, #7e8c9c 98.67%)",
-                            color: "white",
-                          }}
-                          onClick={() => handleAction(request.id)}
-                        >
-                          Pay Now
-                        </button>
-                      </td>
+          <div className="bottom-userCourses">
+          {activeTab === "payoutRequests" &&
+            (error === "no requests found" ? (
+              <>
+                <div className="no-courses-userCourses">
+                 <div>
+                 <h1>No Payment Requests Found</h1>
+                
+                 </div>
+                </div>
+              </>
+            ) : (
+              <div className="tab-pane active" style={{ overflowX: "auto" }}>
+                <table className="table w-md-reverse-50">
+                  <thead>
+                    <tr>
+                      <th scope="col">
+                        Name
+                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                      </th>
+                      <th scope="col" className="text-center">
+                        Amount Requested
+                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                      </th>
+                      <th scope="col" className="text-center">
+                        Requested On
+                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                      </th>
+                      <th scope="col" className="text-center">
+                        Action
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {payoutRequests.map((request, index) => (
+                      <tr key={index}>
+                        <td className="align-middle fs-small py-2 text-capitalize">
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <img
+                              src={request.profile_picture}
+                              alt={request.name}
+                              style={{
+                                width: "33px",
+                                height: "33px",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                                marginRight: "10px",
+                              }}
+                            />
+                            {request.name}
+                          </div>
+                        </td>
+                        <td className="text-center align-middle fs-small">
+                          ${request.amount}
+                        </td>
+                        <td className="text-center align-middle fs-small">
+                          {request.created_at}
+                        </td>
+                        <td className="text-center align-middle fs-small">
+                          <button
+                            className="btn"
+                            style={{
+                              background:
+                                "linear-gradient(92.36deg, #0c243c 0%, #7e8c9c 98.67%)",
+                              color: "white",
+                            }}
+                            onClick={() => handleAction(request.id)}
+                          >
+                            Pay Now
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ))}
             </div>
-          )}
 
           {/* Edit commisson  */}
           {activeTab === "editCommission" && (
@@ -443,6 +468,28 @@ const UserManagement = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+              <div>
+                <p
+                  style={{
+                    color: "red",
+                    fontWeight: "lighter",
+                  }}
+                >
+                  {" "}
+                  *The commission will be applicable on all transactions
+                </p>
+                <p
+                  style={{
+                    color: "red",
+                    fontWeight: "lighter",
+                    marginBottom: "25vh",
+                  }}
+                >
+                  {" "}
+                  *The Updated commission rate will be applicable from date of
+                  transaction{" "}
+                </p>
               </div>
             </div>
           )}

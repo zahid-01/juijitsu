@@ -1,3 +1,7 @@
+//settings
+
+
+
 import { useRef, useState } from "react";
 import { FaPen } from "react-icons/fa";
 import Modal from "../../Components/Modal/Modal";
@@ -27,9 +31,11 @@ export default function Settings() {
       name: "",
     },
   });
+
   const inputRef = useRef(null);
 
   const token = localStorage.getItem("token");
+  const role = localStorage.getItem("userType");
   const profileUrl = `${BASE_URI}/api/v1/users/profile`;
   const fetchOptions = {
     headers: {
@@ -174,6 +180,7 @@ export default function Settings() {
             >
               Edit Profile
             </h5>
+            { role !== "admin" &&(
             <h5
               className={`text-white px-3 pb-2 fw-light cursor-pointer ${
                 activeTab === "closeAccount" ? "border-bottom border-4" : ""
@@ -182,6 +189,7 @@ export default function Settings() {
             >
               Close Account
             </h5>
+            ) }
           </div>
         </div>
       </header>
@@ -401,6 +409,9 @@ export default function Settings() {
                     </div>
                   </div>
                 </div>
+
+               
+                  
                 <button
                   type="submit"
                   className="signup-now py-2 px-4 fw-lightBold mb-0 h-auto"
