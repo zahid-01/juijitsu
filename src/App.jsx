@@ -8,8 +8,12 @@ import PasswordRecovery from "./Pages/PasswordRecovery/PasswordRecovery";
 import { useEffect, useState } from "react";
 import { BASE_URI } from "./Config/url";
 import useFetch from "./hooks/useFetch";
+import axios from "axios";
+import { userCartActions } from "./Store/cartSlice";
+import { useDispatch } from "react-redux";
 
 const App = () => {
+  const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const [cartItemNumber, setCartItemNumber] = useState(0);
 
@@ -22,12 +26,24 @@ const App = () => {
   });
 
   useEffect(() => {
-    console.log(data)
+    axios({
+      method: "GET",
+      url,
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }).then(
+      (res) => {
+        console.log(res.data.cart);
+        dispatch(userCartActions.setCart(res.data.cart));
+      },
+      () => {}
+    );
+
     if (data) {
       setCartItemNumber(data?.cart?.length);
     }
   }, []);
-
 
   return (
     <BrowserRouter>
