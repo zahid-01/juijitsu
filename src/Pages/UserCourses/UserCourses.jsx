@@ -14,6 +14,8 @@ import { faHeart, faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import "ldrs/grid";
 import "ldrs/bouncy";
+import { useDispatch } from "react-redux";
+import { userCartActions } from "../../Store/cartSlice";
 
 const ShimmerCard = () => (
   <div className="card-bottom-userCourses shimmer-card-usercourses">
@@ -48,6 +50,7 @@ const Card = ({
   const [isLoading, setIsLoading] = useState(false);
   const [hearted, setHearted] = useState(heartedAPI);
   console.log(heartedAPI);
+  const dispatch = useDispatch();
   // const hearted = false
   const handleAddToCart = async (e) => {
     e.stopPropagation();
@@ -159,6 +162,7 @@ const Card = ({
 };
 const UserCourses = ({ search }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const token = localStorage.getItem("token");
 
   const [initialCategory, setInitialCategory] = useState("");
@@ -175,7 +179,7 @@ const UserCourses = ({ search }) => {
   });
 
   const categories = useMemo(() => data2?.data || [], [data2]);
-  
+
   useEffect(() => {
     if (categories.length > 0) {
       setSelectedCategory("All"); // Set to "All" by default
@@ -187,17 +191,18 @@ const UserCourses = ({ search }) => {
     if (category === "All") {
       setSelectedCategory("");
     } else {
-      setSelectedCategory(category); 
+      setSelectedCategory(category);
     }
   };
-  
 
   const url = `${BASE_URI}/api/v1/courses/userDashboard/courses?search=${search}${
-    selectedCategory && selectedCategory !== "All" ? `&category=${selectedCategory}` : ""
+    selectedCategory && selectedCategory !== "All"
+      ? `&category=${selectedCategory}`
+      : ""
   }`;
 
   console.log(url);
-  
+
   const { data, error, refetch, isLoading } = useFetch(url, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
@@ -233,7 +238,19 @@ const UserCourses = ({ search }) => {
       );
       setIsLoading(false);
       toast.success(`${response.data.message}`);
-      refetch();
+
+      axios({
+        method: "GET",
+        url: `${BASE_URI}/api/v1/cart`,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then(
+        (res) => {
+          dispatch(userCartActions.setCart(res.data.cart));
+        },
+        () => {}
+      );
     } catch (err) {
       setIsLoading(false);
       toast.error(`Error: ${err?.response?.data?.message}`);
@@ -264,22 +281,23 @@ const UserCourses = ({ search }) => {
           </div>
 
           <div className="categories-userCourses">
-  {["All", ...categories.map((category) => category.name)].map(
-    (category, index) => (
-      <div
-        key={index}
-        className={
-          selectedCategory === category || (category === "All" && selectedCategory === "")
-            ? "button-categories-userCourses"
-            : "not-button-categories-userCourses"
-        }
-        onClick={() => handleCategoryClick(category)}
-      >
-        <h4>{category}</h4>
-      </div>
-    )
-  )}
-</div>
+            {["All", ...categories.map((category) => category.name)].map(
+              (category, index) => (
+                <div
+                  key={index}
+                  className={
+                    selectedCategory === category ||
+                    (category === "All" && selectedCategory === "")
+                      ? "button-categories-userCourses"
+                      : "not-button-categories-userCourses"
+                  }
+                  onClick={() => handleCategoryClick(category)}
+                >
+                  <h4>{category}</h4>
+                </div>
+              )
+            )}
+          </div>
 
           <div className="bottom-userCourses">
             {error?.response?.data?.message === "No courses found" ? (

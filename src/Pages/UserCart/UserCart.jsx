@@ -25,8 +25,11 @@ import { Link, useNavigate } from "react-router-dom";
 // import Loader from "../../Components/Loader/Loader";
 import "ldrs/bouncy";
 import "ldrs/grid";
+import { useDispatch } from "react-redux";
+import { userCartActions } from "../../Store/cartSlice";
 
 const UserCart = () => {
+  const dispatch = useDispatch();
   const [loadingItems, setLoadingItems] = useState({});
   const [removeLoading, setremoveLoading] = useState({});
   const navigate = useNavigate();
@@ -58,7 +61,8 @@ const UserCart = () => {
         }
       );
       toast.success(`${response.data.message}`);
-      refetch();
+      const data = await refetch();
+      console.log(data);
     } catch (err) {
       toast.error(`Error: ${err?.response?.data?.message}`);
     } finally {
@@ -77,7 +81,19 @@ const UserCart = () => {
         },
       });
       toast.success(`${response.data.message}`);
-      refetch();
+
+      axios({
+        method: "GET",
+        url: `${BASE_URI}/api/v1/cart`,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then(
+        (res) => {
+          dispatch(userCartActions.setCart(res.data.cart));
+        },
+        () => {}
+      );
     } catch (err) {
       toast.error(`Error: ${err?.response?.data?.message}`);
     } finally {
@@ -218,13 +234,13 @@ const UserCart = () => {
                 <div className="mid-right-usercart">
                   <div className="mid-right-top-usercart">
                     <div>
-                    <h5>Total:</h5>
-                    <span>
-                      <h6>${cartItems?.totalPrice}</h6>
-                      <h6>$15.99</h6>
-                    </span>
+                      <h5>Total:</h5>
+                      <span>
+                        <h6>${cartItems?.totalPrice}</h6>
+                        <h6>$15.99</h6>
+                      </span>
                     </div>
-                   
+
                     <div>
                       <p onClick={checkoutHandler} className="cursor-pointer">
                         Checkout
@@ -296,19 +312,20 @@ const UserCart = () => {
 
                         <div className="middle-sec-card-usercart">
                           <div className="addCourse-card-usercart">
-                            <h6 >
-                              {items?.category}
-                            </h6>
+                            <h6>{items?.category}</h6>
                           </div>
                           <div className="pricing-card-usercart">
-                            <h5>{items?.tags?.split(" ").slice(0, 2).join(" ") + "..."}</h5>
+                            <h5>
+                              {items?.tags?.split(" ").slice(0, 2).join(" ") +
+                                "..."}
+                            </h5>
                           </div>
                         </div>
                         <p>{items?.name}</p>
                         <h5>
                           {items?.title?.split(" ").slice(0, 3).join(" ")}
                         </h5>
-                        
+
                         <div className="bottom-card-userusercart">
                           <span>
                             <h5>${items?.price}</h5>
