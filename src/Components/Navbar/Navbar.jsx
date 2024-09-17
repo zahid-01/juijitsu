@@ -13,8 +13,10 @@ import toast from "react-hot-toast";
 import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
 import useFetch from "../../hooks/useFetch";
+import Cart from "../Cart/Cart";
 
 export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
+  console.log("swjvjlw");
   const searchInputRef = useRef(null);
   const profileBarRef = useRef(null); // Reference for the profile-bar
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -36,14 +38,14 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const { data, refetch } = useFetch(profileUrl, fetchOptions);
   const { name, profile_picture } = data?.data[0] || [];
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setUser(JSON.parse(localStorage.getItem("user")));
-      setToken(localStorage.getItem("token"));
-    };
-    const intervalId = setInterval(handleStorageChange, 1000);
-    return () => clearInterval(intervalId);
-  }, []);
+  // useEffect(() => {
+  //   const handleStorageChange = () => {
+  //     setUser(JSON.parse(localStorage.getItem("user")));
+  //     setToken(localStorage.getItem("token"));
+  //   };
+  //   const intervalId = setInterval(handleStorageChange, 1000);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   useEffect(() => {
     if (token) {
@@ -146,30 +148,23 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
       {/* {userType === "user" && ( */}
       {userType === "user" && (
         <div className="cart-container">
-          <Link to="/userCart">
-            <BsFillCartFill className="primary-color fs-2 ms-5 cursor-pointer" />
-          </Link>
+          <Cart />
           {/* <div className="cart-badge">{cartItemNumber}</div>{" "} */}
         </div>
       )}
 
-
       {userType === "admin" && (
-
         <div className="cart-container">
           <Link to="/userCart">
             <BsBellFill className="primary-color fs-4 ms-5 cursor-pointer" />
           </Link>
-
           <div className="cart-badge">{cartItemNumber}</div>{" "}
-
         </div>
       )}
 
       {token && (
         <div onClick={handleProfileClick} style={{ cursor: "pointer" }}>
           <div className="profile-picture-container">
-          
             {profile_picture ? (
               <img
                 src={profile_picture}
