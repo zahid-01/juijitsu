@@ -2,12 +2,13 @@ import { useState } from "react";
 import { FaEnvelope } from "react-icons/fa";
 import learnImg from "../../assets/learnImg.avif"; // Assuming this is the image on the left
 import { Link } from "react-router-dom";
-import { BASE_URI } from "../../Config/url";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { BASE_URI } from "../../Config/url";
 
 function PasswordRecovery() {
   const [email, setEmail] = useState("");
+  const [linkSent, setLinkSent] = useState(false); // Track if link is sent successfully
   const token = localStorage.getItem("token");
 
   const handleEmailChange = (event) => {
@@ -24,11 +25,12 @@ function PasswordRecovery() {
           Authorization: "Bearer " + token,
         },
       })
-      .then((resp) => {
-        console.log(resp.data);
+      .then((response) => {
+        console.log(response.data);
+        setLinkSent(true);
+        toast.success("Password reset link sent successfully!");
       })
-      .then((err) => {
-        // console.log(err);
+      .catch((err) => {
         toast.error(
           err.response
             ? err?.response?.data?.message
@@ -60,37 +62,49 @@ function PasswordRecovery() {
               <p> get back on track right away.</p>
             </div>
 
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label htmlFor="email" className="form-label fw-bold fs-small">
-                  Email
-                </label>
-                <div className="input-group">
-                  <label htmlFor="email" className="input-group-text">
-                    <FaEnvelope />
+            {!linkSent ? (
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label
+                    htmlFor="email"
+                    className="form-label fw-bold fs-small"
+                  >
+                    Email
                   </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    className="form-control py-2-half-5"
-                    placeholder="Enter Email "
-                    aria-label="Email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    required
-                  />
+                  <div className="input-group">
+                    <label htmlFor="email" className="input-group-text">
+                      <FaEnvelope />
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      className="form-control py-2-half-5"
+                      placeholder="Enter Email"
+                      aria-label="Email"
+                      value={email}
+                      onChange={handleEmailChange}
+                      required
+                    />
+                  </div>
                 </div>
+                <div className="text-center d-md-flex align-items-center justify-content-center w-100">
+                  <button
+                    className="signup-now w-md-50 w-100 text-center mt-4"
+                    type="submit"
+                  >
+                    Send Password Reset Link
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="text-center">
+                <h4 className="mt-4 text-success">
+                  Link sent successfully! Please check your email.
+                </h4>
               </div>
-              <div className="text-center d-md-flex align-items-center justify-content-center w-100">
-                <button
-                  className="signup-now w-md-50 w-100  text-center mt-4"
-                  type="submit"
-                >
-                  Send Password Reset Link
-                </button>
-              </div>
-            </form>
+            )}
+
             <div className="text-center">
               <button className="btn btn-outline-secondary text-center mt-3 w-md-25 w-50">
                 <Link to="/" className="text-decoration-none text-black">
