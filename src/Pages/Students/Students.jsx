@@ -40,7 +40,7 @@ const UserManagement = () => {
         console.log(response.data.data.users);
         setStudents(response.data?.data?.users || []);
       } catch (err) {
-        setError(err.message);
+        setError(err?.response?.data?.message);
       } finally {
         setLoading(false);
       }
@@ -107,7 +107,18 @@ const UserManagement = () => {
 
       <div className="tab-content px-3 py-3 custom-box rounded-top-0">
         <div className="px-4">
-          {activeTab === "users" && (
+          {activeTab === "users" && 
+           
+           (error === "no students found" ? (
+            <>
+              <div  className="no-courses-userCourses">
+             <div>
+             <h1>No Students Found</h1>
+            
+             </div>
+              </div>
+            </>
+          ) :(
             <div className="tab-pane active" style={{ overflowX: "auto" }}>
               <table className="table w-md-reverse-50">
                 <thead>
@@ -189,7 +200,7 @@ const UserManagement = () => {
                 </tbody>
               </table>
             </div>
-          )}
+          ))}
         </div>
       </div>
     </div>
