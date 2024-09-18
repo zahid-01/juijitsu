@@ -9,6 +9,8 @@ import {
   faEllipsisVertical,
   faChevronLeft,
   faChevronRight,
+  faPencil,
+  faCircleInfo,
 } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
@@ -24,6 +26,9 @@ import "ldrs/grid";
 import axios from "axios";
 import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
 import ReactPlayer from "react-player";
+import { FaUserCircle ,FaStar} from "react-icons/fa";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import toast from "react-hot-toast";
 // import { bouncy } from "ldrs";
 
 const UserPurchasedCourse = () => {
@@ -41,10 +46,18 @@ const UserPurchasedCourse = () => {
   const [isEnter, setIsEnter] = useState(false);
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [video_type, setVideo_type] = useState("");
+  const [optionsPopUp, setOptionsPopUp] = useState(false);
+  const [editRatingPopUp, setEditRatingPopUp] = useState(false);
+  const [addRatingPopUp, setAddRatingPopUp]=useState(false);
+const [review, setReview] = useState("");
+const [selectedRating, setSelectedRating] = useState(0);
+
+
   const handleMouseEnter = () => {
     setShow(true);
     setIsEnter(true);
   };
+
   const handleMouseLeave = () => {
     setShow(false);
   };
@@ -173,6 +186,93 @@ const UserPurchasedCourse = () => {
     // console.log(checkResponse?.data )
   }
 
+  const handleAddToFavClick = async(e)=>{
+e.stopPropagation();
+
+  }
+
+  const handleEditClick = async(e)=>{
+    e.stopPropagation();
+    setOptionsPopUp(false);
+    try {
+      const url = `${BASE_URI}/api/v1/reviews/totalReview/${id}`;
+      const response = await axios({
+        method: "GET",
+        url,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      // setReview(response?.data?.review);
+      console.log(reviewData.data);
+    } catch (error) {
+      console.error(error);
+    }
+    setEditRatingPopUp(true);
+  }
+  const handleAddRatingClick =(e)=>{
+    e.stopPropagation();
+    setOptionsPopUp(false)
+    setAddRatingPopUp(true);
+  }
+  const handleRating = (value) => {
+    setSelectedRating(value);
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    
+    console.log(selectedRating, review, id)
+    try {
+      const url = `${BASE_URI}/api/v1/reviews`;
+      const response = await axios({
+        method: "POST",
+        url,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+        data: {
+          "comment": review,
+          "rating": selectedRating,
+          "courseId": id,
+        },
+      });
+      toast.success("Rating Added successfully")
+      setReview("");
+      setSelectedRating(0);
+      setAddRatingPopUp(false);
+      setReviewsLoading(false);
+      refetch();
+    } catch (error) {
+      toast.error(error.response.data.message)
+      console.error(error);
+    }
+  };
+
+
+  const getRating = async()=>{
+    try {
+      const url = `${BASE_URI}/api/v1/reviews/totalReview/${id}`;
+      const response = await axios({
+        method: "GET",
+        url,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      // setReview(response?.data?.review);
+      console.log(reviewData.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+
+
+
+
+// console.log(courseData?.review?.userReviews)
   return (
     <>
       {/* {error2?.response?.data?.message === "No courses found" ? (
@@ -187,6 +287,113 @@ const UserPurchasedCourse = () => {
         ></l-grid>
       ) : (
         <div className="wrapper-purchasedCourse">
+
+{
+  optionsPopUp && 
+  <div onClick={() => setOptionsPopUp(false)} className="rating-popup d-flex justify-content-center align-items-center">
+    <div 
+      className="flex-column gap-2 shadow-lg bg-white rounded"
+      onClick={(e) => e.stopPropagation()} // Prevents the outer div from being triggered
+    >
+      <span onClick={() => handleAddToFavClick()} className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom">
+        <FontAwesomeIcon style={{color:"yellow", cursor:"pointer"}} icon={faStar} />
+        <p>Add to favorites</p>
+      </span>
+      {
+        courseData?.course?.is_rated ? 
+        <span onClick={handleAddRatingClick} className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom">
+          <FontAwesomeIcon icon={faPencil} />
+          <p>Edit Your Rating</p>
+        </span>
+        :
+        <span onClick={handleAddRatingClick} className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom">
+          <FontAwesomeIcon icon={faPencil} />
+          <p>Add Rating</p>
+        </span>
+      }
+      
+      <span className="cursor-pointer d-flex w-100 gap-4 align-items-center p-2">
+        <FontAwesomeIcon icon={faCircleInfo} />
+        <p className="fs-6 fw-2">Not refundable!</p>
+      </span>
+    </div>
+  </div>
+}
+
+
+{
+  addRatingPopUp && 
+  <div className="rating-popup d-flex justify-content-center align-items-center">
+      <div className="card p-4 shadow-lg bg-white rounded">
+        <h5>Add Your Rating</h5>
+        <div className="star-rating mb-3">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <FaStar
+              key={star}
+              className={`star ${selectedRating >= star ? "text-warning" : ""}`}
+              onClick={() => handleRating(star)}
+              style={{ cursor: "pointer", fontSize: "2rem" }}
+            />
+          ))}
+        </div>
+        <div className="mb-3">
+          <textarea
+            value={review}
+            onChange={(e)=>setReview(e.target.value)}
+            placeholder="Add Your Review"
+            className="form-control"
+            rows={4}
+          />
+        </div>
+        <div className="d-flex justify-content-between">
+          <button className="btn btn-secondary" onClick={()=>setAddRatingPopUp(false)}>
+            Discard
+          </button>
+          <button className="btn btn-primary" onClick={handleReviewSubmit}>
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+}
+
+{
+  editRatingPopUp &&
+  <div className="rating-popup d-flex justify-content-center align-items-center">
+      <div className="card p-4 shadow-lg bg-white rounded">
+        <h5>Add Your Rating</h5>
+        <div className="star-rating mb-3">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <FaStar
+              key={star}
+              className={`star ${selectedRating >= star ? "text-warning" : ""}`}
+              onClick={() => handleRating(star)}
+              style={{ cursor: "pointer", fontSize: "2rem" }}
+            />
+          ))}
+        </div>
+        <div className="mb-3">
+          <textarea
+            value={review}
+            onChange={(e)=>setReview(e.target.value)}
+            placeholder="Add Your Review"
+            className="form-control"
+            rows={4}
+          />
+        </div>
+        <div className="d-flex justify-content-between">
+          <button className="btn btn-secondary" onClick={()=>setEditRatingPopUp(false)}>
+            Discard
+          </button>
+          <button className="btn btn-primary" onClick={handleReviewSubmit}>
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+}
+
+
           <div className="top-purchasedCourse">
             <h4>Course Overview</h4>
 
@@ -260,14 +467,15 @@ const UserPurchasedCourse = () => {
                 <h6>Your Progress</h6>
               </div>
               <FontAwesomeIcon
+              onClick={()=>setOptionsPopUp(true)}
                 icon={faEllipsisVertical}
-                style={{ height: "100%", width: "2.5%" }}
+                style={{ height: "100%", width: "2.5%" , cursor:"pointer"}}
               />
             </span>
           </div>
           <div className="content-container-purchasedCourse">
             <div className="left-bottom-purchasedCourse">
-              <div className="video-container-purchasedCourse" >
+              <div className="video-container-purchasedCourse">
                 {video_type === "youtube" ? (
                   <ReactPlayer
                     url={video_url }
@@ -503,8 +711,8 @@ const UserPurchasedCourse = () => {
                   </>
                 )}
 
-                {buttonPick === "Reviews" && (
-                  <div className="ratings-purchasedCourse">
+{buttonPick === "Reviews" && (
+                 <div className="w-100 position-relative" style={{minHeight:"20vh"}}>
                     {reviewsLoading ? (
                       <l-grid
                         id="reviews-loading"
@@ -514,157 +722,51 @@ const UserPurchasedCourse = () => {
                       ></l-grid>
                     ) : (
                       <>
-                        <div className="left-ratings-purchasedCourse">
-                          <h6>Average Reviews</h6>
-                          <h5>{reviewData?.data?.averageRating}</h5>
+
+                <h5 className="mb-2 fs-6">Reviews & Ratings:</h5>
+                <div className="w-100">
+                  {courseData?.review?.userReviews?.length > 0 ? (
+                    courseData?.review?.userReviews.map((review, index) => (
+                      <div className="d-flex gap-5 border-bottom pb-2 pt-2" key={index}>
+                        <div className="w-30">
+                          {review?.profile_picture ? (
+                            <img
+                            className="w-30 rounded-5"
+                            loading="lazy"
+                              src={review?.profile_picture}
+                              alt="profile image"
+                            />
+                          ) : (
+                            <FaUserCircle className="fs-1" />
+                          )}
+                          <h5 style={{fontSize:"1rem",fontWeight:"100"}} className="">{review?.name || "No name available"}</h5>
+                          
+                        </div>
+                        <div className="w-50">
                           <span>
-                            <FontAwesomeIcon
-                              icon={faStar}
-                              className="staricon"
-                            />
-                            <FontAwesomeIcon
-                              icon={faStar}
-                              className="staricon"
-                            />
-                            <FontAwesomeIcon
-                              icon={faStar}
-                              className="staricon"
-                            />
-                            <FontAwesomeIcon
-                              icon={faStar}
-                              className="staricon"
-                            />
+                            {[...Array(5)].map((_, i) =>
+                              i < review.rating ? (
+                                <AiFillStar style={{color:"yellow"}} key={i} className="fs-5" />
+                              ) : (
+                                <AiOutlineStar key={i} className="fs-5" />
+                              )
+                            )}
                           </span>
-                          <h6>Ratings</h6>
+                          <p className="w-100">{review.comment || "No comment available"}</p>
                         </div>
-                        <div className="right-ratings-purchasedCourse">
-                          <h6>Detailed Ratings</h6>
-                          <div>
-                            <h6>{reviewData?.data?.ratingPercentages[1]}%</h6>
-                            <span>
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                            </span>
-                            <div>
-                              <div
-                                style={{
-                                  width: `${reviewData?.data?.ratingPercentages[1]}%`,
-                                }}
-                                className="fifty-rating-purchasedCourse"
-                              ></div>
-                            </div>
-                          </div>
-                          <div>
-                            <h6>{reviewData?.data?.ratingPercentages[2]}%</h6>
-                            <span>
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                            </span>
-                            <div>
-                              <div
-                                style={{
-                                  width: `${reviewData?.data?.ratingPercentages[2]}%`,
-                                }}
-                                className="fourty-rating-purchasedCourse"
-                              ></div>
-                            </div>
-                          </div>
-                          <div>
-                            <h6>{reviewData?.data?.ratingPercentages[3]}%</h6>
-                            <span>
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                            </span>
-                            <div>
-                              <div
-                                style={{
-                                  width: `${reviewData?.data?.ratingPercentages[3]}%`,
-                                }}
-                                className="thirty-rating-purchasedCourse"
-                              ></div>
-                            </div>
-                          </div>
-                          <div>
-                            <h6>{reviewData?.data?.ratingPercentages[4]}%</h6>
-                            <span>
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                            </span>
-                            <div>
-                              <div
-                                style={{
-                                  width: `${reviewData?.data?.ratingPercentages[4]}%`,
-                                }}
-                                className="twenty-rating-purchasedCourse"
-                              ></div>
-                            </div>
-                          </div>
-                          <div>
-                            <h6>{reviewData?.data?.ratingPercentages[5]}%</h6>
-                            <span>
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="staricon"
-                              />
-                            </span>
-                            <div>
-                              <div
-                                style={{
-                                  width: `${reviewData?.data?.ratingPercentages[5]}%`,
-                                }}
-                                className="ten-rating-purchasedCourse"
-                              ></div>
-                            </div>
-                          </div>
-                        </div>
+                        <p className="w-30 fs-6">
+                            {review?.review_date
+                              ? review?.review_date.split("T")[0]
+                              : "No review date"}
+                          </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{marginLeft:"2vw"}}>No reviews available!</p>
+                  )}
+                </div>
+                
+                        
                       </>
                     )}
                   </div>

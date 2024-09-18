@@ -7,9 +7,7 @@ import {
   faStar,
   faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
-
 import { FaYoutube } from "react-icons/fa";
-
 import cardImage from "../../assets/coursesCard.png";
 import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
@@ -19,6 +17,7 @@ import "ldrs/grid";
 import "ldrs/bouncy";
 import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
 import ReactPlayer from "react-player";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
 const UserCourseOverview = () => {
   const [isLoding, setIsLoding] = useState(false);
@@ -127,6 +126,8 @@ const UserCourseOverview = () => {
         ></l-grid>
       ) : (
         <div className="wrapper-userCourseview">
+
+          
           <div className="top-userCourseview">
             <h3 className="text-uppercase">
               {courseData?.course?.title || "No title available"}
@@ -345,6 +346,48 @@ const UserCourseOverview = () => {
                       : "No certification available"}
                   </h6>
                 </span>
+              </div>
+              <div className="ratings-right-mid-userCourseview">
+                <h5>Reviews & Ratings:</h5>
+                <div className="map-ratings-right-mid-userCourseview">
+                  {courseData?.review?.userReviews?.length > 0 ? (
+                    courseData.review.userReviews.map((review, index) => (
+                      <div key={index}>
+                        <div>
+                          {review?.profile_picture ? (
+                            <img
+                            loading="lazy"
+                              src={review?.profile_picture}
+                              alt="profile image"
+                            />
+                          ) : (
+                            <FaUserCircle className="fs-1" />
+                          )}
+                          <h5>{review?.name || "No name available"}</h5>
+                          <p>
+                            {review?.review_date
+                              ? review?.review_date.split("T")[0]
+                              : "No review date"}
+                          </p>
+                        </div>
+                        <div>
+                          <span>
+                            {[...Array(5)].map((_, i) =>
+                              i < review.rating ? (
+                                <AiFillStar key={i} className="staricon" />
+                              ) : (
+                                <AiOutlineStar key={i} className="staricon" />
+                              )
+                            )}
+                          </span>
+                          <p>{review.comment || "No comment available"}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{marginLeft:"2vw"}}>No reviews available!</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
