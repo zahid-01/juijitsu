@@ -17,22 +17,47 @@
   align-items: center;
   justify-content: space-evenly;
 }
+
+
+
 .mid-left-usercart {
   /* background-color: aquamarine; */
-  height: 40vh;
+  height: auto; /* Adjust height based on content */
+  max-height: 40vh; /* Maximum height before scroll bar appears */
   width: 70%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1vh 0 1vh 0;
+  padding: 1vh 0;
   gap: 1vh;
   overflow-y: auto;
   border-radius: 0.5vw;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+/* Forcing scroll bar to appear visually */
+.mid-left-usercart::-webkit-scrollbar {
+  width: 12px; /* Width of the scroll bar */
+}
+
+.mid-left-usercart::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the scroll bar track */
+}
+
+.mid-left-usercart::-webkit-scrollbar-thumb {
+  background-color: #888; /* Scroll bar color */
+  border-radius: 10px; /* Rounded corners for the scroll bar */
+  border: 3px solid #f1f1f1; /* Adds padding inside the scroll bar */
+}
+
+/* Forcing scroll bar visibility in Firefox */
+.mid-left-usercart {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
 .mid-left-usercart .mid-left-cards-usercart {
   background: #f7f7f7;
-  min-height: 18.5vh;
+  /* min-height: 18.5vh; */
   box-shadow: 0px 0px 4px 0.2px #00000040;
 
   width: 98%;
@@ -45,7 +70,9 @@
 }
 .mid-left-usercart div .mid-left-left-usercart {
   /* background-color: red; */
-  height: 100%;
+  /* height: 100%; */
+  height:18vh;
+  overflow: hidden;
   width: 30%;
   display: flex;
   flex-direction: column;
@@ -87,12 +114,14 @@
 .mid-left-usercart div .mid-left-right-usercart {
   /* background-color: rgb(0, 229, 255); */
   height: 100%;
+ 
   width: 20%;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-top: 2vh;
   gap: 1vh;
+  
 }
 .mid-left-right-usercart h6 {
   display: flex;
@@ -138,13 +167,14 @@
 }
 .mid-right-usercart {
   /* background-color: bisque; */
-  height: 100%;
+  /* height: 100%; */
   width: 25%;
   border-radius: 0.5vw;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 2.2vh;
 }
 .mid-right-top-usercart {
   display: flex;

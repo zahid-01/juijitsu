@@ -31,6 +31,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const [profileCompletion, setProfileCompletion] = useState(null);
 
   const profileUrl = `${BASE_URI}/api/v1/users/profile`;
+
   const fetchOptions = {
     headers: {
       Authorization: "Bearer " + token,
@@ -39,7 +40,10 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const notifications = useSelector((state) => state.payouts.notifications);
 
   const { data, refetch } = useFetch(profileUrl, fetchOptions);
+  
+ 
   const { name, profile_picture } = data?.data[0] || [];
+  // console.log(name);
 
   // useEffect(() => {
   //   const handleStorageChange = () => {
