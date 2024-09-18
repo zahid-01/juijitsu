@@ -14,9 +14,9 @@ import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
 import useFetch from "../../hooks/useFetch";
 import Cart from "../Cart/Cart";
+import { useSelector } from "react-redux";
 
 export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
-  console.log("swjvjlw");
   const searchInputRef = useRef(null);
   const profileBarRef = useRef(null); // Reference for the profile-bar
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -34,6 +34,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
       Authorization: "Bearer " + token,
     },
   };
+  const notifications = useSelector((state) => state.payouts.notifications);
 
   const { data, refetch } = useFetch(profileUrl, fetchOptions);
   const { name, profile_picture } = data?.data[0] || [];
@@ -155,10 +156,10 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
 
       {userType === "admin" && (
         <div className="cart-container">
-          <Link to="/userCart">
+          <Link to="/adminPayouts">
             <BsBellFill className="primary-color fs-4 ms-5 cursor-pointer" />
           </Link>
-          <div className="cart-badge">{cartItemNumber}</div>{" "}
+          <div className="cart-badge">{notifications.length}</div>{" "}
         </div>
       )}
 

@@ -5,7 +5,6 @@ import "./Cart.css";
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart.cart);
-  console.log("ajfhhvwlihfcka w;jcaw;kevhlwch ", cart);
 
   return (
     <div className="cart-container">
