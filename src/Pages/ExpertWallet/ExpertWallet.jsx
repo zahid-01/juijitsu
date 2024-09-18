@@ -17,6 +17,8 @@ export default function ExpertWallet() {
   const [country, setCountry] = useState("");
   const [routing, setRouting] = useState("");
   const [editable , setEditable] = useState(false);
+  const [withDrawPopup, setWithDrawPopup] = useState(false);
+  const [withdrawalAmount, setWithdrawalAmount] = useState(null);
   useEffect(() => {
     async function fetchWalletData() {
       try {
@@ -250,12 +252,58 @@ const handleEdit = async()=>{
   }
 
 
+  const handleWithdraw = async()=>{
+    try {
+      const response = await axios.post(
+        `${BASE_URI}/api/v1/payment/payoutRequest`,
+        {
+          "amount": withdrawalAmount,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response?.data);
+      setWithdrawalAmount(null)
+      setWithDrawPopup(false);
+      toast.success("Withdrawal successful");
+    
+    } catch (err) {
+      console.log(err)
+      toast.error(err?.response?.data?.message);
+    }
+  }
+
 
 
 
   // console.log(accountType)
   return (
-    <div className="w-100">
+    <div className="w-100 position-relative">
+    
+      {  withDrawPopup &&
+      <div className="rating-popup d-flex justify-content-center align-items-center">
+      <div className=" flex-column gap-2 card p-4 shadow-lg bg-white rounded">
+        <h5 className="text-center">Withdraw Money</h5>
+        <span>
+          <h6>Enter Amount</h6>
+          <input type="text" placeholder="Enter Amount" value={withdrawalAmount} onChange={(e)=>setWithdrawalAmount(e.target.value)}/>
+        </span>
+        <p className="text-red">{"* Please enter amount >= $50"}</p>
+        <div className=" d-flex justify-content-between">
+        <div onClick={()=>setWithDrawPopup(false)} style={{boxShadow: "0px 0px 4px 0.2px #00000040"}} className=" rounded h-100 p-2 d-flex justify-content-center cursor-pointer"><p>Cancel</p></div>
+        <div onClick={handleWithdraw} style={{boxShadow: "0px 0px 4px 0.2px #00000040",background: "linear-gradient(91.96deg, #0C243C 0%, #7E8C9C 100%)"
+}} className="h-100 p-2 rounded d-flex justify-content-center text-white cursor-pointer"><p>Send Request</p></div>
+        </div>
+        
+        
+        
+      
+    </div>
+      </div>
+}
       <header className="py-3">
         <h3 className="fw-bold">
           Welcome back, <span className="text-capitalize">{user.name}</span>
@@ -284,9 +332,9 @@ const handleEdit = async()=>{
               <h5>{accountBalance}</h5>
               <h2>💰</h2>
             </div>
-            <button className="bg-transparent text-white border-white rounded fw-light p-2">
+            <div onClick={()=> setWithDrawPopup(!withDrawPopup)} className="cursor-pointer border bg-transparent text-white  border-white rounded fw-light p-1">
               Withdraw money
-            </button>
+            </div>
           </div>
         </div>
         <div className="d-flex gap-1 ">

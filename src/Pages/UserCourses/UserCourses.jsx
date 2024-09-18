@@ -50,7 +50,7 @@ const Card = ({
   const [isLoading, setIsLoading] = useState(false);
   const [hearted, setHearted] = useState(heartedAPI);
   console.log(heartedAPI);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   // const hearted = false
   const handleAddToCart = async (e) => {
     e.stopPropagation();
