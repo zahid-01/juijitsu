@@ -58,7 +58,7 @@ const PurchaseHistory = () => {
           </h5>
         </div>
       </header>
-      <div className="tab-content px-3 py-4 custom-box rounded-top-0">
+      <div className="tab-content px-3 py-4 custom-box rounded-top-0" style={{ backgroundColor: "white" }}>
         <div className="px-4">
           {activeTab === "courses" && (
             <div className="tab-pane active" style={{ overflowX: "auto" }}>
