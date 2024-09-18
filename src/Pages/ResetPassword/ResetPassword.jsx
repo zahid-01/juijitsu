@@ -53,7 +53,7 @@ function ResetPassword() {
       setIsLoading(false);
 
       // Redirect to login or another page after success
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       toast.error(
         error.response?.data?.message ||

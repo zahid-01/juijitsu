@@ -1,6 +1,6 @@
 //settings
 
-import { useRef, useState,useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FaPen } from "react-icons/fa";
 import Modal from "../../Components/Modal/Modal";
 import { BASE_URI } from "../../Config/url";
@@ -24,7 +24,8 @@ export default function Settings() {
   const [profilePicture, setProfilePicture] = useState("");
   const [isReadOnly, setIsReadOnly] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [oldpassword, setOldPassword] = useState("");
+
   const [userData, setUserData] = useState({
     users: {
       name: "",
@@ -67,7 +68,6 @@ export default function Settings() {
     bio,
   } = data?.data[0] || [];
 
-
   useEffect(() => {
     if (data) {
       setUserData({
@@ -106,15 +106,11 @@ export default function Settings() {
       });
   };
 
- 
-
   const handleUpdateProfilePicture = async (e) => {
     e.preventDefault();
     setIsLoading(true); // Set loading state to true
 
     const formData = new FormData();
-
-  
 
     if (profilePicture) {
       console.log("profile");
@@ -133,8 +129,6 @@ export default function Settings() {
     formData.append("twitter", userData?.users?.twitter || twitter);
     formData.append("website", userData?.users?.website || website);
     formData.append("bio", userData?.users?.bio || bio);
-
-    console.log(profilePicture);
 
     try {
       const response = await axios.patch(
@@ -187,12 +181,25 @@ export default function Settings() {
   };
 
   const handleNextAction = () => {
-    setIsModalDelete(false);
-    setFinalDelete(true);
-    localStorage.removeItem("user");
-    localStorage.removeItem("userType");
-    localStorage.removeItem("token");
-    localStorage.removeItem("rememberMe");
+    axios
+      .delete(`${BASE_URI}/api/v1/auth/deleteAccount`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: { password: oldpassword },
+      })
+      .then((resp) => {
+        setIsModalDelete(false);
+        setFinalDelete(true);
+        localStorage.removeItem("user");
+        localStorage.removeItem("userType");
+        localStorage.removeItem("token");
+        localStorage.removeItem("rememberMe");
+        console.log(resp);
+      })
+      .catch((err) => {
+        toast.error(err?.response?.data?.message);
+      });
   };
 
   // const handleEditNameClick = () => {
@@ -308,7 +315,6 @@ export default function Settings() {
                     htmlFor="password"
                     className="mb-1"
                     style={{ fontSize: "20px" }}
-                    
                   >
                     Password
                   </label>
@@ -349,8 +355,6 @@ export default function Settings() {
                   className=" py-2 px-3 mb-3 w-100 border border-2 rounded-3"
                   placeholder="Enter password"
                   //  autoComplete="current-password"
-                 
-                  
                 />
                 <p
                   className="mb-4"
@@ -426,7 +430,9 @@ export default function Settings() {
                         className="form-control py-3"
                         id="name"
                         // value={isReadOnly ? name : userData.users.name}
-                        value={isReadOnly ? userData.users.name : userData.users.name}
+                        value={
+                          isReadOnly ? userData.users.name : userData.users.name
+                        }
                         placeholder="Enter name"
                         readOnly={isReadOnly}
                         ref={inputRef}
@@ -523,7 +529,7 @@ export default function Settings() {
                         className="form-control py-3"
                         id="name"
                         value={isReadOnly ? name : userData.users.name}
-                        // value={name} 
+                        // value={name}
                         placeholder="Enter name"
                         readOnly={isReadOnly}
                         ref={inputRef}
@@ -622,7 +628,11 @@ export default function Settings() {
                         //     ? company_name
                         //     : userData.users.company_name
                         // }
-                        value={isReadOnly ? userData.users.company_name : userData.users.company_name}
+                        value={
+                          isReadOnly
+                            ? userData.users.company_name
+                            : userData.users.company_name
+                        }
                         placeholder="Enter company name "
                         readOnly={isReadOnly}
                         ref={companyRef}
@@ -663,7 +673,11 @@ export default function Settings() {
                         className="form-control py-3"
                         id="youtube"
                         // value={isReadOnly ? youtube : userData.users.youtube}
-                        value={isReadOnly ? userData.users.youtube : userData.users.youtube}
+                        value={
+                          isReadOnly
+                            ? userData.users.youtube
+                            : userData.users.youtube
+                        }
                         placeholder="Enter Youtube Url"
                         readOnly={isReadOnly}
                         ref={youtubeRef}
@@ -703,7 +717,11 @@ export default function Settings() {
                         className="form-control py-3"
                         id="twitter"
                         // value={isReadOnly ? twitter : userData.users.twitter}
-                        value={isReadOnly ? userData.users.twitter : userData.users.twitter}
+                        value={
+                          isReadOnly
+                            ? userData.users.twitter
+                            : userData.users.twitter
+                        }
                         placeholder="Enter twitter Url"
                         readOnly={isReadOnly}
                         ref={twitterRef}
@@ -720,7 +738,7 @@ export default function Settings() {
                       <div className="input-group-append">
                         <span
                           className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer"
-                           onClick={handleEditTwitterClick}  
+                          onClick={handleEditTwitterClick}
                         >
                           <FaPen />
                         </span>
@@ -743,7 +761,11 @@ export default function Settings() {
                         className="form-control py-3"
                         id="website"
                         // value={isReadOnly ? website : userData.users.website}
-                        value={isReadOnly ? userData.users.website : userData.users.website}
+                        value={
+                          isReadOnly
+                            ? userData.users.website
+                            : userData.users.website
+                        }
                         placeholder="Enter website Url"
                         readOnly={isReadOnly}
                         ref={websiteRef}
@@ -818,7 +840,7 @@ export default function Settings() {
               ) : null}
             </div>
           )}
-          
+
           {/* {activeTab === "closeAccount" && (
             <div className="tab-pane active" style={{ minHeight: "25rem" }}>
               <div
@@ -870,57 +892,56 @@ export default function Settings() {
             </div>
           )} */}
 
-{role !== "admin" && activeTab === "closeAccount" && (
-  <div className="tab-pane active" style={{ minHeight: "25rem" }}>
-    <div
-      className="pb-5 d-flex flex-column align-items-start justify-content-between w-md-50 h-100"
-      style={{ minHeight: "23rem" }}
-    >
-      <p>
-        If you close your account, you will be unsubscribed from all
-        of your courses and will lose access to your account and data
-        associated with your account forever, even if you choose to
-        create a new account using the same email address in the
-        future.
-      </p>
-      <button
-        className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
-        onClick={() => setIsModalDelete(true)}
-      >
-        Close Account
-      </button>
-    </div>
+          {role !== "admin" && activeTab === "closeAccount" && (
+            <div className="tab-pane active" style={{ minHeight: "25rem" }}>
+              <div
+                className="pb-5 d-flex flex-column align-items-start justify-content-between w-md-50 h-100"
+                style={{ minHeight: "23rem" }}
+              >
+                <p>
+                  If you close your account, you will be unsubscribed from all
+                  of your courses and will lose access to your account and data
+                  associated with your account forever, even if you choose to
+                  create a new account using the same email address in the
+                  future.
+                </p>
+                <button
+                  className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
+                  onClick={() => setIsModalDelete(true)}
+                >
+                  Close Account
+                </button>
+              </div>
 
-    <Modal
-      show={isModalDelete}
-      onClose={closeModalDelete}
-      btnName="Close Account"
-      heading="Close Account?"
-      handleClickAction={handleNextAction}
-    >
-      <div className="form-group text-start">
-        <label
-          htmlFor="formBasicPassword"
-          className="mb-2 fw-light fs-small"
-        >
-          Are you sure you want to delete your account?
-        </label>
-        <input
-          type="password"
-          className="form-control py-3"
-          id="formBasicPassword"
-          placeholder="Enter your password"
-          autoComplete="new-password"
-        />
-      </div>
-    </Modal>
+              <Modal
+                show={isModalDelete}
+                onClose={closeModalDelete}
+                btnName="Close Account"
+                heading="Close Account?"
+                handleClickAction={handleNextAction}
+              >
+                <div className="form-group text-start">
+                  <label
+                    htmlFor="formBasicPassword"
+                    className="mb-2 fw-light fs-small"
+                  >
+                    Are you sure you want to delete your account?
+                  </label>
+                  <input
+                    type="password"
+                    className="form-control py-3"
+                    id="formBasicPassword"
+                    placeholder="Enter your password"
+                    onChange={(e) => setOldPassword(e.target.value)}
+                  />
+                </div>
+              </Modal>
 
-    <Modal show={finalDelete} path="/" btnName="Continue">
-      Your account has been successfully deleted!
-    </Modal>
-  </div>
-)}
-
+              <Modal show={finalDelete} path="/" btnName="Continue">
+                Your account has been successfully deleted!
+              </Modal>
+            </div>
+          )}
         </div>
       </div>
     </div>
