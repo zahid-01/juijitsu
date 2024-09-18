@@ -43,8 +43,8 @@ const UserManagement = () => {
       });
       setPayoutRequests(response?.data?.data || []);
       console.log(response?.data?.data);
-      const unread = response?.data?.data.filter((el) => !el.is_read);
-      dispatch(payoutActions.setNotifications(unread));
+
+      dispatch(payoutActions.setNotifications(response?.data?.data));
       // console.log(payoutRequests);
     } catch (err) {
       setError(err?.response?.data?.message);

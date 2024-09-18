@@ -159,7 +159,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           <Link to="/adminPayouts">
             <BsBellFill className="primary-color fs-4 ms-5 cursor-pointer" />
           </Link>
-          <div className="cart-badge">{notifications.length}</div>{" "}
+          <div className="cart-badge">{notifications?.length}</div>{" "}
         </div>
       )}
 
