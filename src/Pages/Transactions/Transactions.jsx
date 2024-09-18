@@ -1,19 +1,14 @@
+// Transactions
+
 import { useEffect, useState } from "react";
 import { BASE_URI } from "../../Config/url";
 import axios from "axios";
 
-
 import { FaCalendar } from "react-icons/fa6";
-
-import { LuArrowUpDown } from "react-icons/lu";
-
 import { FaPen } from "react-icons/fa";
 import "./Transactions.css";
-import { useDispatch } from "react-redux";
-import { payoutActions } from "../../Store/payoutSlice";
 
 const UserManagement = () => {
-  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("payoutRequests");
 
   const token = localStorage.getItem("token");
@@ -48,8 +43,6 @@ const UserManagement = () => {
       });
       setPayoutRequests(response?.data?.data || []);
       console.log(response?.data?.data);
-
-      dispatch(payoutActions.setNotifications(response?.data?.data));
       // console.log(payoutRequests);
     } catch (err) {
       setError(err?.response?.data?.message);
@@ -203,7 +196,10 @@ const UserManagement = () => {
           Sep 4, 2024
         </div> */}
       </div>
-      <header className="header-container p-3 pb-0 rounded-bottom-0 custom-box" style={{backgroundColor:"white"}}>
+      <header
+        className="header-container p-3 pb-0 rounded-bottom-0 custom-box"
+        style={{ backgroundColor: "white" }}
+      >
         <div className="d-flex gap-5 px-4">
           {[
             // "payExperts",
@@ -226,59 +222,69 @@ const UserManagement = () => {
         </div>
       </header>
 
-      <div className="tab-content px-3 py-1 custom-box rounded-top-0" style={{backgroundColor:"white"}}>
+      <div
+        className="tab-content px-3 py-1 custom-box rounded-top-0"
+        style={{ backgroundColor: "white" }}
+      >
         <div className="px-4">
-          {/* Transactions */}
-       
+          {/* Payout Requests */}
           <div className="bottom-transactions">
-
-          {activeTab === "transactions" &&
-            (error === "no transactions found" ? (
-              <>
-                <div  className="no-courses-userCourses">
-               <div>
-               <h1>No Transactions Found</h1>
-              
-               </div>
-                </div>
-              </>
-            ) : (
-              <div className="tab-pane active" style={{ overflowX: "auto" }}>
-                <table className="table w-md-reverse-50">
-                  <thead>
-                    <tr>
-                      <th scope="col">
-                        Name
-                       
-                      </th>
-                      <th scope="col" className="text-center">
-                        Price
-                     
-                      </th>
-                      <th scope="col" className="text-center">
-                        Transaction Id
-                       
-                      </th>
-                      <th scope="col" className="text-center">
-                        Transaction Date
-                      
-                      </th>
-                      <th scope="col" className="text-center">
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {transactions.map((user, index) => (
-                      <tr key={index}>
-                        <td className="align-middle fs-small py-2 text-capitalize">
-                          <div
-                            style={{ display: "flex", alignItems: "center" }}
-                          >
-                            <img
-                              src={user.profile_picture}
-                              alt={user.name}
-         
+            {activeTab === "payoutRequests" &&
+              (error === "no requests found" ? (
+                <>
+                  <div className="no-courses-userCourses">
+                    <div>
+                      <h1>No Payment Requests Found</h1>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="tab-pane active" style={{ overflowX: "auto" }}>
+                  <table className="table w-md-reverse-50">
+                    <thead>
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col" className="text-center">
+                          Amount Requested
+                        </th>
+                        <th scope="col" className="text-center">
+                          Requested On
+                        </th>
+                        <th scope="col" className="text-center">
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {payoutRequests.map((request, index) => (
+                        <tr key={index}>
+                          <td className="align-middle fs-small py-2 text-capitalize">
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <img
+                                src={request.profile_picture}
+                                alt={request.name}
+                                style={{
+                                  width: "33px",
+                                  height: "33px",
+                                  borderRadius: "50%",
+                                  objectFit: "cover",
+                                  marginRight: "10px",
+                                }}
+                              />
+                              {request.name}
+                            </div>
+                          </td>
+                          <td className="text-center align-middle fs-small">
+                            ${request.amount}
+                          </td>
+                          <td className="text-center align-middle fs-small">
+                            {request.created_at}
+                          </td>
+                          <td className="text-center align-middle fs-small">
+                            <button
+                              className="btn"
                               style={{
                                 background:
                                   "linear-gradient(92.36deg, #0c243c 0%, #7e8c9c 98.67%)",
@@ -297,52 +303,72 @@ const UserManagement = () => {
               ))}
           </div>
 
-          {/* Payout Requests */}
-          <div className="bottom-transactions">
-          {activeTab === "payoutRequests" &&
-            (error === "no requests found" ? (
-              <>
-                <div className="no-courses-userCourses">
-                 <div>
-                 <h1>No Payment Requests Found</h1>
-                
-                 </div>
-                </div>
-              </>
-            ) : (
-              <div className="tab-pane active" style={{ overflowX: "auto" }}>
-                <table className="table w-md-reverse-50">
-                  <thead>
-                    <tr>
-                      <th scope="col">
-                        Name
-                    
-                      </th>
-                      <th scope="col" className="text-center">
-                        Amount Requested
-                       
-                      </th>
-                      <th scope="col" className="text-center">
-                        Requested On
-                       
-                      </th>
-                      <th scope="col" className="text-center">
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {payoutRequests.map((request, index) => (
-                      <tr key={index}>
-                        <td className="align-middle fs-small py-2 text-capitalize">
-                          <div
-                            style={{ display: "flex", alignItems: "center" }}
-                          >
-                            <img
-                              src={request.profile_picture}
-                              alt={request.name}
+          {/* Transactions */}
 
-         
+          <div className="bottom-transactions">
+            {activeTab === "transactions" &&
+              (error === "no transactions found" ? (
+                <>
+                  <div className="no-courses-userCourses">
+                    <div>
+                      <h1>No Transactions Found</h1>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="tab-pane active" style={{ overflowX: "auto" }}>
+                  <table className="table w-md-reverse-50">
+                    <thead>
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col" className="text-center">
+                          Price
+                        </th>
+                        <th scope="col" className="text-center">
+                          Transaction Id
+                        </th>
+                        <th scope="col" className="text-center">
+                          Transaction Date
+                        </th>
+                        <th scope="col" className="text-center">
+                          Status
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {transactions.map((user, index) => (
+                        <tr key={index}>
+                          <td className="align-middle fs-small py-2 text-capitalize">
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <img
+                                src={user.profile_picture}
+                                alt={user.name}
+                                style={{
+                                  width: "33px",
+                                  height: "33px",
+                                  borderRadius: "50%",
+                                  objectFit: "cover",
+                                  marginRight: "10px",
+                                }}
+                              />
+                              {user.name}
+                            </div>
+                          </td>
+                          <td className="text-center align-middle fs-small">
+                            {user.withdrawal_amount}
+                          </td>
+                          <td className="text-center align-middle fs-small">
+                            {user.transaction_id}
+                          </td>
+                          <td className="text-center align-middle fs-small">
+                            {new Date(
+                              user.withdrawal_date
+                            ).toLocaleDateString()}
+                          </td>
+                          <td className="text-center align-middle fs-small">
+                            <span
                               style={{
                                 color:
                                   user.withdrawal_status.toLowerCase() ===

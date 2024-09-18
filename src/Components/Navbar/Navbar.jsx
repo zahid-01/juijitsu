@@ -20,8 +20,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const searchInputRef = useRef(null);
   const profileBarRef = useRef(null); // Reference for the profile-bar
   const [isProfileOpen, setIsProfileOpen] = useState(false);
- 
- 
+
   const [user, setUser] = useState(() =>
     JSON.parse(localStorage.getItem("user"))
   );
@@ -127,40 +126,36 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
         token ? "justify-content-between" : "justify-content-center"
       } ${collapsed ? "collapsed" : ""}`}
     >
-      {(userType === "user" || !token)
-       && (
-          <div className="d-flex gap-3 align-items-center w-75 ">
-            <div className="search-input input-group w-75">
-              <label
-                className="input-group-text search-icon border-end-0"
-                htmlFor="search"
-                onClick={handleIconClick}
-              >
-                <CiSearch />
-              </label>
-              <input
-                type="text"
-                id="search"
-                placeholder="Search here..."
-                aria-label="search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                ref={searchInputRef}
-                className="navbar-input form-control border-start-0 ps-0"
-              />
-            </div>
-            <CiFilter className="primary-color fs-2 ms-3 cursor-pointer" />
+      {(userType === "user" || !token) && (
+        <div className="d-flex gap-3 align-items-center w-75 ">
+          <div className="search-input input-group w-75">
+            <label
+              className="input-group-text search-icon border-end-0"
+              htmlFor="search"
+              onClick={handleIconClick}
+            >
+              <CiSearch />
+            </label>
+            <input
+              type="text"
+              id="search"
+              placeholder="Search here..."
+              aria-label="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              ref={searchInputRef}
+              className="navbar-input form-control border-start-0 ps-0"
+            />
           </div>
-        )}
+          <CiFilter className="primary-color fs-2 ms-3 cursor-pointer" />
+        </div>
+      )}
       {/* {userType === "user" && ( */}
       {userType === "user" && (
-
-        <div className="cart-container" >
-//           <Link to="/userCart">
+        <div className="cart-container">
+          {/* //           <Link to="/userCart">
 //             <BsFillCartFill className="primary-color fs-2 ms-5 cursor-pointer" />
-//           </Link>
-
-       
+//           </Link> */}
           <Cart />
 
           {/* <div className="cart-badge">{cartItemNumber}</div>{" "} */}
@@ -168,25 +163,25 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
       )}
 
       {userType === "admin" && (
-
-        <div className="cart-container" style={{marginLeft:"58vw"}} >
-           <Link to="/adminPayouts">
-            <BsBellFill className="primary-color fs-4 ms-5 cursor-pointer" 
-           
-           />
+        <div className="cart-container" style={{ marginLeft: "58vw" }}>
+          <Link to="/transactions">
+            <BsBellFill className="primary-color fs-4 ms-5 cursor-pointer" />
           </Link>
           <div className="cart-badge">{notifications?.length}</div>{" "}
-
         </div>
       )}
       {userType === "expert" && (
-         
-         <div className="profile-picture-container" 
-         style={{ objectFit: "cover", height: "3rem", width: "3rem" , marginLeft:"20vw" }}>  
-         </div>
-     
+        <div
+          className="profile-picture-container"
+          style={{
+            objectFit: "cover",
+            height: "3rem",
+            width: "3rem",
+            marginLeft: "20vw",
+          }}
+        ></div>
       )}
-      {token  &&  (
+      {token && (
         <div onClick={handleProfileClick} style={{ cursor: "pointer" }}>
           <div className="profile-picture-container">
             {profile_picture ? (
@@ -195,7 +190,6 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
                 alt="Profile"
                 className="profile-picture"
                 style={{ objectFit: "cover", height: "3rem", width: "3rem" }} //, marginLeft:"30vw"
-                
               />
             ) : (
               <FaUserCircle
@@ -206,8 +200,6 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           </div>
         </div>
       )}
-
-
 
       <div
         ref={profileBarRef} // Add the ref to the profile-bar
@@ -282,59 +274,61 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
 
           {/* other experts */}
           {token && role === "expert" && (
-          <div>  
-            <div className="d-flex align-items-center justify-content-between mb-3">
-              <h4 className="fw-lightBold mb-0">Other Experts</h4>
-              <IoIosAddCircleOutline className="fs-2 text-secondary" />
-            </div>
-            <div className="mb-4">
-              {experts.map((expert) => (
-                <div
-                  className="d-flex align-items-center justify-content-between py-2 border-bottom"
-                  key={expert.id}
-                >
-                  <div className="d-flex align-items-center gap-2">
-                    {expert.profile_picture ? (
-                      <img
-                        src={expert.profile_picture}
-                        alt=""
-                        className="rounded-circle"
-                        style={{
-                          height: "2rem",
-                          width: "2rem",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      <FaUserCircle
-                        className="fs-2"
-                        style={{
-                          height: "2rem",
-                          width: "2rem",
-                        }}
-                      />
-                    )}
-                    <div>
-                      <p className="mb-0 fw-lightBold text-start text-capitalize">
-                        {expert.name}
-                      </p>
-                      {/* Optional: Display designation if you have it */}
-                      {/* <p className="mb-0 fs-small text-start">{user.designation}</p> */}
-                    </div>
-                  </div>
-                  <button
-                    className="rounded-pill px-3 py-1 bg-custom-primary text-white fs-small"
-                    // onClick={() => onFollow(user.id)}
+            <div>
+              <div className="d-flex align-items-center justify-content-between mb-3">
+                <h4 className="fw-lightBold mb-0">Other Experts</h4>
+                <IoIosAddCircleOutline className="fs-2 text-secondary" />
+              </div>
+              <div className="mb-4">
+                {experts.map((expert) => (
+                  <div
+                    className="d-flex align-items-center justify-content-between py-2 border-bottom"
+                    key={expert.id}
                   >
-                    Follow
-                  </button>
-                </div>
-              ))}
+                    <div className="d-flex align-items-center gap-2">
+                      {expert.profile_picture ? (
+                        <img
+                          src={expert.profile_picture}
+                          alt=""
+                          className="rounded-circle"
+                          style={{
+                            height: "2rem",
+                            width: "2rem",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <FaUserCircle
+                          className="fs-2"
+                          style={{
+                            height: "2rem",
+                            width: "2rem",
+                          }}
+                        />
+                      )}
+                      <div>
+                        <p className="mb-0 fw-lightBold text-start text-capitalize">
+                          {expert.name}
+                        </p>
+                        {/* Optional: Display designation if you have it */}
+                        {/* <p className="mb-0 fs-small text-start">{user.designation}</p> */}
+                      </div>
+                    </div>
+                    <button
+                      className="rounded-pill px-3 py-1 bg-custom-primary text-white fs-small"
+                      // onClick={() => onFollow(user.id)}
+                    >
+                      Follow
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {experts.length > 3 && (
+                <button className="signup-now w-100 rounded-pill">
+                  See all
+                </button>
+              )}
             </div>
-            {experts.length > 3 && (
-              <button className="signup-now w-100 rounded-pill">See all</button>
-            )}
-          </div>
           )}
         </main>
       </div>
