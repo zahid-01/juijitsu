@@ -18,9 +18,12 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const searchInputRef = useRef(null);
   const profileBarRef = useRef(null); // Reference for the profile-bar
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+ 
+ 
   const [user, setUser] = useState(() =>
     JSON.parse(localStorage.getItem("user"))
   );
+  const role = localStorage.getItem("userType");
   const [token, setToken] = useState(localStorage.getItem("token"));
   const userType = localStorage.getItem("userType");
   const [experts, setExperts] = useState([]);
@@ -165,8 +168,14 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           </Link>
         </div>
       )}
-
-      {token && (
+      {userType === "expert" && (
+         
+         <div className="profile-picture-container" 
+         style={{ objectFit: "cover", height: "3rem", width: "3rem" , marginLeft:"20vw" }}>  
+         </div>
+     
+      )}
+      {token  &&  (
         <div onClick={handleProfileClick} style={{ cursor: "pointer" }}>
           <div className="profile-picture-container">
             {profile_picture ? (
@@ -175,6 +184,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
                 alt="Profile"
                 className="profile-picture"
                 style={{ objectFit: "cover", height: "3rem", width: "3rem" }} //, marginLeft:"30vw"
+                
               />
             ) : (
               <FaUserCircle
@@ -185,6 +195,9 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           </div>
         </div>
       )}
+
+
+
       <div
         ref={profileBarRef} // Add the ref to the profile-bar
         className={`profile-bar rounded-4 text-black px-4 py-4 ${
@@ -255,7 +268,10 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
             </p>
           </div>
           <div style={{ height: "8rem" }}></div>
-          <div>
+
+          {/* other experts */}
+          {token && role === "expert" && (
+          <div>  
             <div className="d-flex align-items-center justify-content-between mb-3">
               <h4 className="fw-lightBold mb-0">Other Experts</h4>
               <IoIosAddCircleOutline className="fs-2 text-secondary" />
@@ -308,6 +324,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
               <button className="signup-now w-100 rounded-pill">See all</button>
             )}
           </div>
+          )}
         </main>
       </div>
     </nav>

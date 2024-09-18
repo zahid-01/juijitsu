@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { BASE_URI } from "../../Config/url";
 import axios from "axios";
-import { LuArrowUpDown } from "react-icons/lu";
+
 import { FaCalendar } from "react-icons/fa6";
 import { FaPen } from "react-icons/fa";
 import "./Transactions.css";
@@ -195,7 +195,7 @@ const UserManagement = () => {
           Sep 4, 2024
         </div> */}
       </div>
-      <header className="header-container p-3 pb-0 rounded-bottom-0 custom-box">
+      <header className="header-container p-3 pb-0 rounded-bottom-0 custom-box" style={{backgroundColor:"white"}}>
         <div className="d-flex gap-5 px-4">
           {[
             // "payExperts",
@@ -218,11 +218,11 @@ const UserManagement = () => {
         </div>
       </header>
 
-      <div className="tab-content px-3 py-1 custom-box rounded-top-0">
+      <div className="tab-content px-3 py-1 custom-box rounded-top-0" style={{backgroundColor:"white"}}>
         <div className="px-4">
           {/* Transactions */}
        
-          <div className="bottom-userCourses">
+          <div className="bottom-transactions">
 
           {activeTab === "transactions" &&
             (error === "no transactions found" ? (
@@ -241,19 +241,19 @@ const UserManagement = () => {
                     <tr>
                       <th scope="col">
                         Name
-                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                       
                       </th>
                       <th scope="col" className="text-center">
                         Price
-                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                     
                       </th>
                       <th scope="col" className="text-center">
                         Transaction Id
-                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                       
                       </th>
                       <th scope="col" className="text-center">
                         Transaction Date
-                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                      
                       </th>
                       <th scope="col" className="text-center">
                         Status
@@ -315,7 +315,7 @@ const UserManagement = () => {
             </div>
 
           {/* Payout Requests */}
-          <div className="bottom-userCourses">
+          <div className="bottom-transactions">
           {activeTab === "payoutRequests" &&
             (error === "no requests found" ? (
               <>
@@ -333,15 +333,15 @@ const UserManagement = () => {
                     <tr>
                       <th scope="col">
                         Name
-                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                    
                       </th>
                       <th scope="col" className="text-center">
                         Amount Requested
-                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                       
                       </th>
                       <th scope="col" className="text-center">
                         Requested On
-                        <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                       
                       </th>
                       <th scope="col" className="text-center">
                         Action

@@ -308,6 +308,7 @@ export default function Settings() {
                     htmlFor="password"
                     className="mb-1"
                     style={{ fontSize: "20px" }}
+                    
                   >
                     Password
                   </label>
@@ -318,6 +319,7 @@ export default function Settings() {
                       id="password"
                       value={password ? password : ""}
                       placeholder="Enter password"
+                      //  autoComplete="current-password"
                       readOnly
                     />
                     <div className="input-group-append ">
@@ -346,6 +348,9 @@ export default function Settings() {
                   type="password"
                   className=" py-2 px-3 mb-3 w-100 border border-2 rounded-3"
                   placeholder="Enter password"
+                  //  autoComplete="current-password"
+                 
+                  
                 />
                 <p
                   className="mb-4"
@@ -373,6 +378,7 @@ export default function Settings() {
                   name="password"
                   value={updatePasswordData.password}
                   placeholder="Enter current password"
+                  //  autoComplete="new-password"
                   onChange={handleUpdatePasswordChange}
                 />
                 <input
@@ -380,7 +386,7 @@ export default function Settings() {
                   className=" py-2 px-3 mb-3 w-100 border border-2 rounded-3"
                   name="newPassword"
                   value={updatePasswordData.newPassword}
-                  placeholder="Enter current New password"
+                  placeholder="Enter  New password"
                   onChange={handleUpdatePasswordChange}
                 />
                 <input
@@ -388,7 +394,7 @@ export default function Settings() {
                   className=" py-2 px-3 mb-4 w-100 border border-2 rounded-3"
                   name="passwordConfirm"
                   value={updatePasswordData.passwordConfirm}
-                  placeholder="Confirm New password"
+                  placeholder="Confirm  password"
                   onChange={handleUpdatePasswordChange}
                 />
                 <div className="d-flex align-items-center justify-content-end">
@@ -812,7 +818,8 @@ export default function Settings() {
               ) : null}
             </div>
           )}
-          {activeTab === "closeAccount" && (
+          
+          {/* {activeTab === "closeAccount" && (
             <div className="tab-pane active" style={{ minHeight: "25rem" }}>
               <div
                 className="pb-5 d-flex flex-column align-items-start justify-content-between w-md-50 h-100"
@@ -852,7 +859,7 @@ export default function Settings() {
                     className="form-control py-3"
                     id="formBasicPassword"
                     placeholder="Enter your password"
-                    autoComplete="new-password"
+                    // autoComplete="new-password"
                   />
                 </div>
               </Modal>
@@ -861,7 +868,59 @@ export default function Settings() {
                 Your account has been successfully deleted!
               </Modal>
             </div>
-          )}
+          )} */}
+
+{role !== "admin" && activeTab === "closeAccount" && (
+  <div className="tab-pane active" style={{ minHeight: "25rem" }}>
+    <div
+      className="pb-5 d-flex flex-column align-items-start justify-content-between w-md-50 h-100"
+      style={{ minHeight: "23rem" }}
+    >
+      <p>
+        If you close your account, you will be unsubscribed from all
+        of your courses and will lose access to your account and data
+        associated with your account forever, even if you choose to
+        create a new account using the same email address in the
+        future.
+      </p>
+      <button
+        className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
+        onClick={() => setIsModalDelete(true)}
+      >
+        Close Account
+      </button>
+    </div>
+
+    <Modal
+      show={isModalDelete}
+      onClose={closeModalDelete}
+      btnName="Close Account"
+      heading="Close Account?"
+      handleClickAction={handleNextAction}
+    >
+      <div className="form-group text-start">
+        <label
+          htmlFor="formBasicPassword"
+          className="mb-2 fw-light fs-small"
+        >
+          Are you sure you want to delete your account?
+        </label>
+        <input
+          type="password"
+          className="form-control py-3"
+          id="formBasicPassword"
+          placeholder="Enter your password"
+          autoComplete="new-password"
+        />
+      </div>
+    </Modal>
+
+    <Modal show={finalDelete} path="/" btnName="Continue">
+      Your account has been successfully deleted!
+    </Modal>
+  </div>
+)}
+
         </div>
       </div>
     </div>
