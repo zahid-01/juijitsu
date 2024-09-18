@@ -1,0 +1,4 @@
+input[type="password"][autocomplete="current-password"] {
+    -webkit-text-security: disc; /* for webkit browsers */
+    text-security: disc; /* for other browsers */
+  }

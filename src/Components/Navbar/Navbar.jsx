@@ -20,9 +20,12 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const searchInputRef = useRef(null);
   const profileBarRef = useRef(null); // Reference for the profile-bar
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+ 
+ 
   const [user, setUser] = useState(() =>
     JSON.parse(localStorage.getItem("user"))
   );
+  const role = localStorage.getItem("userType");
   const [token, setToken] = useState(localStorage.getItem("token"));
   const userType = localStorage.getItem("userType");
   const [experts, setExperts] = useState([]);
@@ -124,46 +127,66 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
         token ? "justify-content-between" : "justify-content-center"
       } ${collapsed ? "collapsed" : ""}`}
     >
-      <div className="d-flex gap-3 align-items-center w-75">
-        <div className="search-input input-group w-75">
-          <label
-            className="input-group-text search-icon border-end-0"
-            htmlFor="search"
-            onClick={handleIconClick}
-          >
-            <CiSearch />
-          </label>
-          <input
-            type="text"
-            id="search"
-            placeholder="Search here..."
-            aria-label="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            ref={searchInputRef}
-            className="navbar-input form-control border-start-0 ps-0"
-          />
-        </div>
-        <CiFilter className="primary-color fs-2 ms-3 cursor-pointer" />
-      </div>
+      {(userType === "user" || !token)
+       && (
+          <div className="d-flex gap-3 align-items-center w-75 ">
+            <div className="search-input input-group w-75">
+              <label
+                className="input-group-text search-icon border-end-0"
+                htmlFor="search"
+                onClick={handleIconClick}
+              >
+                <CiSearch />
+              </label>
+              <input
+                type="text"
+                id="search"
+                placeholder="Search here..."
+                aria-label="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                ref={searchInputRef}
+                className="navbar-input form-control border-start-0 ps-0"
+              />
+            </div>
+            <CiFilter className="primary-color fs-2 ms-3 cursor-pointer" />
+          </div>
+        )}
       {/* {userType === "user" && ( */}
       {userType === "user" && (
-        <div className="cart-container">
+
+        <div className="cart-container" >
+//           <Link to="/userCart">
+//             <BsFillCartFill className="primary-color fs-2 ms-5 cursor-pointer" />
+//           </Link>
+
+       
           <Cart />
+
           {/* <div className="cart-badge">{cartItemNumber}</div>{" "} */}
         </div>
       )}
 
       {userType === "admin" && (
-        <div className="cart-container">
-          <Link to="/adminPayouts">
-            <BsBellFill className="primary-color fs-4 ms-5 cursor-pointer" />
+
+        <div className="cart-container" style={{marginLeft:"58vw"}} >
+           <Link to="/adminPayouts">
+            <BsBellFill className="primary-color fs-4 ms-5 cursor-pointer" 
+           
+           />
           </Link>
           <div className="cart-badge">{notifications?.length}</div>{" "}
+
         </div>
       )}
-
-      {token && (
+      {userType === "expert" && (
+         
+         <div className="profile-picture-container" 
+         style={{ objectFit: "cover", height: "3rem", width: "3rem" , marginLeft:"20vw" }}>  
+         </div>
+     
+      )}
+      {token  &&  (
         <div onClick={handleProfileClick} style={{ cursor: "pointer" }}>
           <div className="profile-picture-container">
             {profile_picture ? (
@@ -171,7 +194,8 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
                 src={profile_picture}
                 alt="Profile"
                 className="profile-picture"
-                style={{ objectFit: "cover", height: "3rem", width: "3rem" }}
+                style={{ objectFit: "cover", height: "3rem", width: "3rem" }} //, marginLeft:"30vw"
+                
               />
             ) : (
               <FaUserCircle
@@ -182,6 +206,9 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           </div>
         </div>
       )}
+
+
+
       <div
         ref={profileBarRef} // Add the ref to the profile-bar
         className={`profile-bar rounded-4 text-black px-4 py-4 ${
@@ -252,7 +279,10 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
             </p>
           </div>
           <div style={{ height: "8rem" }}></div>
-          <div>
+
+          {/* other experts */}
+          {token && role === "expert" && (
+          <div>  
             <div className="d-flex align-items-center justify-content-between mb-3">
               <h4 className="fw-lightBold mb-0">Other Experts</h4>
               <IoIosAddCircleOutline className="fs-2 text-secondary" />
@@ -305,6 +335,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
               <button className="signup-now w-100 rounded-pill">See all</button>
             )}
           </div>
+          )}
         </main>
       </div>
     </nav>

@@ -1,8 +1,6 @@
 //settings
 
-
-
-import { useRef, useState } from "react";
+import { useRef, useState,useEffect } from "react";
 import { FaPen } from "react-icons/fa";
 import Modal from "../../Components/Modal/Modal";
 import { BASE_URI } from "../../Config/url";
@@ -26,17 +24,30 @@ export default function Settings() {
   const [profilePicture, setProfilePicture] = useState("");
   const [isReadOnly, setIsReadOnly] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  
   const [userData, setUserData] = useState({
     users: {
       name: "",
+      company_name: "",
+      youtube: "",
+      twitter: "",
+      website: "",
+      bio: "",
     },
   });
 
   const inputRef = useRef(null);
 
+  const companyRef = useRef(null);
+  const youtubeRef = useRef(null);
+  const twitterRef = useRef(null);
+  const websiteRef = useRef(null);
+  const bioRef = useRef(null);
+
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("userType");
   const profileUrl = `${BASE_URI}/api/v1/users/profile`;
+
   const fetchOptions = {
     headers: {
       Authorization: "Bearer " + token,
@@ -44,7 +55,34 @@ export default function Settings() {
   };
 
   const { data, refetch } = useFetch(profileUrl, fetchOptions);
-  const { email, password, name, profile_picture } = data?.data[0] || [];
+  const {
+    email,
+    password,
+    name,
+    profile_picture,
+    company_name,
+    youtube,
+    twitter,
+    website,
+    bio,
+  } = data?.data[0] || [];
+
+
+  useEffect(() => {
+    if (data) {
+      setUserData({
+        users: {
+          name: data.data[0].name,
+          company_name: data.data[0].company_name,
+          youtube: data.data[0].youtube,
+          twitter: data.data[0].twitter,
+          website: data.data[0].website,
+          bio: data.data[0].bio,
+        },
+      });
+    }
+  }, [data]);
+  console.log(data);
 
   const handlePasswordUpdateAction = () => {
     axios
@@ -68,16 +106,35 @@ export default function Settings() {
       });
   };
 
+ 
+
   const handleUpdateProfilePicture = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsLoading(true); // Set loading state to true
+
     const formData = new FormData();
 
+  
+
+    if (profilePicture) {
+      console.log("profile");
+      formData.append("profile_picture", profilePicture);
+    } else {
+      formData.append("profile_picture", profile_picture);
+    }
+
+    // Append other user data
+    formData.append("name", userData?.users?.name || name);
     formData.append(
-      "profile_picture",
-      profilePicture ? profilePicture : profile_picture
+      "company_name",
+      userData?.users?.company_name || company_name
     );
-    formData.append("name", userData?.users?.name);
+    formData.append("youtube", userData?.users?.youtube || youtube);
+    formData.append("twitter", userData?.users?.twitter || twitter);
+    formData.append("website", userData?.users?.website || website);
+    formData.append("bio", userData?.users?.bio || bio);
+
+    console.log(profilePicture);
 
     try {
       const response = await axios.patch(
@@ -90,24 +147,22 @@ export default function Settings() {
           },
         }
       );
-      setIsLoading(false);
-      toast.success(
-        response.data.message
-          ? response.data.message
-          : "Profile updated successfully"
-      );
 
+      toast.success(response.data.message || "Profile updated successfully");
+
+      // Clear form and states
       setProfilePicture("");
       setImage(null);
       setIsReadOnly(true);
 
-      refetch();
+      refetch(); // Refetch data if needed
     } catch (err) {
-      setIsLoading(false);
       toast.error(
         err?.response?.data?.message ||
           "An error occurred while updating the profile"
       );
+    } finally {
+      setIsLoading(false); // Ensure loading state is reset
     }
   };
 
@@ -140,11 +195,34 @@ export default function Settings() {
     localStorage.removeItem("rememberMe");
   };
 
+  // const handleEditNameClick = () => {
+  //   setIsReadOnly(false);
+  //   inputRef.current.focus();
+  // };
   const handleEditNameClick = () => {
+    setIsReadOnly(!isReadOnly);
+  };
+  const handleEditcompanyClick = () => {
     setIsReadOnly(false);
-    inputRef.current.focus();
+    companyRef.current.focus();
+  };
+  const handleEditYoutubeClick = () => {
+    setIsReadOnly(false);
+    youtubeRef.current.focus();
+  };
+  const handleEditTwitterClick = () => {
+    setIsReadOnly(false);
+    twitterRef.current.focus();
+  };
+  const handleEditWebsiteClick = () => {
+    setIsReadOnly(false);
+    websiteRef.current.focus();
   };
 
+  const handleEditBioClick = () => {
+    setIsReadOnly(false);
+    bioRef.current.focus();
+  };
   const handleUpdatePasswordChange = (e) => {
     const { name, value } = e.target;
     setUpdatePasswordData((prevData) => ({
@@ -180,16 +258,16 @@ export default function Settings() {
             >
               Edit Profile
             </h5>
-            { role !== "admin" &&(
-            <h5
-              className={`text-white px-3 pb-2 fw-light cursor-pointer ${
-                activeTab === "closeAccount" ? "border-bottom border-4" : ""
-              }`}
-              onClick={() => setActiveTab("closeAccount")}
-            >
-              Close Account
-            </h5>
-            ) }
+            {role !== "admin" && (
+              <h5
+                className={`text-white px-3 pb-2 fw-light cursor-pointer ${
+                  activeTab === "closeAccount" ? "border-bottom border-4" : ""
+                }`}
+                onClick={() => setActiveTab("closeAccount")}
+              >
+                Close Account
+              </h5>
+            )}
           </div>
         </div>
       </header>
@@ -230,6 +308,7 @@ export default function Settings() {
                     htmlFor="password"
                     className="mb-1"
                     style={{ fontSize: "20px" }}
+                    
                   >
                     Password
                   </label>
@@ -240,6 +319,7 @@ export default function Settings() {
                       id="password"
                       value={password ? password : ""}
                       placeholder="Enter password"
+                      //  autoComplete="current-password"
                       readOnly
                     />
                     <div className="input-group-append ">
@@ -268,6 +348,9 @@ export default function Settings() {
                   type="password"
                   className=" py-2 px-3 mb-3 w-100 border border-2 rounded-3"
                   placeholder="Enter password"
+                  //  autoComplete="current-password"
+                 
+                  
                 />
                 <p
                   className="mb-4"
@@ -295,6 +378,7 @@ export default function Settings() {
                   name="password"
                   value={updatePasswordData.password}
                   placeholder="Enter current password"
+                  //  autoComplete="new-password"
                   onChange={handleUpdatePasswordChange}
                 />
                 <input
@@ -302,7 +386,7 @@ export default function Settings() {
                   className=" py-2 px-3 mb-3 w-100 border border-2 rounded-3"
                   name="newPassword"
                   value={updatePasswordData.newPassword}
-                  placeholder="Enter current New password"
+                  placeholder="Enter  New password"
                   onChange={handleUpdatePasswordChange}
                 />
                 <input
@@ -310,7 +394,7 @@ export default function Settings() {
                   className=" py-2 px-3 mb-4 w-100 border border-2 rounded-3"
                   name="passwordConfirm"
                   value={updatePasswordData.passwordConfirm}
-                  placeholder="Confirm New password"
+                  placeholder="Confirm  password"
                   onChange={handleUpdatePasswordChange}
                 />
                 <div className="d-flex align-items-center justify-content-end">
@@ -326,103 +410,416 @@ export default function Settings() {
           )}
           {activeTab === "editProfile" && (
             <div className="tab-pane active" style={{ minHeight: "25rem" }}>
-              <form>
-                <div className="form-group w-md-50 mb-4">
-                  <label
-                    htmlFor="name"
-                    className="mb-1"
-                    style={{ fontSize: "20px" }}
-                  >
-                    Full Name
-                  </label>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control py-3"
-                      id="name"
-                      value={isReadOnly ? name : userData.users.name}
-                      placeholder="Enter name"
-                      readOnly={isReadOnly}
-                      ref={inputRef}
-                      onChange={(e) =>
-                        setUserData({
-                          ...userData,
-                          users: { ...userData.users, name: e.target.value },
-                        })
-                      }
-                    />
-                    <div className="input-group-append">
-                      <span
-                        className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer"
-                        onClick={handleEditNameClick}
-                      >
-                        <FaPen />
-                      </span>
+              {role === "admin" || role === "user" ? (
+                <form>
+                  <div className="form-group w-md-50 mb-4">
+                    <label
+                      htmlFor="name"
+                      className="mb-1"
+                      style={{ fontSize: "20px" }}
+                    >
+                      Full Name
+                    </label>
+                    <div className="input-group">
+                      <input
+                        type="text"
+                        className="form-control py-3"
+                        id="name"
+                        // value={isReadOnly ? name : userData.users.name}
+                        value={isReadOnly ? userData.users.name : userData.users.name}
+                        placeholder="Enter name"
+                        readOnly={isReadOnly}
+                        ref={inputRef}
+                        onChange={(e) =>
+                          setUserData({
+                            ...userData,
+                            users: { ...userData.users, name: e.target.value },
+                          })
+                        }
+                      />
+                      <div className="input-group-append">
+                        <span
+                          className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer"
+                          onClick={handleEditNameClick}
+                        >
+                          <FaPen />
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="form-group w-md-50 mb-5">
-                  <label
-                    htmlFor="image"
-                    className="mb-1"
-                    style={{ fontSize: "20px" }}
-                  >
-                    Profile Photo
-                  </label>
-                  <div className="text-center mb-3">
-                    {image ? (
-                      <div className="w-75 border rounded-3">
-                        <img
-                          src={image}
-                          alt="Preview"
-                          className="img-thumbnail object-fit-contain"
-                          style={{ maxWidth: "200px" }}
-                        />
+                  <div className="form-group w-md-50 mb-5">
+                    <label
+                      htmlFor="image"
+                      className="mb-1"
+                      style={{ fontSize: "20px" }}
+                    >
+                      Profile Photo
+                    </label>
+                    <div className="text-center mb-3">
+                      {image ? (
+                        <div className="w-75 border rounded-3">
+                          <img
+                            src={image}
+                            alt="Preview"
+                            className="img-thumbnail object-fit-contain"
+                            style={{ maxWidth: "200px" }}
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-75 border rounded-3">
+                          <img
+                            src={profile_picture}
+                            alt="img"
+                            className="img-thumbnail object-fit-contain"
+                            style={{ maxWidth: "200px" }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="input-group">
+                      <input
+                        type="file"
+                        className="form-control py-3"
+                        id="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                      />
+                      <div className="input-group-append">
+                        <span className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer fw-light">
+                          Upload Image
+                        </span>
                       </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="signup-now py-2 px-4 fw-lightBold mb-0 h-auto"
+                    onClick={handleUpdateProfilePicture}
+                  >
+                    {isLoading ? (
+                      <PulseLoader size={8} color="white" />
                     ) : (
-                      <div className="w-75 border rounded-3">
-                        <img
-                          src={profile_picture}
-                          alt="img"
-                          className="img-thumbnail object-fit-contain"
-                          style={{ maxWidth: "200px" }}
-                        />
-                      </div>
+                      "Save"
                     )}
-                  </div>
-                  <div className="input-group">
-                    <input
-                      type="file"
-                      className="form-control py-3"
-                      id="image"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                    />
-                    <div className="input-group-append">
-                      <span
-                        className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer fw-light"
-                        // onClick={handleUpdateProfilePicture}
-                      >
-                        Upload Image
-                      </span>
+                  </button>
+                </form>
+              ) : null}
+
+              {role === "expert" ? (
+                <form>
+                  <div className="form-group w-md-50 mb-4">
+                    <label
+                      htmlFor="name"
+                      className="mb-1"
+                      style={{ fontSize: "20px" }}
+                    >
+                      Full Name
+                    </label>
+                    <div className="input-group">
+                      <input
+                        type="text"
+                        className="form-control py-3"
+                        id="name"
+                        value={isReadOnly ? name : userData.users.name}
+                        // value={name} 
+                        placeholder="Enter name"
+                        readOnly={isReadOnly}
+                        ref={inputRef}
+                        onChange={(e) =>
+                          setUserData({
+                            ...userData,
+                            users: { ...userData.users, name: e.target.value },
+                          })
+                        }
+                      />
+                      <div className="input-group-append">
+                        <span
+                          className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer"
+                          onClick={handleEditNameClick}
+                        >
+                          <FaPen />
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-               
-                  
-                <button
-                  type="submit"
-                  className="signup-now py-2 px-4 fw-lightBold mb-0 h-auto"
-                  onClick={handleUpdateProfilePicture}
-                >
-                  {isLoading ? <PulseLoader size={8} color="white" /> : "Save"}
-                </button>
-              </form>
+                  <div className="form-group w-md-50 mb-5">
+                    <label
+                      htmlFor="image"
+                      className="mb-1"
+                      style={{ fontSize: "20px" }}
+                    >
+                      Profile Photo
+                    </label>
+                    <div className="text-center mb-3">
+                      {image ? (
+                        <div className="w-75 border rounded-3">
+                          <img
+                            src={image}
+                            alt="Preview"
+                            className="img-thumbnail object-fit-contain"
+                            style={{ maxWidth: "200px" }}
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-75 border rounded-3">
+                          <img
+                            src={profile_picture}
+                            alt="img"
+                            className="img-thumbnail object-fit-contain"
+                            style={{ maxWidth: "200px" }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="input-group">
+                      <input
+                        type="file"
+                        className="form-control py-3"
+                        id="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                      />
+                      <div className="input-group-append">
+                        <span className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer fw-light">
+                          Upload Image
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <button
+                    type="submit"
+                    className="signup-now py-2 px-4 fw-lightBold mb-0 h-auto"
+                    onClick={handleUpdateProfilePicture}
+                  >
+                    {isLoading ? (
+                      <PulseLoader size={8} color="white" />
+                    ) : (
+                      "Save"
+                    )}
+                  </button> */}
+
+                  {/* company name */}
+
+                  <div className="form-group w-md-50 mb-4">
+                    <label
+                      htmlFor="company_name"
+                      className="mb-1"
+                      style={{ fontSize: "20px" }}
+                    >
+                      Company Name
+                    </label>
+                    <div className="input-group">
+                      <input
+                        type="text"
+                        className="form-control py-3"
+                        id="company_name"
+                        // value={
+                        //   isReadOnly
+                        //     ? company_name
+                        //     : userData.users.company_name
+                        // }
+                        value={isReadOnly ? userData.users.company_name : userData.users.company_name}
+                        placeholder="Enter company name "
+                        readOnly={isReadOnly}
+                        ref={companyRef}
+                        onChange={(e) =>
+                          setUserData({
+                            ...userData,
+                            users: {
+                              ...userData.users,
+                              company_name: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                      <div className="input-group-append">
+                        <span
+                          className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer"
+                          onClick={handleEditcompanyClick}
+                        >
+                          <FaPen />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Youtube */}
+
+                  <div className="form-group w-md-50 mb-4">
+                    <label
+                      htmlFor="youtube"
+                      className="mb-1"
+                      style={{ fontSize: "20px" }}
+                    >
+                      Youtube
+                    </label>
+                    <div className="input-group">
+                      <input
+                        type="text"
+                        className="form-control py-3"
+                        id="youtube"
+                        // value={isReadOnly ? youtube : userData.users.youtube}
+                        value={isReadOnly ? userData.users.youtube : userData.users.youtube}
+                        placeholder="Enter Youtube Url"
+                        readOnly={isReadOnly}
+                        ref={youtubeRef}
+                        onChange={(e) =>
+                          setUserData({
+                            ...userData,
+                            users: {
+                              ...userData.users,
+                              youtube: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                      <div className="input-group-append">
+                        <span
+                          className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer"
+                          onClick={handleEditYoutubeClick}
+                        >
+                          <FaPen />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* twitter */}
+                  <div className="form-group w-md-50 mb-4">
+                    <label
+                      htmlFor="twitter"
+                      className="mb-1"
+                      style={{ fontSize: "20px" }}
+                    >
+                      Twitter
+                    </label>
+                    <div className="input-group">
+                      <input
+                        type="text"
+                        className="form-control py-3"
+                        id="twitter"
+                        // value={isReadOnly ? twitter : userData.users.twitter}
+                        value={isReadOnly ? userData.users.twitter : userData.users.twitter}
+                        placeholder="Enter twitter Url"
+                        readOnly={isReadOnly}
+                        ref={twitterRef}
+                        onChange={(e) =>
+                          setUserData({
+                            ...userData,
+                            users: {
+                              ...userData.users,
+                              twitter: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                      <div className="input-group-append">
+                        <span
+                          className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer"
+                           onClick={handleEditTwitterClick}  
+                        >
+                          <FaPen />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/*  personal website*/}
+                  <div className="form-group w-md-50 mb-4">
+                    <label
+                      htmlFor="website"
+                      className="mb-1"
+                      style={{ fontSize: "20px" }}
+                    >
+                      Personal Website
+                    </label>
+                    <div className="input-group">
+                      <input
+                        type="text"
+                        className="form-control py-3"
+                        id="website"
+                        // value={isReadOnly ? website : userData.users.website}
+                        value={isReadOnly ? userData.users.website : userData.users.website}
+                        placeholder="Enter website Url"
+                        readOnly={isReadOnly}
+                        ref={websiteRef}
+                        onChange={(e) =>
+                          setUserData({
+                            ...userData,
+                            users: {
+                              ...userData.users,
+                              website: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                      <div className="input-group-append">
+                        <span
+                          className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer"
+                          onClick={handleEditWebsiteClick}
+                        >
+                          <FaPen />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  {/* bio */}
+                  <div className="form-group w-md-50 mb-4">
+                    <label
+                      htmlFor="bio"
+                      className="mb-1"
+                      style={{ fontSize: "20px" }}
+                    >
+                      Add your bio
+                    </label>
+                    <div className="input-group">
+                      <input
+                        type="text"
+                        className="form-control py-3"
+                        id="bio"
+                        // value={isReadOnly ? bio : userData.users.bio} // Corrected value attribute
+                        value={isReadOnly ? userData.users.bio : userData.bio}
+                        placeholder="Add your bio"
+                        ref={bioRef}
+                        onChange={(e) =>
+                          setUserData({
+                            ...userData,
+                            users: { ...userData.users, bio: e.target.value }, // Fixed key from bio to website
+                          })
+                        }
+                      />
+                      <div className="input-group-append">
+                        <span
+                          className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer"
+                          onClick={handleEditBioClick}
+                        >
+                          <FaPen />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="signup-now py-2 px-4 fw-lightBold mb-0 h-auto"
+                    onClick={handleUpdateProfilePicture}
+                  >
+                    {isLoading ? (
+                      <PulseLoader size={8} color="white" />
+                    ) : (
+                      "Save"
+                    )}
+                  </button>
+                </form>
+              ) : null}
             </div>
           )}
-          {activeTab === "closeAccount" && (
+          
+          {/* {activeTab === "closeAccount" && (
             <div className="tab-pane active" style={{ minHeight: "25rem" }}>
               <div
                 className="pb-5 d-flex flex-column align-items-start justify-content-between w-md-50 h-100"
@@ -462,6 +859,7 @@ export default function Settings() {
                     className="form-control py-3"
                     id="formBasicPassword"
                     placeholder="Enter your password"
+                    // autoComplete="new-password"
                   />
                 </div>
               </Modal>
@@ -470,7 +868,59 @@ export default function Settings() {
                 Your account has been successfully deleted!
               </Modal>
             </div>
-          )}
+          )} */}
+
+{role !== "admin" && activeTab === "closeAccount" && (
+  <div className="tab-pane active" style={{ minHeight: "25rem" }}>
+    <div
+      className="pb-5 d-flex flex-column align-items-start justify-content-between w-md-50 h-100"
+      style={{ minHeight: "23rem" }}
+    >
+      <p>
+        If you close your account, you will be unsubscribed from all
+        of your courses and will lose access to your account and data
+        associated with your account forever, even if you choose to
+        create a new account using the same email address in the
+        future.
+      </p>
+      <button
+        className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
+        onClick={() => setIsModalDelete(true)}
+      >
+        Close Account
+      </button>
+    </div>
+
+    <Modal
+      show={isModalDelete}
+      onClose={closeModalDelete}
+      btnName="Close Account"
+      heading="Close Account?"
+      handleClickAction={handleNextAction}
+    >
+      <div className="form-group text-start">
+        <label
+          htmlFor="formBasicPassword"
+          className="mb-2 fw-light fs-small"
+        >
+          Are you sure you want to delete your account?
+        </label>
+        <input
+          type="password"
+          className="form-control py-3"
+          id="formBasicPassword"
+          placeholder="Enter your password"
+          autoComplete="new-password"
+        />
+      </div>
+    </Modal>
+
+    <Modal show={finalDelete} path="/" btnName="Continue">
+      Your account has been successfully deleted!
+    </Modal>
+  </div>
+)}
+
         </div>
       </div>
     </div>

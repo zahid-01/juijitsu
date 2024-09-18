@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { BASE_URI } from "../../Config/url";
 import axios from "axios";
 import formatDate from "../../utils/formatDate";
-import { LuArrowUpDown } from "react-icons/lu";
-import { FaCalendar } from "react-icons/fa6";
+
+
 
 const UserManagement = () => {
   const [activeTab, setActiveTab] = useState("users");
@@ -104,7 +104,7 @@ const UserManagement = () => {
         </div> */}
       </div>
 
-      <div className="tab-content px-3 py-3 custom-box rounded-top-0">
+      <div className="tab-content px-3 py-3 custom-box rounded-top-0"  style={{backgroundColor:"white"}}>
         <div className="px-4">
 
           {activeTab === "users" && 
@@ -125,23 +125,23 @@ const UserManagement = () => {
                   <tr>
                     <th scope="col">
                       Name
-                      <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                    
                     </th>
                     <th scope="col" className="text-center">
                       Total Courses
-                      <LuArrowUpDown style={{ marginLeft: "8px" }} />
+               
                     </th>
                     <th scope="col" className="text-center">
                       Joined On
-                      <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                   
                     </th>
                     <th scope="col" className="text-center">
                       Status
-                      <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                  
                     </th>
                     <th scope="col" className="text-center">
                       Balance
-                      <LuArrowUpDown style={{ marginLeft: "8px" }} />
+                    
                     </th>
                     <th scope="col" className="text-center">
                       Action
