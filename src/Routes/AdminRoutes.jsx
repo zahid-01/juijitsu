@@ -6,8 +6,6 @@ import Students from "../Pages/Students/Students";
 import Transactions from "../Pages/Transactions/Transactions";
 import Settings from "../Pages/Settings/Settings";
 
-
-
 export default function AdminRoutes() {
   return (
     <Routes>
@@ -17,6 +15,7 @@ export default function AdminRoutes() {
       <Route path="/students" element={<Students />} />
       <Route path="/transactions" element={<Transactions />} />
       <Route path="/settings" element={<Settings />} />
+      <Route path="/adminPayouts" element={<Transactions />} />
     </Routes>
   );
 }

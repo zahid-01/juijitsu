@@ -13,6 +13,8 @@ import toast from "react-hot-toast";
 import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
 import useFetch from "../../hooks/useFetch";
+import Cart from "../Cart/Cart";
+import { useSelector } from "react-redux";
 
 export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const searchInputRef = useRef(null);
@@ -35,18 +37,19 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
       Authorization: "Bearer " + token,
     },
   };
+  const notifications = useSelector((state) => state.payouts.notifications);
 
   const { data, refetch } = useFetch(profileUrl, fetchOptions);
   const { name, profile_picture } = data?.data[0] || [];
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setUser(JSON.parse(localStorage.getItem("user")));
-      setToken(localStorage.getItem("token"));
-    };
-    const intervalId = setInterval(handleStorageChange, 1000);
-    return () => clearInterval(intervalId);
-  }, []);
+  // useEffect(() => {
+  //   const handleStorageChange = () => {
+  //     setUser(JSON.parse(localStorage.getItem("user")));
+  //     setToken(localStorage.getItem("token"));
+  //   };
+  //   const intervalId = setInterval(handleStorageChange, 1000);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   useEffect(() => {
     if (token) {
@@ -151,21 +154,29 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
         )}
       {/* {userType === "user" && ( */}
       {userType === "user" && (
+
         <div className="cart-container" >
-          <Link to="/userCart">
-            <BsFillCartFill className="primary-color fs-2 ms-5 cursor-pointer" />
-          </Link>
+//           <Link to="/userCart">
+//             <BsFillCartFill className="primary-color fs-2 ms-5 cursor-pointer" />
+//           </Link>
+
+       
+          <Cart />
+
           {/* <div className="cart-badge">{cartItemNumber}</div>{" "} */}
         </div>
       )}
 
       {userType === "admin" && (
+
         <div className="cart-container" style={{marginLeft:"58vw"}} >
-          <Link to="/">
+           <Link to="/adminPayouts">
             <BsBellFill className="primary-color fs-4 ms-5 cursor-pointer" 
            
            />
           </Link>
+          <div className="cart-badge">{notifications?.length}</div>{" "}
+
         </div>
       )}
       {userType === "expert" && (

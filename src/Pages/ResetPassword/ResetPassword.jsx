@@ -2,18 +2,23 @@ import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoKeyOutline } from "react-icons/io5";
 import { PulseLoader } from "react-spinners";
+import { useParams, useNavigate } from "react-router-dom";
 import learnImg from "../../assets/learnImg.avif";
 import axios from "axios";
 import { BASE_URI } from "../../Config/url";
+import toast from "react-hot-toast";
 
 function ResetPassword() {
-  const [password, setpassword] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const { token } = useParams(); // Capture token from URL
+  const navigate = useNavigate(); // For redirecting after success
+
   const handleNewPasswordChange = (event) => {
-    setpassword(event.target.value);
+    setPassword(event.target.value);
   };
 
   const handleConfirmPasswordChange = (event) => {
@@ -24,10 +29,38 @@ function ResetPassword() {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Ensure password and confirm password match
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     setIsLoading(true);
-    axios.post(`${BASE_URI}`);
+
+    try {
+      const response = await axios.post(
+        `${BASE_URI}/api/v1/auth/reset-password/${token}`,
+        {
+          password,
+          confirmPassword,
+        }
+      );
+
+      toast.success("Password reset successfully");
+      setIsLoading(false);
+
+      // Redirect to login or another page after success
+      navigate("/login");
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to reset password. Please try again."
+      );
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -111,7 +144,7 @@ function ResetPassword() {
                     id="confirm-password"
                     name="confirmPassword"
                     className="form-control border-end-0 py-2-half-5"
-                    placeholder="Enter Password"
+                    placeholder="Confirm Password"
                     aria-label="Password"
                     value={confirmPassword}
                     onChange={handleConfirmPasswordChange}

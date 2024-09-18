@@ -45,6 +45,9 @@ input::placeholder {
 .text-light-custom {
   color: #c9d1d5;
 }
+.text-red{
+  color: red;
+}
 .neutral-color {
   color: #7e8c9c;
 }
@@ -104,6 +107,17 @@ input::placeholder {
 .w-md-25 {
   width: 25%;
 }
+.pl-1{
+padding-left: 5%;
+}
+.grid-col-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Creates 2 equal columns */
+  gap: 15px; /* Adds space between the columns */
+  padding: 20px;
+  background-color: #f8f9fa;
+}
+
 @media (max-width: 768px) {
   .w-md-50 {
     width: 100%;

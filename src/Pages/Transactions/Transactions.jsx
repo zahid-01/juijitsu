@@ -2,12 +2,19 @@ import { useEffect, useState } from "react";
 import { BASE_URI } from "../../Config/url";
 import axios from "axios";
 
+
 import { FaCalendar } from "react-icons/fa6";
+
+import { LuArrowUpDown } from "react-icons/lu";
+
 import { FaPen } from "react-icons/fa";
 import "./Transactions.css";
+import { useDispatch } from "react-redux";
+import { payoutActions } from "../../Store/payoutSlice";
 
 const UserManagement = () => {
-  const [activeTab, setActiveTab] = useState("transactions");
+  const dispatch = useDispatch();
+  const [activeTab, setActiveTab] = useState("payoutRequests");
 
   const token = localStorage.getItem("token");
 
@@ -41,6 +48,8 @@ const UserManagement = () => {
       });
       setPayoutRequests(response?.data?.data || []);
       console.log(response?.data?.data);
+
+      dispatch(payoutActions.setNotifications(response?.data?.data));
       // console.log(payoutRequests);
     } catch (err) {
       setError(err?.response?.data?.message);
@@ -62,7 +71,6 @@ const UserManagement = () => {
       // console.log(response.data?.data?.history); // Log the data to check structure
     } catch (err) {
       setError(err?.response?.data?.message);
-     
     } finally {
       setLoading(false);
     }
@@ -199,8 +207,8 @@ const UserManagement = () => {
         <div className="d-flex gap-5 px-4">
           {[
             // "payExperts",
-            "transactions",
             "payoutRequests", // New tab for payout requests
+            "transactions",
             "editCommission",
           ].map((tab) => (
             <h5
@@ -270,49 +278,24 @@ const UserManagement = () => {
                             <img
                               src={user.profile_picture}
                               alt={user.name}
+         
                               style={{
-                                width: "33px",
-                                height: "33px",
-                                borderRadius: "50%",
-                                objectFit: "cover",
-                                marginRight: "10px",
+                                background:
+                                  "linear-gradient(92.36deg, #0c243c 0%, #7e8c9c 98.67%)",
+                                color: "white",
                               }}
-                            />
-                            {user.name}
-                          </div>
-                        </td>
-                        <td className="text-center align-middle fs-small">
-                          {user.withdrawal_amount}
-                        </td>
-                        <td className="text-center align-middle fs-small">
-                          {user.transaction_id}
-                        </td>
-                        <td className="text-center align-middle fs-small">
-                          {new Date(user.withdrawal_date).toLocaleDateString()}
-                        </td>
-                        <td className="text-center align-middle fs-small">
-                          <span
-                            style={{
-                              color:
-                                user.withdrawal_status.toLowerCase() ===
-                                "success"
-                                  ? "green"
-                                  : user.withdrawal_status.toLowerCase() ===
-                                    "failed"
-                                  ? "red"
-                                  : "black",
-                            }}
-                          >
-                            {user.withdrawal_status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ))}
-            </div>
+                              onClick={() => handleAction(request.id)}
+                            >
+                              Pay Now
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+          </div>
 
           {/* Payout Requests */}
           <div className="bottom-transactions">
@@ -358,43 +341,29 @@ const UserManagement = () => {
                             <img
                               src={request.profile_picture}
                               alt={request.name}
+
+         
                               style={{
-                                width: "33px",
-                                height: "33px",
-                                borderRadius: "50%",
-                                objectFit: "cover",
-                                marginRight: "10px",
+                                color:
+                                  user.withdrawal_status.toLowerCase() ===
+                                  "success"
+                                    ? "green"
+                                    : user.withdrawal_status.toLowerCase() ===
+                                      "failed"
+                                    ? "red"
+                                    : "black",
                               }}
-                            />
-                            {request.name}
-                          </div>
-                        </td>
-                        <td className="text-center align-middle fs-small">
-                          ${request.amount}
-                        </td>
-                        <td className="text-center align-middle fs-small">
-                          {request.created_at}
-                        </td>
-                        <td className="text-center align-middle fs-small">
-                          <button
-                            className="btn"
-                            style={{
-                              background:
-                                "linear-gradient(92.36deg, #0c243c 0%, #7e8c9c 98.67%)",
-                              color: "white",
-                            }}
-                            onClick={() => handleAction(request.id)}
-                          >
-                            Pay Now
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ))}
-            </div>
+                            >
+                              {user.withdrawal_status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+          </div>
 
           {/* Edit commisson  */}
           {activeTab === "editCommission" && (
