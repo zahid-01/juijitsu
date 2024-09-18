@@ -438,7 +438,7 @@ const handleEdit = async()=>{
               <select
                 value={accountType}
                 onChange={(e) => setAccountType(e.target.value)}
-                className="w-80"
+                className="w-80 pl-1"
                 style={{ height: "5vh" }}
                 name="countries"
                 id="countries"
@@ -460,7 +460,7 @@ const handleEdit = async()=>{
               disabled={editable}
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
-                className="w-80"
+                className="w-80 pl-1"
                 style={{ height: "5vh" }}
                 name="countries"
                 id="countries"
