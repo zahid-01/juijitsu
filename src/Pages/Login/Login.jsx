@@ -9,8 +9,11 @@ import axios from "axios";
 import { BASE_URI } from "../../Config/url";
 import { PulseLoader } from "react-spinners";
 import toast from "react-hot-toast";
+import { userCartActions } from "../../Store/cartSlice";
+import { useDispatch } from "react-redux";
 
 export default function Login() {
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -90,13 +93,29 @@ export default function Login() {
           email: "",
           password: "",
         });
+        axios({
+          method: "GET",
+          url: `${BASE_URI}/api/v1/cart`,
+          headers: {
+            Authorization: "Bearer " + resp.data.token,
+          },
+        }).then(
+          (res) => {
+            console.log(res.data.cart);
+            dispatch(userCartActions.setCart(res.data.cart));
+          },
+          () => {}
+        );
         toast.success("Logged In Successfully!");
         if (resp.data.Data.user_type === "expert") {
-          navigate("/courses");
+          // navigate("/courses");
+          history.push("/courses");
         } else if (resp.data.Data.user_type === "user") {
-          navigate("/userCourses");
+          // history.push("/courses");
+          window.location.reload();
         } else if (resp.data.Data.user_type === "admin") {
-          navigate("/adminDashboard");
+          // navigate("/adminDashboard");
+          window.location.reload();
         }
         setIsLoading(false);
       })

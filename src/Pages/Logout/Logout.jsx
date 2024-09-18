@@ -27,6 +27,7 @@ const Logout = () => {
         localStorage.removeItem("user");
         localStorage.removeItem("userType");
         navigate("/");
+        window.location.reload();
         toast.success(`Logged out successfully!`);
       })
       .catch(() => {

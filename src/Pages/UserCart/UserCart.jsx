@@ -91,6 +91,7 @@ const UserCart = () => {
       }).then(
         (res) => {
           dispatch(userCartActions.setCart(res.data.cart));
+          window.location.reload();
         },
         () => {}
       );
