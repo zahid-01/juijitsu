@@ -35,6 +35,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
     },
   };
   const notifications = useSelector((state) => state.payouts.notifications);
+  useSelector((state) => state.cart);
 
   const { data, refetch } = useFetch(profileUrl, fetchOptions);
   const { name, profile_picture } = data?.data[0] || [];
