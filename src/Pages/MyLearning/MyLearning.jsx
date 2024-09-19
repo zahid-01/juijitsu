@@ -9,6 +9,18 @@ import { FaStar } from "react-icons/fa"; // For star icons
 import axios from "axios";
 import toast from "react-hot-toast";
 
+
+
+const ShimmerCard = () => (
+  <div className="card-bottom-userCourses shimmer-card-usercourses">
+    <div className="shimmer-content-usercourses short"></div>
+    <div className="shimmer-content-usercourses long"></div>
+
+    <div className="shimmer-content-usercourses medium"></div>
+    <div className="shimmer-content-usercourses long"></div>
+  </div>
+);
+
 const Card = ({
   id,
   category,
@@ -247,9 +259,7 @@ if(status === 'purchased'){
 
   return (
     <>
-      {isLoading ? (
-        <l-grid id="myLearningLoader" size="60" speed="1.5" color="black"></l-grid>
-      ) : (
+      
         <div className="wrapper-myLearning">
           <header className="bg-gradient-custom-div p-3 pb-0 rounded-bottom-3.5 custom-box">
             <h3 className="pb-5">My Learning</h3>
@@ -291,7 +301,12 @@ if(status === 'purchased'){
           </header>
 
           <div className="bottom-myLearning">
-            {error?.response?.data?.message === "No courses found" ? (
+          {isLoading ? (
+        Array.from({ length: 12 }).map((_, idx) => (
+          <ShimmerCard key={idx} />
+        ))
+      ) : (
+            error?.response?.data?.message === "No courses found" ? (
               <div className="no-courses-myLearning">
                 <div>
                 <h1>No Courses Purchased Yet!</h1>
@@ -334,10 +349,11 @@ if(status === 'purchased'){
                   />
                 ))}
               </>
+            )
             )}
           </div>
         </div>
-      )}
+      
     </>
   );
 };
