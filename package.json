@@ -37,7 +37,9 @@
     "react-shimmer-effects": "^1.0.3",
     "react-spinners": "^0.14.1",
     "react-tooltip": "^5.28.0",
-    "recoil": "^0.7.7"
+    "recoil": "^0.7.7",
+    "sweetalert2": "^11.14.0",
+    "sweetalert2-react-content": "^5.0.7"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
