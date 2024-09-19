@@ -45,7 +45,7 @@ const UserManagement = () => {
         },
       });
       setPayoutRequests(response?.data?.data || []);
-      dispatch(payoutActions.setNotifications(response?.data?.data));
+      // dispatch(payoutActions.setNotifications(response?.data?.data));
     } catch (err) {
       setError(err?.response?.data?.message);
     } finally {

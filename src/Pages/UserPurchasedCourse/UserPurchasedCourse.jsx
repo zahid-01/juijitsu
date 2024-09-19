@@ -131,6 +131,13 @@ const [selectedRating, setSelectedRating] = useState(0);
   const courseData = useMemo(() => data?.data || [], [data]);
   console.log(courseData);
 
+  useEffect(()=>{
+    if(courseData?.course?.is_rated){
+      setSelectedRating(courseData?.course?.rating)
+      setReview(courseData?.course?.comment);
+    }
+  },[courseData])
+
   const percentage =
     (courseData?.course?.lessons_completed /
       courseData?.course?.total_lessons) *
@@ -194,20 +201,6 @@ e.stopPropagation();
   const handleEditClick = async(e)=>{
     e.stopPropagation();
     setOptionsPopUp(false);
-    try {
-      const url = `${BASE_URI}/api/v1/reviews/totalReview/${id}`;
-      const response = await axios({
-        method: "GET",
-        url,
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      // setReview(response?.data?.review);
-      console.log(reviewData.data);
-    } catch (error) {
-      console.error(error);
-    }
     setEditRatingPopUp(true);
   }
   const handleAddRatingClick =(e)=>{
@@ -250,23 +243,48 @@ e.stopPropagation();
   };
 
 
-  const getRating = async()=>{
+  const updateRating = async()=>{
     try {
-      const url = `${BASE_URI}/api/v1/reviews/totalReview/${id}`;
+      const url = `${BASE_URI}/api/v1/reviews/${courseData?.course?.review_id}`;
       const response = await axios({
-        method: "GET",
+        method: "PATCH",
         url,
         headers: {
           Authorization: "Bearer " + token,
         },
+        data: {
+          "rating": selectedRating,
+          "comment":review
+        },
       });
-      // setReview(response?.data?.review);
-      console.log(reviewData.data);
+      toast.success("Rating updated successfully")
+      setReviewData(response.data);
+      setEditRatingPopUp(false);
+      refetch();
     } catch (error) {
+      toast.error(error.response.data.message);
       console.error(error);
     }
   }
 
+
+  const deleteRating = async()=>{
+    try{
+      const response = await axios({
+        method: 'DELETE',
+        url: `${BASE_URI}/api/v1/reviews/${courseData?.course?.review_id}`,
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      setEditRatingPopUp(false)
+      toast.success("Rating deleted successfully");
+    }
+    catch(error){
+      toast.error(error.response.data.message);
+      console.error(error);
+    }
+  }
 
 
 
@@ -301,7 +319,7 @@ e.stopPropagation();
       </span>
       {
         courseData?.course?.is_rated ? 
-        <span onClick={handleAddRatingClick} className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom">
+        <span onClick={handleEditClick} className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom">
           <FontAwesomeIcon icon={faPencil} />
           <p>Edit Your Rating</p>
         </span>
@@ -382,11 +400,14 @@ e.stopPropagation();
           />
         </div>
         <div className="d-flex justify-content-between">
+        <button className="btn btn-danger" onClick={deleteRating}>
+            Delete
+          </button>
           <button className="btn btn-secondary" onClick={()=>setEditRatingPopUp(false)}>
             Discard
           </button>
-          <button className="btn btn-primary" onClick={handleReviewSubmit}>
-            Submit
+          <button className="btn btn-primary" onClick={updateRating}>
+            Save
           </button>
         </div>
       </div>
