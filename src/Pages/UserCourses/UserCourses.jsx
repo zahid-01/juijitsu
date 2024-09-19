@@ -276,6 +276,7 @@ const UserCourses = ({ search }) => {
         ></l-grid>
       ) : (
         <div className="wrapper-userCourses w-100">
+          <div className="bg-gradient-custom-div px-3 rounded">
           <div className="top-userCourses">
             <h4>Courses</h4>
           </div>
@@ -288,7 +289,7 @@ const UserCourses = ({ search }) => {
                   className={
                     selectedCategory === category ||
                     (category === "All" && selectedCategory === "")
-                      ? "button-categories-userCourses"
+                      ? "button-categories-userCourses border-bottom border-4"
                       : "not-button-categories-userCourses"
                   }
                   onClick={() => handleCategoryClick(category)}
@@ -297,6 +298,7 @@ const UserCourses = ({ search }) => {
                 </div>
               )
             )}
+          </div>
           </div>
 
           <div className="bottom-userCourses">
