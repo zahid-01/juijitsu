@@ -44,7 +44,7 @@ const UserCart = () => {
 
   const APIdata = useMemo(() => data?.data || [data], [data]);
   const cartItems = APIdata[0];
-  // console.log((error && error) || (cartItems && cartItems));
+  console.log((error && error) || (cartItems && cartItems));
 
   const handleCart = async (id, e) => {
     e.stopPropagation();
@@ -239,14 +239,19 @@ const UserCart = () => {
                       <h5>Total:</h5>
                       <span>
                         <h6>${cartItems?.totalPrice}</h6>
-                        <h6>$15.99</h6>
+                        <h6>${cartItems?.priceWithoutDiscount}</h6>
                       </span>
                     </div>
 
                     <div>
-                      <p onClick={checkoutHandler} className="cursor-pointer" style={{    
-                        paddingTop: "1vh",
-                       paddingBottom: "1.2vh"}}>
+                      <p
+                        onClick={checkoutHandler}
+                        className="cursor-pointer"
+                        style={{
+                          paddingTop: "1vh",
+                          paddingBottom: "1.2vh",
+                        }}
+                      >
                         Checkout
                       </p>
                       <p>

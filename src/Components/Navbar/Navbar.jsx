@@ -168,7 +168,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
       )}
 
       {userType === "admin" && (
-        <div className="cart-container" style={{ marginLeft: "58vw" }}>
+        <div className="cart-container  admin-cart-container" >
           <Link to="/transactions">
             <BsBellFill className="primary-color fs-4 ms-5 cursor-pointer" />
           </Link>
@@ -194,7 +194,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
                 src={profile_picture}
                 alt="Profile"
                 className="profile-picture"
-                style={{ objectFit: "cover", height: "3rem", width: "3rem" }} //, marginLeft:"30vw"
+                style={{ objectFit: "cover", height: "3rem", width: "3rem" }} 
               />
             ) : (
               <FaUserCircle

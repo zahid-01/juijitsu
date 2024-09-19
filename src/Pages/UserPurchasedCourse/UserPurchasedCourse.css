@@ -831,3 +831,110 @@
   }
 }
 
+/* ----------------------------CERTIFICATE CSS----------------- */
+body {
+ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ 
+
+  background-color: #ffffff;
+  overflow: hidden; /* Prevent scrollbars */
+}
+
+.certificate-container {
+  position: relative;
+  width: 100vw;
+ margin-top:-40vh;
+  background-color: #fff;
+  display: block;
+  padding: 20px;
+    overflow: hidden; 
+    margin-left:20px
+  
+}
+
+.header, .title, .instructors, .description, .signature, .date, .length {
+  text-align: left;
+  margin: 0;
+}
+
+.header {
+  font-size: 24px;
+ color: #728698;
+  margin-bottom: 40px;
+  margin-top: 120px; /* Add some space between the header and the rest of the content */
+}
+
+.title {
+  font-size: 56px;
+  font-weight: bold;
+  margin-bottom: 50px;
+  color: #000000;
+}
+
+.instructors {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #373738;
+}
+
+.description {
+  font-size: 23px;
+  color: #373720;
+  margin-bottom: 40px;
+  font-weight:100;
+}
+
+.signature {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.date, .length {
+  font-size: 19px;
+  color: #6c757d;
+  }
+  .date{
+  margin-top:10px
+  }
+.length{
+margin-top:15px;
+}
+.certificate-number {
+  position: absolute;
+  right: 20px;
+  top: 120px;
+  font-size: 19px;
+  color: #6c757d;
+}
+
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 200px; /* Increase if needed */
+  color: rgba(13, 23, 29, 0.2); /* Darker and more opaque */
+  z-index: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  font-weight: bolder; /* Makes the text bolder */
+}
+
+.firstHeader {
+  color:#0c243c;
+  font-weight: bold;
+  font-size: 32px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  display: inline;
+  margin-bottom: 100px; /* Adjust the margin to achieve the desired gap */
+  position: relative;
+  top: 90;
+  left: 0;
+}
+  .certificate{
+  top:70;
+  left:30;
+  }
