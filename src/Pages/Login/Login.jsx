@@ -109,12 +109,11 @@ export default function Login() {
         toast.success("Logged In Successfully!");
         if (resp.data.Data.user_type === "expert") {
           // navigate("/courses");
-          history.push("/courses");
+          window.location.reload();
         } else if (resp.data.Data.user_type === "user") {
           // history.push("/courses");
           window.location.reload();
         } else if (resp.data.Data.user_type === "admin") {
-          // navigate("/adminDashboard");
           window.location.reload();
         }
         setIsLoading(false);

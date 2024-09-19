@@ -39,10 +39,10 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   };
   const notifications = useSelector((state) => state.payouts.notifications);
   useSelector((state) => state.cart);
+  console.log(notifications);
 
   const { data, refetch } = useFetch(profileUrl, fetchOptions);
-  
- 
+
   const { name, profile_picture } = data?.data[0] || [];
   // console.log(name);
 
@@ -172,7 +172,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           <Link to="/transactions">
             <BsBellFill className="primary-color fs-4 ms-5 cursor-pointer" />
           </Link>
-          <div className="cart-badge">{notifications?.length}</div>{" "}
+          <div className="cart-badge">{notifications}</div>{" "}
         </div>
       )}
       {userType === "expert" && (
