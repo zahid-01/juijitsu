@@ -244,7 +244,9 @@ const UserCart = () => {
                     </div>
 
                     <div>
-                      <p onClick={checkoutHandler} className="cursor-pointer">
+                      <p onClick={checkoutHandler} className="cursor-pointer" style={{    
+                        paddingTop: "1vh",
+                       paddingBottom: "1.2vh"}}>
                         Checkout
                       </p>
                       <p>
