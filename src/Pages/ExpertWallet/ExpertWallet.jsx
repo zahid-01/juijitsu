@@ -16,7 +16,7 @@ export default function ExpertWallet() {
   const [accountType, setAccountType] = useState("");
   const [country, setCountry] = useState("");
   const [routing, setRouting] = useState("");
-  const [editable , setEditable] = useState(false);
+  const [editable, setEditable] = useState(false);
   const [withDrawPopup, setWithDrawPopup] = useState(false);
   const [withdrawalAmount, setWithdrawalAmount] = useState(null);
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function ExpertWallet() {
             },
           }
         );
-        console.log(response.data);
+
         setWalletData(response.data.data);
       } catch (error) {
         console.error("Error fetching wallet data:", error);
@@ -135,7 +135,7 @@ export default function ExpertWallet() {
   }
 
   const { lastWithdrawal, orders, payable_amount } = walletData;
-  const recentPayout = lastWithdrawal[0]?.total_withdrawn_amount || "$0.00";
+  const recentPayout = lastWithdrawal[0]?.withdrawal_amount || "$0.00";
   const accountBalance = `$${payable_amount}`;
 
   const handleClear = () => {
@@ -159,13 +159,13 @@ export default function ExpertWallet() {
         }
       );
       console.log(response?.data);
-      
+
       setEditable(true);
-      setAccountName(response?.data?.data?.account_holder_name)
-      setAccountNumber(response?.data?.data?.account_number)
-      setAccountType(response?.data?.data?.account_holder_type)
-      setCountry(response?.data?.data?.country)
-      setRouting(response?.data?.data?.routing_number)
+      setAccountName(response?.data?.data?.account_holder_name);
+      setAccountNumber(response?.data?.data?.account_number);
+      setAccountType(response?.data?.data?.account_holder_type);
+      setCountry(response?.data?.data?.country);
+      setRouting(response?.data?.data?.routing_number);
       setBankDetails(response?.data?.data);
     } catch (err) {
       console.log(err?.response?.data?.message);
@@ -203,33 +203,33 @@ export default function ExpertWallet() {
     }
   };
 
-const handleEdit = async()=>{
-  try {
-    const response = await axios.patch(
-      `${BASE_URI}/api/v1/payment/accountDetails`,
-      {
-        type: accountType,
-        country: country,
-        routingNumber: routing,
-        accountNumber: accountNumber,
-        accountHolderName: accountName,
-        accountHolderType: accountType,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+  const handleEdit = async () => {
+    try {
+      const response = await axios.patch(
+        `${BASE_URI}/api/v1/payment/accountDetails`,
+        {
+          type: accountType,
+          country: country,
+          routingNumber: routing,
+          accountNumber: accountNumber,
+          accountHolderName: accountName,
+          accountHolderType: accountType,
         },
-      }
-    );
-    console.log(response?.data);
-    toast.success("Account updated successfully");
-    bankClick();
-  } catch (err) {
-    toast.error(err?.response?.data?.message);
-  }
-}
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response?.data);
+      toast.success("Account updated successfully");
+      bankClick();
+    } catch (err) {
+      toast.error(err?.response?.data?.message);
+    }
+  };
 
-  const handleDeleteAccount = async()=>{
+  const handleDeleteAccount = async () => {
     try {
       const response = await axios.delete(
         `${BASE_URI}/api/v1/payment/accountDetails`,
@@ -245,19 +245,18 @@ const handleEdit = async()=>{
     } catch (err) {
       toast.error(err?.response?.data?.message);
     }
-  }
+  };
 
-  const togleEditable = ()=>{
+  const togleEditable = () => {
     setEditable(!editable);
-  }
+  };
 
-
-  const handleWithdraw = async()=>{
+  const handleWithdraw = async () => {
     try {
       const response = await axios.post(
         `${BASE_URI}/api/v1/payment/payoutRequest`,
         {
-          "amount": withdrawalAmount,
+          amount: withdrawalAmount,
         },
         {
           headers: {
@@ -266,44 +265,55 @@ const handleEdit = async()=>{
         }
       );
       console.log(response?.data);
-      setWithdrawalAmount(null)
+      setWithdrawalAmount(null);
       setWithDrawPopup(false);
       toast.success("Withdrawal successful");
-    
     } catch (err) {
-      console.log(err)
+      console.log(err);
       toast.error(err?.response?.data?.message);
     }
-  }
-
-
-
+  };
 
   // console.log(accountType)
   return (
     <div className="w-100 position-relative">
-    
-      {  withDrawPopup &&
-      <div className="rating-popup d-flex justify-content-center align-items-center">
-      <div className=" flex-column gap-2 card p-4 shadow-lg bg-white rounded">
-        <h5 className="text-center">Withdraw Money</h5>
-        <span>
-          <h6>Enter Amount</h6>
-          <input type="text" placeholder="Enter Amount" value={withdrawalAmount} onChange={(e)=>setWithdrawalAmount(e.target.value)}/>
-        </span>
-        <p className="text-red">{"* Please enter amount >= $50"}</p>
-        <div className=" d-flex justify-content-between">
-        <div onClick={()=>setWithDrawPopup(false)} style={{boxShadow: "0px 0px 4px 0.2px #00000040"}} className=" rounded h-100 p-2 d-flex justify-content-center cursor-pointer"><p>Cancel</p></div>
-        <div onClick={handleWithdraw} style={{boxShadow: "0px 0px 4px 0.2px #00000040",background: "linear-gradient(91.96deg, #0C243C 0%, #7E8C9C 100%)"
-}} className="h-100 p-2 rounded d-flex justify-content-center text-white cursor-pointer"><p>Send Request</p></div>
+      {withDrawPopup && (
+        <div className="rating-popup d-flex justify-content-center align-items-center">
+          <div className=" flex-column gap-2 card p-4 shadow-lg bg-white rounded">
+            <h5 className="text-center">Withdraw Money</h5>
+            <span>
+              <h6>Enter Amount</h6>
+              <input
+                type="text"
+                placeholder="Enter Amount"
+                value={withdrawalAmount}
+                onChange={(e) => setWithdrawalAmount(e.target.value)}
+              />
+            </span>
+            <p className="text-red">{"* Please enter amount >= $50"}</p>
+            <div className=" d-flex justify-content-between">
+              <div
+                onClick={() => setWithDrawPopup(false)}
+                style={{ boxShadow: "0px 0px 4px 0.2px #00000040" }}
+                className=" rounded h-100 p-2 d-flex justify-content-center cursor-pointer"
+              >
+                <p>Cancel</p>
+              </div>
+              <div
+                onClick={handleWithdraw}
+                style={{
+                  boxShadow: "0px 0px 4px 0.2px #00000040",
+                  background:
+                    "linear-gradient(91.96deg, #0C243C 0%, #7E8C9C 100%)",
+                }}
+                className="h-100 p-2 rounded d-flex justify-content-center text-white cursor-pointer"
+              >
+                <p>Send Request</p>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        
-        
-      
-    </div>
-      </div>
-}
+      )}
       <header className="py-3">
         <h3 className="fw-bold">
           Welcome back, <span className="text-capitalize">{user.name}</span>
@@ -332,7 +342,10 @@ const handleEdit = async()=>{
               <h5>{accountBalance}</h5>
               <h2>💰</h2>
             </div>
-            <div onClick={()=> setWithDrawPopup(!withDrawPopup)} className="cursor-pointer border bg-transparent text-white  border-white rounded fw-light p-1">
+            <div
+              onClick={() => setWithDrawPopup(!withDrawPopup)}
+              className="cursor-pointer border bg-transparent text-white  border-white rounded fw-light p-1"
+            >
               Withdraw money
             </div>
           </div>
@@ -444,7 +457,6 @@ const handleEdit = async()=>{
                 placeholder={
                   bankDetails?.account_number || "Enter account number"
                 }
-                
                 disabled={editable}
               />
             </span>
@@ -505,7 +517,7 @@ const handleEdit = async()=>{
               </h6>
 
               <select
-              disabled={editable}
+                disabled={editable}
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
                 className="w-80 pl-1"
@@ -740,50 +752,49 @@ const handleEdit = async()=>{
             </span>
 
             <div className="w-100 h-100 d-flex align-items-end gap-5">
-              {
-                !bankDetails && 
+              {!bankDetails && (
                 <>
-                <span
-                onClick={handleClear}
-                className="ps-3 pe-3 pt-2 pb-2 cursor-pointer rounded border border-2 d-flex justify-content-center"
-              >
-                Cancel
-              </span>
-              <span
-                onClick={AddAccountHandler}
-                className="bg-gradient-custom-div cursor-pointer p-2 rounded "
-              >
-                
-                Add account
-              </span>
-              
-              </>
-              }
-              
-              {
-                bankDetails &&
-                <>
-                <span onClick={handleDeleteAccount} style={{backgroundColor:"red"}} className="cursor-pointer text-white p-2 rounded">
-                Delete
-              </span>
-              {
-                editable === false ? 
-                
-                <span onClick={handleEdit} className="bg-gradient-custom-div cursor-pointer text-white ps-4 pe-4 pt-2 pb-2 rounded">
-                Save Changes
-              </span>
-                :<span onClick={togleEditable} className="bg-gradient-custom-div cursor-pointer text-white ps-4 pe-4 pt-2 pb-2 rounded">
-                Edit
-              </span>
-              }
-             
+                  <span
+                    onClick={handleClear}
+                    className="ps-3 pe-3 pt-2 pb-2 cursor-pointer rounded border border-2 d-flex justify-content-center"
+                  >
+                    Cancel
+                  </span>
+                  <span
+                    onClick={AddAccountHandler}
+                    className="bg-gradient-custom-div cursor-pointer p-2 rounded "
+                  >
+                    Add account
+                  </span>
                 </>
-                
-              }
+              )}
 
-
-              
-              
+              {bankDetails && (
+                <>
+                  <span
+                    onClick={handleDeleteAccount}
+                    style={{ backgroundColor: "red" }}
+                    className="cursor-pointer text-white p-2 rounded"
+                  >
+                    Delete
+                  </span>
+                  {editable === false ? (
+                    <span
+                      onClick={handleEdit}
+                      className="bg-gradient-custom-div cursor-pointer text-white ps-4 pe-4 pt-2 pb-2 rounded"
+                    >
+                      Save Changes
+                    </span>
+                  ) : (
+                    <span
+                      onClick={togleEditable}
+                      className="bg-gradient-custom-div cursor-pointer text-white ps-4 pe-4 pt-2 pb-2 rounded"
+                    >
+                      Edit
+                    </span>
+                  )}
+                </>
+              )}
             </div>
           </div>
         )}
