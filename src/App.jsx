@@ -10,6 +10,7 @@ import useFetch from "./hooks/useFetch";
 import axios from "axios";
 import { userCartActions } from "./Store/cartSlice";
 import { useDispatch } from "react-redux";
+import { payoutActions } from "./Store/payoutSlice";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -39,11 +40,20 @@ const App = () => {
       () => {}
     );
 
+    axios
+      .get(`${BASE_URI}/api/v1/admin/payoutRequest`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        dispatch(payoutActions.setNotifications(res?.data?.data.length));
+      });
+
     if (data) {
       setCartItemNumber(data?.cart?.length);
     }
   }, []);
-
 
   return (
     <BrowserRouter>

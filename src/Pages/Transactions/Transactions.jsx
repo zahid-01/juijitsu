@@ -7,8 +7,11 @@ import axios from "axios";
 import { FaCalendar } from "react-icons/fa6";
 import { FaPen } from "react-icons/fa";
 import "./Transactions.css";
+import { useDispatch } from "react-redux";
+import { payoutActions } from "../../Store/payoutSlice";
 
 const UserManagement = () => {
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("payoutRequests");
 
   const token = localStorage.getItem("token");
@@ -42,11 +45,9 @@ const UserManagement = () => {
         },
       });
       setPayoutRequests(response?.data?.data || []);
-      console.log(response?.data?.data);
-      // console.log(payoutRequests);
+      dispatch(payoutActions.setNotifications(response?.data?.data));
     } catch (err) {
       setError(err?.response?.data?.message);
-      // console.log(err.response.data.message)
     } finally {
       setLoading(false);
     }
