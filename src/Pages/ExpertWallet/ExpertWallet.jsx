@@ -46,7 +46,7 @@ export default function ExpertWallet() {
     return (
       <div className="w-100">
         <header className="py-3">
-          <ShimmerThumbnail width={200} height={30} />
+         
           <ShimmerThumbnail
             width={150}
             height={20}
@@ -68,7 +68,7 @@ export default function ExpertWallet() {
               />
               <ShimmerThumbnail width={100} height={20} />
             </div>
-            <div className="bg-gradient-custom-div text-center p-2 w-25 rounded-custom py-3">
+            
               <ShimmerThumbnail
                 width={200}
                 height={20}
@@ -80,7 +80,7 @@ export default function ExpertWallet() {
                 height={30}
                 style={{ marginTop: "10px" }}
               />
-            </div>
+           
           </div>
           <div className="d-flex gap-5 px-4 border-bottom">
             <ShimmerThumbnail
@@ -319,46 +319,46 @@ export default function ExpertWallet() {
           Welcome back, <span className="text-capitalize">{user.name}</span>
         </h3>
       </header>
-      <main className="custom-box py-5">
-        <div className="d-sm-flex align-items-center justify-content-between px-5 pb-3">
-          <div className="text-center">
-            <h5 className="mb-3">
+      <main className="custom-box">
+        <div style={{borderTopRightRadius:"10px", borderTopLeftRadius:"10px"}} className="d-sm-flex justify-content-between px-5 py-5 bg-gradient-custom-div pb-3">
+          <div>
+            <h5 className="mb-3 fw-normal">
               Account type:{" "}
-              <span className="fw-normal text-capitalize">
+              <span className="fw-light text-capitalize">
                 {user.user_type}
               </span>
             </h5>
-            <h5 className="mb-3">
-              Status: <span className="fw-normal">Verified</span>
+            <h5 className="mb-3 fw-normal">
+              Status: <span className="fw-light">Verified</span>
             </h5>
-            <h5 className="mb-3">
-              Recent Payout: <span className="fw-normal">{recentPayout}</span>
+            <h5 className="mb-3 fw-normal">
+              Recent Payout: <span className="fw-light">{recentPayout}</span>
             </h5>
           </div>
-          <div className="bg-gradient-custom-div text-center p-2 w-md-25 rounded-custom py-3">
-            <h5 className="mb-4 fw-light">Account Balance</h5>
-            <div className="mb-4 d-flex align-items-center justify-content-between">
-              <h2>💰</h2>
+          <div style={{boxShadow: "0px 0px 12px 0px #FFFFFF80"}} className="bg-white text-center text-black p-4 w-md-25 rounded position-relative">
+            <h5 className="mb-4 fw-light ">Account Balance</h5>
+            <div className="mb-4 d-flex align-items-center justify-content-center">
+              <h2 style={{filter: "blur(1px)", transform:"rotate(-30deg)", fontSize:"1.3rem", position:"absolute", bottom:"40%", left:"5%"}}>💰</h2>
               <h5>{accountBalance}</h5>
-              <h2>💰</h2>
+              <h2  style={{filter: "blur(1px)", transform:"rotate(-30deg)", fontSize:"1.3rem", position:"absolute", bottom:"55%", right:"5%"}}>💰</h2>
             </div>
             <div
               onClick={() => setWithDrawPopup(!withDrawPopup)}
-              className="cursor-pointer border bg-transparent text-white  border-white rounded fw-light p-1"
+              className="cursor-pointer border bg-transparent text-black  border-black rounded fw-light p-1"
             >
               Withdraw money
             </div>
           </div>
         </div>
-        <div className="d-flex gap-1 ">
+        <div className="d-flex gap-1 bg-gradient-custom-div">
           <div className="d-flex gap-5 px-4 border-bottom">
             <h5
               className={
                 activeTab !== "activity"
-                  ? `text-black fw-light px-3 cursor-pointer pt-2`
+                  ? `text-white fw-light px-3 cursor-pointer pt-2`
                   : `text-white px-3 pb-2 fw-light cursor-pointer ${
                       activeTab === "activity"
-                        ? "border-bottom border-4 bg-gradient-custom-div pt-2 rounded-top"
+                        ? "border-bottom border-4 pt-2 rounded-top"
                         : ""
                     }`
               }
@@ -372,10 +372,10 @@ export default function ExpertWallet() {
             <h5
               className={
                 activeTab !== "bank-account"
-                  ? `text-black fw-light px-3 cursor-pointer pt-2`
+                  ? `text-white fw-light px-3 cursor-pointer pt-2`
                   : `text-white px-3 pb-2 fw-light cursor-pointer ${
                       activeTab === "bank-account"
-                        ? "border-bottom border-4 bg-gradient-custom-div pt-2 rounded-top"
+                        ? "border-bottom border-4 pt-2 rounded-top"
                         : ""
                     }`
               }
