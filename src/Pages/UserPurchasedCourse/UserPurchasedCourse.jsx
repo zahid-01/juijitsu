@@ -26,7 +26,7 @@ import "ldrs/grid";
 import axios from "axios";
 import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
 import ReactPlayer from "react-player";
-import { FaUserCircle ,FaStar} from "react-icons/fa";
+import { FaUserCircle, FaStar } from "react-icons/fa";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import toast from "react-hot-toast";
 // import { bouncy } from "ldrs";
@@ -48,10 +48,10 @@ const UserPurchasedCourse = () => {
   const [video_type, setVideo_type] = useState("");
   const [optionsPopUp, setOptionsPopUp] = useState(false);
   const [editRatingPopUp, setEditRatingPopUp] = useState(false);
-  const [addRatingPopUp, setAddRatingPopUp]=useState(false);
-const [review, setReview] = useState("");
-const [selectedRating, setSelectedRating] = useState(0);
-
+  const [addRatingPopUp, setAddRatingPopUp] = useState(false);
+  const [review, setReview] = useState("");
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [certificate, setcertificate] = useState(null);
 
   const handleMouseEnter = () => {
     setShow(true);
@@ -176,46 +176,44 @@ const [selectedRating, setSelectedRating] = useState(0);
   // console.log(show)
 
   const checkedLesson = async ({ chapter_id, lesson_id }) => {
-    
     const checkResponse = await axios({
-      method: 'PATCH',
+      method: "PATCH",
       url: `${BASE_URI}/api/v1/lessons/markLessonAsRead`,
       headers: {
-        Authorization: 'Bearer ' + token
+        Authorization: "Bearer " + token,
       },
       data: {
-        course_id : id,
-        lesson_id : lesson_id
-      }
-    })
-    
+        course_id: id,
+        lesson_id: lesson_id,
+      },
+    });
+
     // window.location.reload();
     // console.log(checkResponse?.data )
-  }
+  };
 
-  const handleAddToFavClick = async(e)=>{
-e.stopPropagation();
+  const handleAddToFavClick = async (e) => {
+    e.stopPropagation();
+  };
 
-  }
-
-  const handleEditClick = async(e)=>{
+  const handleEditClick = async (e) => {
     e.stopPropagation();
     setOptionsPopUp(false);
     setEditRatingPopUp(true);
-  }
-  const handleAddRatingClick =(e)=>{
+  };
+  const handleAddRatingClick = (e) => {
     e.stopPropagation();
-    setOptionsPopUp(false)
+    setOptionsPopUp(false);
     setAddRatingPopUp(true);
-  }
+  };
   const handleRating = (value) => {
     setSelectedRating(value);
   };
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    
-    console.log(selectedRating, review, id)
+
+    console.log(selectedRating, review, id);
     try {
       const url = `${BASE_URI}/api/v1/reviews`;
       const response = await axios({
@@ -225,25 +223,27 @@ e.stopPropagation();
           Authorization: "Bearer " + token,
         },
         data: {
-          "comment": review,
-          "rating": selectedRating,
-          "courseId": id,
+          comment: review,
+          rating: selectedRating,
+          courseId: id,
         },
       });
-      toast.success("Rating Added successfully")
+      toast.success("Rating Added successfully");
       setReview("");
       setSelectedRating(0);
       setAddRatingPopUp(false);
       setReviewsLoading(false);
       refetch();
     } catch (error) {
-      toast.error(error.response.data.message)
+      toast.error(error.response.data.message);
       console.error(error);
     }
   };
 
 
+
   const updateRating = async()=>{
+
     try {
       const url = `${BASE_URI}/api/v1/reviews/${courseData?.course?.review_id}`;
       const response = await axios({
@@ -265,8 +265,49 @@ e.stopPropagation();
       toast.error(error.response.data.message);
       console.error(error);
     }
+  };
+
+  
+  
+
+  // const handlePrint = async (id) => {
+  //   try {
+  //     const url = `${BASE_URI}/api/v1/users/certificates/${id}`;
+  //     const response = await axios({
+  //       method: "GET",
+  //       url,
+  //       headers: {
+  //         Authorization: "Bearer " + token,
+  //       },
+  //     });
+  //     setcertificate(response?.data?.data);
+  //     console.log(response?.data?.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+
+
+
+const handlePrint = async (id) => {
+  try {
+    const url = `${BASE_URI}/api/v1/users/certificates/${id}`;
+    const response = await axios({
+      method: "GET",
+      url,
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+    setcertificate(response?.data?.data);
+    console.log(response?.data?.data);
+  } catch (error) {
+    alert("No certificate found for the provided ID.");
   }
 
+  const printContent = `
+    <html>
+    <head>
+   <link rel="stylesheet" type="text/css" href="/src/Pages/UserPurchasedCourse/UserPurchasedCourse.css">
 
   const deleteRating = async()=>{
     try{
@@ -288,9 +329,43 @@ e.stopPropagation();
 
 
 
+    </head>
+    <body>
+    <div class="certificate">
+      <div class="certificate-container">
+        <div>
+          <div class="certificate-number">Certificate no: <strong> ${certificate.certificate_id}</strong></div>
+          <div class="firstHeader" >jiujitsux</div>
+        </div>
+        <div class="header">Certificate of Completion</div>
+        <div class="title">${certificate.title}</div>
+        <div class="instructors">Instructors: <strong>${certificate.expert_name}</strong></div>
+        <div class="description">
+          This certificate above verifies that <strong>${certificate.user}</strong> successfully completed the course ${certificate.title} on 11/09/2024 as taught by <strong>${certificate.expert_name}</strong> on Juijitsux. The certificate indicates the entire course was completed as validated by the student. The course duration represents the total video hours of the course at time of most recent completion.
+        </div>
+        <div class="signature"><strong>${certificate.expert_name}</strong></div>
+        <div class="date"> Date: <strong>${new Date(certificate.created_at).toLocaleDateString('en-GB')}</strong></div>
+        <div class="length">Length: <strong>
+          ${Math.floor(certificate.total_duration / 3600)} hours 
+          ${Math.floor((certificate.total_duration % 3600) / 60)} minutes
+        </strong></div>
+        <div class="watermark">Jiujitsux</div>
+      </div>
+    </div>
+    </body>
+    </html>
+  `;
+
+  const newWindow = window.open("", "_blank", "width=600,height=400");
+  newWindow.document.open();
+  newWindow.document.write(printContent);
+  newWindow.document.close();
+  newWindow.focus(); // Ensure the new window is focused before printing
+  newWindow.print();
+};
 
 
-// console.log(courseData?.review?.userReviews)
+  // console.log(courseData?.review?.userReviews)
   return (
     <>
       {/* {error2?.response?.data?.message === "No courses found" ? (
@@ -305,6 +380,94 @@ e.stopPropagation();
         ></l-grid>
       ) : (
         <div className="wrapper-purchasedCourse">
+          {optionsPopUp && (
+            <div
+              onClick={() => setOptionsPopUp(false)}
+              className="rating-popup d-flex justify-content-center align-items-center"
+            >
+              <div
+                className="flex-column gap-2 shadow-lg bg-white rounded"
+                onClick={(e) => e.stopPropagation()} // Prevents the outer div from being triggered
+              >
+                <span
+                  onClick={() => handleAddToFavClick()}
+                  className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom"
+                >
+                  <FontAwesomeIcon
+                    style={{ color: "yellow", cursor: "pointer" }}
+                    icon={faStar}
+                  />
+                  <p>Add to favorites</p>
+                </span>
+                {courseData?.course?.is_rated ? (
+                  <span
+                    onClick={handleAddRatingClick}
+                    className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom"
+                  >
+                    <FontAwesomeIcon icon={faPencil} />
+                    <p>Edit Your Rating</p>
+                  </span>
+                ) : (
+                  <span
+                    onClick={handleAddRatingClick}
+                    className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom"
+                  >
+                    <FontAwesomeIcon icon={faPencil} />
+                    <p>Add Rating</p>
+                  </span>
+                )}
+
+
+                <span className="cursor-pointer d-flex w-100 gap-4 align-items-center p-2">
+                  <FontAwesomeIcon icon={faCircleInfo} />
+                  <p className="fs-6 fw-2">Not refundable!</p>
+                </span>
+              </div>
+            </div>
+          )}
+
+          {addRatingPopUp && (
+            <div className="rating-popup d-flex justify-content-center align-items-center">
+              <div className="card p-4 shadow-lg bg-white rounded">
+                <h5>Add Your Rating</h5>
+                <div className="star-rating mb-3">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <FaStar
+                      key={star}
+                      className={`star ${
+                        selectedRating >= star ? "text-warning" : ""
+                      }`}
+                      onClick={() => handleRating(star)}
+                      style={{ cursor: "pointer", fontSize: "2rem" }}
+                    />
+                  ))}
+                </div>
+                <div className="mb-3">
+                  <textarea
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                    placeholder="Add Your Review"
+                    className="form-control"
+                    rows={4}
+                  />
+                </div>
+                <div className="d-flex justify-content-between">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setAddRatingPopUp(false)}
+                  >
+                    Discard
+                  </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleReviewSubmit}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
 {
   optionsPopUp && 
@@ -415,6 +578,49 @@ e.stopPropagation();
 }
 
 
+          {editRatingPopUp && (
+            <div className="rating-popup d-flex justify-content-center align-items-center">
+              <div className="card p-4 shadow-lg bg-white rounded">
+                <h5>Add Your Rating</h5>
+                <div className="star-rating mb-3">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <FaStar
+                      key={star}
+                      className={`star ${
+                        selectedRating >= star ? "text-warning" : ""
+                      }`}
+                      onClick={() => handleRating(star)}
+                      style={{ cursor: "pointer", fontSize: "2rem" }}
+                    />
+                  ))}
+                </div>
+                <div className="mb-3">
+                  <textarea
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                    placeholder="Add Your Review"
+                    className="form-control"
+                    rows={4}
+                  />
+                </div>
+                <div className="d-flex justify-content-between">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setEditRatingPopUp(false)}
+                  >
+                    Discard
+                  </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleReviewSubmit}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="top-purchasedCourse">
             <h4>Course Overview</h4>
 
@@ -462,7 +668,6 @@ e.stopPropagation();
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
-
                 {/* {show && ( */}
 
                 {/* )} */}
@@ -488,9 +693,9 @@ e.stopPropagation();
                 <h6>Your Progress</h6>
               </div>
               <FontAwesomeIcon
-              onClick={()=>setOptionsPopUp(true)}
+                onClick={() => setOptionsPopUp(true)}
                 icon={faEllipsisVertical}
-                style={{ height: "100%", width: "2.5%" , cursor:"pointer"}}
+                style={{ height: "100%", width: "2.5%", cursor: "pointer" }}
               />
             </span>
           </div>
@@ -499,17 +704,16 @@ e.stopPropagation();
               <div className="video-container-purchasedCourse">
                 {video_type === "youtube" ? (
                   <ReactPlayer
-                    url={video_url }
+                    url={video_url}
                     className="tumbnail-userCourseview"
-                    style={{ width: '100% !important', }}
+                    style={{ width: "100% !important" }}
                     controls={true}
                   />
                 ) : (
                   <video
                     src={video_url}
                     className="tumbnail-userCourseview"
-                    
-                    style={{ width: '100% !important' }}
+                    style={{ width: "100% !important" }}
                     controls
                   >
                     Your browser does not support the video tag.
@@ -636,7 +840,12 @@ e.stopPropagation();
                         course
                       </h6>
                       <div>
-                        <h6>Certificate</h6>
+                        <button
+                          className="signup-now  fw-lightBold fs-small mb-0 h-auto"
+                          onClick={() => handlePrint(courseData?.course?.id)}
+                        >
+                          Certificate
+                        </button>
                       </div>
                     </div>
                     <div className="discription-purchasedCourse">
@@ -660,7 +869,12 @@ e.stopPropagation();
                         <img
                           src={courseData?.course?.profile_picture || profile}
                           alt="profile"
-                          style={{objectFit :"cover",height:"2.5vw", width: "2.5vw", borderRadius: "100%" }}
+                          style={{
+                            objectFit: "cover",
+                            height: "2.5vw",
+                            width: "2.5vw",
+                            borderRadius: "100%",
+                          }}
                         />{" "}
                         <h6 className="text-uppercase">
                           {courseData?.course?.name}
@@ -732,8 +946,11 @@ e.stopPropagation();
                   </>
                 )}
 
-{buttonPick === "Reviews" && (
-                 <div className="w-100 position-relative" style={{minHeight:"20vh"}}>
+                {buttonPick === "Reviews" && (
+                  <div
+                    className="w-100 position-relative"
+                    style={{ minHeight: "20vh" }}
+                  >
                     {reviewsLoading ? (
                       <l-grid
                         id="reviews-loading"
@@ -743,51 +960,71 @@ e.stopPropagation();
                       ></l-grid>
                     ) : (
                       <>
-
-                <h5 className="mb-2 fs-6">Reviews & Ratings:</h5>
-                <div className="w-100">
-                  {courseData?.review?.userReviews?.length > 0 ? (
-                    courseData?.review?.userReviews.map((review, index) => (
-                      <div className="d-flex gap-5 border-bottom pb-2 pt-2" key={index}>
-                        <div className="w-30">
-                          {review?.profile_picture ? (
-                            <img
-                            className="w-30 rounded-5"
-                            loading="lazy"
-                              src={review?.profile_picture}
-                              alt="profile image"
-                            />
-                          ) : (
-                            <FaUserCircle className="fs-1" />
-                          )}
-                          <h5 style={{fontSize:"1rem",fontWeight:"100"}} className="">{review?.name || "No name available"}</h5>
-                          
-                        </div>
-                        <div className="w-50">
-                          <span>
-                            {[...Array(5)].map((_, i) =>
-                              i < review.rating ? (
-                                <AiFillStar style={{color:"yellow"}} key={i} className="fs-5" />
-                              ) : (
-                                <AiOutlineStar key={i} className="fs-5" />
+                        <h5 className="mb-2 fs-6">Reviews & Ratings:</h5>
+                        <div className="w-100">
+                          {courseData?.review?.userReviews?.length > 0 ? (
+                            courseData?.review?.userReviews.map(
+                              (review, index) => (
+                                <div
+                                  className="d-flex gap-5 border-bottom pb-2 pt-2"
+                                  key={index}
+                                >
+                                  <div className="w-30">
+                                    {review?.profile_picture ? (
+                                      <img
+                                        className="w-30 rounded-5"
+                                        loading="lazy"
+                                        src={review?.profile_picture}
+                                        alt="profile image"
+                                      />
+                                    ) : (
+                                      <FaUserCircle className="fs-1" />
+                                    )}
+                                    <h5
+                                      style={{
+                                        fontSize: "1rem",
+                                        fontWeight: "100",
+                                      }}
+                                      className=""
+                                    >
+                                      {review?.name || "No name available"}
+                                    </h5>
+                                  </div>
+                                  <div className="w-50">
+                                    <span>
+                                      {[...Array(5)].map((_, i) =>
+                                        i < review.rating ? (
+                                          <AiFillStar
+                                            style={{ color: "yellow" }}
+                                            key={i}
+                                            className="fs-5"
+                                          />
+                                        ) : (
+                                          <AiOutlineStar
+                                            key={i}
+                                            className="fs-5"
+                                          />
+                                        )
+                                      )}
+                                    </span>
+                                    <p className="w-100">
+                                      {review.comment || "No comment available"}
+                                    </p>
+                                  </div>
+                                  <p className="w-30 fs-6">
+                                    {review?.review_date
+                                      ? review?.review_date.split("T")[0]
+                                      : "No review date"}
+                                  </p>
+                                </div>
                               )
-                            )}
-                          </span>
-                          <p className="w-100">{review.comment || "No comment available"}</p>
+                            )
+                          ) : (
+                            <p style={{ marginLeft: "2vw" }}>
+                              No reviews available!
+                            </p>
+                          )}
                         </div>
-                        <p className="w-30 fs-6">
-                            {review?.review_date
-                              ? review?.review_date.split("T")[0]
-                              : "No review date"}
-                          </p>
-                      </div>
-                    ))
-                  ) : (
-                    <p style={{marginLeft:"2vw"}}>No reviews available!</p>
-                  )}
-                </div>
-                
-                        
                       </>
                     )}
                   </div>
@@ -866,18 +1103,22 @@ e.stopPropagation();
                         </summary>
                         {chapter?.lessons.map((lesson) => (
                           <div key={lesson?.lesson_id}>
-                            <input type="checkbox"
-                            defaultChecked={lesson?.completed === 1}
-                            onChange={(e) => {
-        if (e.target.checked) {
-          console.log(chapter?.chapter_id, lesson?.lesson_id)
-          checkedLesson({
-            
-            lesson_id: lesson?.lesson_id,
-          });
-        }
-      }}
-      disabled={lesson?.completed === 1}/>
+                            <input
+                              type="checkbox"
+                              defaultChecked={lesson?.completed === 1}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  console.log(
+                                    chapter?.chapter_id,
+                                    lesson?.lesson_id
+                                  );
+                                  checkedLesson({
+                                    lesson_id: lesson?.lesson_id,
+                                  });
+                                }
+                              }}
+                              disabled={lesson?.completed === 1}
+                            />
                             <span
                               onClick={() =>
                                 handleVideoChange(

@@ -141,6 +141,9 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
     setCourseId(id);
     navigate(`/courses/addLesson/${id}`);
   };
+
+
+
   return (
     <>
       {error2?.response?.data?.message === "No courses found" ? (
