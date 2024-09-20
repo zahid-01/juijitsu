@@ -104,27 +104,6 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
     setIsProfileOpen(!isProfileOpen);
   };
 
-  // const profileCompletionApi = async()=>{
-  //   try{
-  //     const percentage = await axios({
-  //       method: 'GET',
-  //       url: `${BASE_URI}/api/v1/users/profileCompletion`,
-  //       headers: {
-  //         Authorization: `Bearer ${token}`
-  //       }
-  //     })
-  //     console.log(percentage)
-  //     setProfileCompletion(percentage)
-  //   }
-  //   catch(err){
-  //     toast.error('Unable to fetch profile completion')
-  //   }
-  // }
-
-  // useEffect(()=>{
-  //   profileCompletionApi()
-  // },[profileCompletion]);
-
 
   const handleClickOutside = (event) => {
     if (
