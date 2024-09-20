@@ -154,7 +154,8 @@
   font-size: 1rem;
   text-align: center;
 }
-.no-courses-myLearning div h1 {
+
+.no-courses-userCourses div h1 {
   font-weight: 400;
   font-size: 2rem;
   width: 130%;
