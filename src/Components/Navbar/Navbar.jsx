@@ -15,6 +15,7 @@ import axios from "axios";
 import useFetch from "../../hooks/useFetch";
 import Cart from "../Cart/Cart";
 import { useSelector } from "react-redux";
+import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
 
 export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const searchInputRef = useRef(null);
@@ -39,7 +40,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   };
   const notifications = useSelector((state) => state.payouts.notifications);
   useSelector((state) => state.cart);
-  console.log(notifications);
+  // console.log(notifications);
 
   const { data, refetch } = useFetch(profileUrl, fetchOptions);
 
@@ -89,7 +90,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           },
         })
         .then((resp) => {
-          // console.log(resp.data.data.profileCompletion);
+          console.log(resp.data.data.profileCompletion);
           setProfileCompletion(parseInt(resp.data.data.profileCompletion, 10));
         });
     }
@@ -102,6 +103,28 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const handleProfileClick = () => {
     setIsProfileOpen(!isProfileOpen);
   };
+
+  // const profileCompletionApi = async()=>{
+  //   try{
+  //     const percentage = await axios({
+  //       method: 'GET',
+  //       url: `${BASE_URI}/api/v1/users/profileCompletion`,
+  //       headers: {
+  //         Authorization: `Bearer ${token}`
+  //       }
+  //     })
+  //     console.log(percentage)
+  //     setProfileCompletion(percentage)
+  //   }
+  //   catch(err){
+  //     toast.error('Unable to fetch profile completion')
+  //   }
+  // }
+
+  // useEffect(()=>{
+  //   profileCompletionApi()
+  // },[profileCompletion]);
+
 
   const handleClickOutside = (event) => {
     if (
@@ -176,6 +199,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
         </div>
       )}
       {userType === "expert" && (
+
         <div
           className="profile-picture-container"
           style={{
@@ -190,17 +214,52 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
         <div onClick={handleProfileClick} style={{ cursor: "pointer" }}>
           <div className="profile-picture-container">
             {profile_picture ? (
+              <>
+             
+              <div className="completion-bar">
+                 <CircularProgressbar
+                  styles={buildStyles({   
+                    textSize: '1rem',
+                    pathTransitionDuration: 0.5,
+                    pathColor: `#00000)`,
+                    textColor: '#fff',
+                    trailColor: '#fff',
+                  })}
+                  value={profileCompletion} text={`${profileCompletion}`} />
+
+              </div>
+             
               <img
                 src={profile_picture}
                 alt="Profile"
                 className="profile-picture"
                 style={{ objectFit: "cover", height: "3rem", width: "3rem" }} 
               />
+       
+              
+
+              </>
+              
             ) : (
+              <>
+             
+              <div className="completion-bar">
+                 <CircularProgressbar
+                  styles={buildStyles({   
+                    textSize: '1rem',
+                    pathTransitionDuration: 0.5,
+                    pathColor: `#00000)`,
+                    textColor: '#fff',
+                    trailColor: '#fff',
+                  })}
+                  value={profileCompletion} text={`${profileCompletion}`} />
+
+              </div>
               <FaUserCircle
                 className="profile-picture text-secondary"
                 style={{ fontSize: "3rem" }}
               />
+              </>
             )}
           </div>
         </div>
@@ -223,26 +282,53 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
         </div>
         <main className="text-center">
           <div className="profile-picture-container">
-            <div
-              className="completion-bar"
-              style={{
-                background: `conic-gradient(#0c243c ${profileCompletion}%, #e0e0e0 ${profileCompletion}% 100%)`,
-                width: "6rem",
-                height: "6rem",
-              }}
-            ></div>
             {profile_picture ? (
+              <>
+             
+              <div className="completion-bar">
+                 <CircularProgressbar
+                  styles={buildStyles({   
+                    textSize: '1rem',
+                    pathTransitionDuration: 0.5,
+                    pathColor: `#00000)`,
+                    textColor: '#fff',
+                    trailColor: '#fff',
+                  })}
+                  value={profileCompletion} text={`${profileCompletion}`} />
+
+              </div>
+             
               <img
                 src={profile_picture}
-                alt=""
-                className="profile-picture mb-4"
-                style={{ width: "5rem", height: "5rem", objectFit: "cover" }}
+                alt="Profile"
+                className="profile-picture"
+                style={{ objectFit: "cover", height: "5rem", width: "5rem" }} 
               />
+       
+              
+
+              </>
+              
             ) : (
+              <>
+             
+              <div className="completion-bar">
+                 <CircularProgressbar
+                  styles={buildStyles({   
+                    textSize: '1rem',
+                    pathTransitionDuration: 0.5,
+                    pathColor: `#00000)`,
+                    textColor: '#fff',
+                    trailColor: '#fff',
+                  })}
+                  value={profileCompletion} text={`${profileCompletion}`} />
+
+              </div>
               <FaUserCircle
                 className="profile-picture text-secondary"
-                style={{ fontSize: "5rem" }}
+                style={{ fontSize: "3rem" }}
               />
+              </>
             )}
           </div>
 

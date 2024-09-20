@@ -286,6 +286,23 @@ const UserPurchasedCourse = () => {
   //     console.error(error);
   //   }
 
+  const deleteRating = async()=>{
+    try{
+      const response = await axios({
+        method: 'DELETE',
+        url: `${BASE_URI}/api/v1/reviews/${courseData?.course?.review_id}`,
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      setEditRatingPopUp(false)
+      toast.success("Rating deleted successfully");
+    }
+    catch(error){
+      toast.error(error.response.data.message);
+      console.error(error);
+    }
+  }
 
 
 const handlePrint = async (id) => {
@@ -308,27 +325,6 @@ const handlePrint = async (id) => {
     <html>
     <head>
    <link rel="stylesheet" type="text/css" href="/src/Pages/UserPurchasedCourse/UserPurchasedCourse.css">
-
-  const deleteRating = async()=>{
-    try{
-      const response = await axios({
-        method: 'DELETE',
-        url: `${BASE_URI}/api/v1/reviews/${courseData?.course?.review_id}`,
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-      setEditRatingPopUp(false)
-      toast.success("Rating deleted successfully");
-    }
-    catch(error){
-      toast.error(error.response.data.message);
-      console.error(error);
-    }
-  }
-
-
-
     </head>
     <body>
     <div class="certificate">
@@ -678,16 +674,16 @@ const handlePrint = async (id) => {
                     backgroundColor: "transparent",
                   }}
                 >
+
                   <CircularProgressbar
-                    value={percentage}
-                    strokeWidth={50}
-                    styles={buildStyles({
-                      strokeLinecap: "butt",
-                      pathColor: "#112940",
-                      backgroundColor: "white",
-                      trailColor: "white",
-                    })}
-                  />
+                  styles={buildStyles({   
+                    textSize: '2rem',
+                    pathTransitionDuration: 0.5,
+                    pathColor: `#00000)`,
+                    textColor: '#fff',
+                    trailColor: '#fff',
+                  })}
+                  value={percentage} text={`${Math.floor(percentage)}%`} />
                 </div>
 
                 <h6>Your Progress</h6>
