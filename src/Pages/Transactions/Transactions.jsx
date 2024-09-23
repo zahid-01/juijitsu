@@ -1,4 +1,3 @@
-// Transactions
 
 import { useEffect, useState } from "react";
 import { BASE_URI } from "../../Config/url";

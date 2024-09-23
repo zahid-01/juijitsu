@@ -131,12 +131,12 @@ const UserPurchasedCourse = () => {
   const courseData = useMemo(() => data?.data || [], [data]);
   console.log(courseData);
 
-  useEffect(()=>{
-    if(courseData?.course?.is_rated){
-      setSelectedRating(courseData?.course?.rating)
+  useEffect(() => {
+    if (courseData?.course?.is_rated) {
+      setSelectedRating(courseData?.course?.rating);
       setReview(courseData?.course?.comment);
     }
-  },[courseData])
+  }, [courseData]);
 
   const percentage =
     (courseData?.course?.lessons_completed /
@@ -240,10 +240,7 @@ const UserPurchasedCourse = () => {
     }
   };
 
-
-
-  const updateRating = async()=>{
-
+  const updateRating = async () => {
     try {
       const url = `${BASE_URI}/api/v1/reviews/${courseData?.course?.review_id}`;
       const response = await axios({
@@ -253,11 +250,11 @@ const UserPurchasedCourse = () => {
           Authorization: "Bearer " + token,
         },
         data: {
-          "rating": selectedRating,
-          "comment":review
+          rating: selectedRating,
+          comment: review,
         },
       });
-      toast.success("Rating updated successfully")
+      toast.success("Rating updated successfully");
       setReviewData(response.data);
       setEditRatingPopUp(false);
       refetch();
@@ -266,9 +263,6 @@ const UserPurchasedCourse = () => {
       console.error(error);
     }
   };
-
-  
-  
 
   // const handlePrint = async (id) => {
   //   try {
@@ -286,65 +280,74 @@ const UserPurchasedCourse = () => {
   //     console.error(error);
   //   }
 
-
-
-const handlePrint = async (id) => {
-  try {
-    const url = `${BASE_URI}/api/v1/users/certificates/${id}`;
-    const response = await axios({
-      method: "GET",
-      url,
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    setcertificate(response?.data?.data);
-    console.log(response?.data?.data);
-  } catch (error) {
-    alert("No certificate found for the provided ID.");
-  }
-
-  const printContent = `
-    <html>
-    <head>
-   <link rel="stylesheet" type="text/css" href="/src/Pages/UserPurchasedCourse/UserPurchasedCourse.css">
-
-  const deleteRating = async()=>{
-    try{
+  const deleteRating = async () => {
+    try {
       const response = await axios({
-        method: 'DELETE',
+        method: "DELETE",
         url: `${BASE_URI}/api/v1/reviews/${courseData?.course?.review_id}`,
         headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-      setEditRatingPopUp(false)
+          Authorization: "Bearer " + token,
+        },
+      });
+      setEditRatingPopUp(false);
       toast.success("Rating deleted successfully");
-    }
-    catch(error){
+    } catch (error) {
       toast.error(error.response.data.message);
       console.error(error);
     }
-  }
+  };
 
+  const handlePrint = async (id) => {
+    try {
+      const url = `${BASE_URI}/api/v1/users/certificates/${id}`;
+      const response = await axios({
+        method: "GET",
+        url,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      setcertificate(response?.data?.data);
+      console.log(response?.data?.data);
+    } catch (error) {
+      toast .error(
+        "Certificate cant be generated as the course is not completed yet!."
+      );
+      // alert("No certificate found for the provided ID.");
+    }
 
-
+    const printContent = `
+    <html>
+    <head>
+   <link rel="stylesheet" type="text/css" href="/src/Pages/UserPurchasedCourse/UserPurchasedCourse.css">
     </head>
     <body>
     <div class="certificate">
       <div class="certificate-container">
         <div>
-          <div class="certificate-number">Certificate no: <strong> ${certificate.certificate_id}</strong></div>
+          <div class="certificate-number">Certificate no: <strong> ${
+            certificate.certificate_id
+          }</strong></div>
           <div class="firstHeader" >jiujitsux</div>
         </div>
         <div class="header">Certificate of Completion</div>
         <div class="title">${certificate.title}</div>
-        <div class="instructors">Instructors: <strong>${certificate.expert_name}</strong></div>
+        <div class="instructors">Instructors: <strong>${
+          certificate.expert_name
+        }</strong></div>
         <div class="description">
-          This certificate above verifies that <strong>${certificate.user}</strong> successfully completed the course ${certificate.title} on 11/09/2024 as taught by <strong>${certificate.expert_name}</strong> on Juijitsux. The certificate indicates the entire course was completed as validated by the student. The course duration represents the total video hours of the course at time of most recent completion.
+          This certificate above verifies that <strong>${
+            certificate.user
+          }</strong> successfully completed the course ${
+      certificate.title
+    } on 11/09/2024 as taught by <strong>${
+      certificate.expert_name
+    }</strong> on Juijitsux. The certificate indicates the entire course was completed as validated by the student. The course duration represents the total video hours of the course at time of most recent completion.
         </div>
         <div class="signature"><strong>${certificate.expert_name}</strong></div>
-        <div class="date"> Date: <strong>${new Date(certificate.created_at).toLocaleDateString('en-GB')}</strong></div>
+        <div class="date"> Date: <strong>${new Date(
+          certificate.created_at
+        ).toLocaleDateString("en-GB")}</strong></div>
         <div class="length">Length: <strong>
           ${Math.floor(certificate.total_duration / 3600)} hours 
           ${Math.floor((certificate.total_duration % 3600) / 60)} minutes
@@ -356,14 +359,13 @@ const handlePrint = async (id) => {
     </html>
   `;
 
-  const newWindow = window.open("", "_blank", "width=600,height=400");
-  newWindow.document.open();
-  newWindow.document.write(printContent);
-  newWindow.document.close();
-  newWindow.focus(); // Ensure the new window is focused before printing
-  newWindow.print();
-};
-
+    const newWindow = window.open("", "_blank", "width=600,height=400");
+    newWindow.document.open();
+    newWindow.document.write(printContent);
+    newWindow.document.close();
+    newWindow.focus(); // Ensure the new window is focused before printing
+    newWindow.print();
+  };
 
   // console.log(courseData?.review?.userReviews)
   return (
@@ -417,6 +419,93 @@ const handlePrint = async (id) => {
                   </span>
                 )}
 
+                <span className="cursor-pointer d-flex w-100 gap-4 align-items-center p-2">
+                  <FontAwesomeIcon icon={faCircleInfo} />
+                  <p className="fs-6 fw-2">Not refundable!</p>
+                </span>
+              </div>
+            </div>
+          )}
+
+          {addRatingPopUp && (
+            <div className="rating-popup d-flex justify-content-center align-items-center">
+              <div className="card p-4 shadow-lg bg-white rounded">
+                <h5>Add Your Rating</h5>
+                <div className="star-rating mb-3">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <FaStar
+                      key={star}
+                      className={`star ${
+                        selectedRating >= star ? "text-warning" : ""
+                      }`}
+                      onClick={() => handleRating(star)}
+                      style={{ cursor: "pointer", fontSize: "2rem" }}
+                    />
+                  ))}
+                </div>
+                <div className="mb-3">
+                  <textarea
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                    placeholder="Add Your Review"
+                    className="form-control"
+                    rows={4}
+                  />
+                </div>
+                <div className="d-flex justify-content-between">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setAddRatingPopUp(false)}
+                  >
+                    Discard
+                  </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleReviewSubmit}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {optionsPopUp && (
+            <div
+              onClick={() => setOptionsPopUp(false)}
+              className="rating-popup d-flex justify-content-center align-items-center"
+            >
+              <div
+                className="flex-column gap-2 shadow-lg bg-white rounded"
+                onClick={(e) => e.stopPropagation()} // Prevents the outer div from being triggered
+              >
+                <span
+                  onClick={() => handleAddToFavClick()}
+                  className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom"
+                >
+                  <FontAwesomeIcon
+                    style={{ color: "yellow", cursor: "pointer" }}
+                    icon={faStar}
+                  />
+                  <p>Add to favorites</p>
+                </span>
+                {courseData?.course?.is_rated ? (
+                  <span
+                    onClick={handleEditClick}
+                    className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom"
+                  >
+                    <FontAwesomeIcon icon={faPencil} />
+                    <p>Edit Your Rating</p>
+                  </span>
+                ) : (
+                  <span
+                    onClick={handleAddRatingClick}
+                    className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom"
+                  >
+                    <FontAwesomeIcon icon={faPencil} />
+                    <p>Add Rating</p>
+                  </span>
+                )}
 
                 <span className="cursor-pointer d-flex w-100 gap-4 align-items-center p-2">
                   <FontAwesomeIcon icon={faCircleInfo} />
@@ -469,114 +558,48 @@ const handlePrint = async (id) => {
             </div>
           )}
 
-{
-  optionsPopUp && 
-  <div onClick={() => setOptionsPopUp(false)} className="rating-popup d-flex justify-content-center align-items-center">
-    <div 
-      className="flex-column gap-2 shadow-lg bg-white rounded"
-      onClick={(e) => e.stopPropagation()} // Prevents the outer div from being triggered
-    >
-      <span onClick={() => handleAddToFavClick()} className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom">
-        <FontAwesomeIcon style={{color:"yellow", cursor:"pointer"}} icon={faStar} />
-        <p>Add to favorites</p>
-      </span>
-      {
-        courseData?.course?.is_rated ? 
-        <span onClick={handleEditClick} className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom">
-          <FontAwesomeIcon icon={faPencil} />
-          <p>Edit Your Rating</p>
-        </span>
-        :
-        <span onClick={handleAddRatingClick} className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom">
-          <FontAwesomeIcon icon={faPencil} />
-          <p>Add Rating</p>
-        </span>
-      }
-      
-      <span className="cursor-pointer d-flex w-100 gap-4 align-items-center p-2">
-        <FontAwesomeIcon icon={faCircleInfo} />
-        <p className="fs-6 fw-2">Not refundable!</p>
-      </span>
-    </div>
-  </div>
-}
-
-
-{
-  addRatingPopUp && 
-  <div className="rating-popup d-flex justify-content-center align-items-center">
-      <div className="card p-4 shadow-lg bg-white rounded">
-        <h5>Add Your Rating</h5>
-        <div className="star-rating mb-3">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <FaStar
-              key={star}
-              className={`star ${selectedRating >= star ? "text-warning" : ""}`}
-              onClick={() => handleRating(star)}
-              style={{ cursor: "pointer", fontSize: "2rem" }}
-            />
-          ))}
-        </div>
-        <div className="mb-3">
-          <textarea
-            value={review}
-            onChange={(e)=>setReview(e.target.value)}
-            placeholder="Add Your Review"
-            className="form-control"
-            rows={4}
-          />
-        </div>
-        <div className="d-flex justify-content-between">
-          <button className="btn btn-secondary" onClick={()=>setAddRatingPopUp(false)}>
-            Discard
-          </button>
-          <button className="btn btn-primary" onClick={handleReviewSubmit}>
-            Submit
-          </button>
-        </div>
-      </div>
-    </div>
-}
-
-{
-  editRatingPopUp &&
-  <div className="rating-popup d-flex justify-content-center align-items-center">
-      <div className="card p-4 shadow-lg bg-white rounded">
-        <h5>Add Your Rating</h5>
-        <div className="star-rating mb-3">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <FaStar
-              key={star}
-              className={`star ${selectedRating >= star ? "text-warning" : ""}`}
-              onClick={() => handleRating(star)}
-              style={{ cursor: "pointer", fontSize: "2rem" }}
-            />
-          ))}
-        </div>
-        <div className="mb-3">
-          <textarea
-            value={review}
-            onChange={(e)=>setReview(e.target.value)}
-            placeholder="Add Your Review"
-            className="form-control"
-            rows={4}
-          />
-        </div>
-        <div className="d-flex justify-content-between">
-        <button className="btn btn-danger" onClick={deleteRating}>
-            Delete
-          </button>
-          <button className="btn btn-secondary" onClick={()=>setEditRatingPopUp(false)}>
-            Discard
-          </button>
-          <button className="btn btn-primary" onClick={updateRating}>
-            Save
-          </button>
-        </div>
-      </div>
-    </div>
-}
-
+          {editRatingPopUp && (
+            <div className="rating-popup d-flex justify-content-center align-items-center">
+              <div className="card p-4 shadow-lg bg-white rounded">
+                <h5>Add Your Rating</h5>
+                <div className="star-rating mb-3">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <FaStar
+                      key={star}
+                      className={`star ${
+                        selectedRating >= star ? "text-warning" : ""
+                      }`}
+                      onClick={() => handleRating(star)}
+                      style={{ cursor: "pointer", fontSize: "2rem" }}
+                    />
+                  ))}
+                </div>
+                <div className="mb-3">
+                  <textarea
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                    placeholder="Add Your Review"
+                    className="form-control"
+                    rows={4}
+                  />
+                </div>
+                <div className="d-flex justify-content-between">
+                  <button className="btn btn-danger" onClick={deleteRating}>
+                    Delete
+                  </button>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setEditRatingPopUp(false)}
+                  >
+                    Discard
+                  </button>
+                  <button className="btn btn-primary" onClick={updateRating}>
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {editRatingPopUp && (
             <div className="rating-popup d-flex justify-content-center align-items-center">

@@ -8,6 +8,7 @@ import useFetch from "../../hooks/useFetch";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { PulseLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("accountSecurity");
@@ -16,6 +17,11 @@ export default function Settings() {
   const [finalDelete, setFinalDelete] = useState(false);
   const [isModalPasswordChange, setIsModalPasswordChange] = useState(false);
   const [isModalEmailChange, setIsModalEmailChange] = useState(false);
+  //
+  const [newEmail, setNewEmail] = useState("");
+  const [newpassword, setPassword] = useState("");
+  const navigate = useNavigate();
+
   const [updatePasswordData, setUpdatePasswordData] = useState({
     password: "",
     newPassword: "",
@@ -238,6 +244,44 @@ export default function Settings() {
     }));
   };
 
+  // const handleVerifyClick = async () => {
+  //   try {
+  //     const response = await axios.patch('${BASE_URI}/api/v1/email/updateEmail', { email });
+  //     setMessage('Verification email sent! Please check your inbox.');
+  //     console.log(response)
+  //   } catch (error) {
+  //     setMessage('Failed to send verification email. Please try again.');
+  //   }
+  // };
+  const handleVerifyClick = async () => {
+    try {
+      console.log(newEmail, newpassword);
+      const payload = { email: newEmail, password: newpassword };
+      console.log("Payload:", payload);
+      const response = await axios.patch(
+        `${BASE_URI}/api/v1/auth/email/updateEmail`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+      closeModalEmailChange();
+      localStorage.removeItem("user");
+      localStorage.removeItem("userType");
+      localStorage.removeItem("token");
+      localStorage.removeItem("rememberMe");
+      navigate("/");
+      // Close the modal
+    } catch (error) {
+      console.error("Error changing email:", error);
+      console.error("Error config:", error.config);
+      console.error("Error request:", error.request);
+    }
+  };
+
   // console.log(profilePicture);
 
   return (
@@ -343,19 +387,33 @@ export default function Settings() {
                 show={isModalEmailChange}
                 onClose={closeModalEmailChange}
                 heading="Change Email"
-                // handleClickAction={handleNextAction}
               >
+                {/* Dummy input to prevent autofill */}
+                <input
+                  type="text"
+                  style={{ display: "none" }}
+                  autoComplete="off"
+                />
+
                 <input
                   type="email"
-                  className=" py-2 px-3 mb-3 w-100 border border-2 rounded-3"
+                  className="py-2 px-3 mb-3 w-100 border border-2 rounded-3"
                   placeholder="Enter email"
+                  name="new-email" // Use a unique name to avoid triggering autofill
+                  // value={newEmail}
+                  autoComplete="off" // Prevent browser from autofilling the email
+                  onChange={(e) => setNewEmail(e.target.value)}
                 />
+
                 <input
                   type="password"
-                  className=" py-2 px-3 mb-3 w-100 border border-2 rounded-3"
+                  className="py-2 px-3 mb-3 w-100 border border-2 rounded-3"
                   placeholder="Enter password"
-                  //  autoComplete="current-password"
+                  name="newpassword" // Avoid using the word "password" to trick the browser
+                  autoComplete="new-password"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
+
                 <p
                   className="mb-4"
                   style={{ fontSize: "13px", fontWeight: "300" }}
@@ -363,9 +421,13 @@ export default function Settings() {
                   For security reason any saved card information will be deleted
                   if you change email.
                 </p>
+
                 <div className="d-flex align-items-center justify-content-end">
-                  <button className="signup-now py-1 px-3 fw-lightBold mb-0 h-auto">
-                    Save
+                  <button
+                    className="signup-now py-1 px-3 fw-lightBold mb-0 h-auto"
+                    onClick={handleVerifyClick}
+                  >
+                    Verify
                   </button>
                 </div>
               </Modal>
@@ -382,7 +444,7 @@ export default function Settings() {
                   name="password"
                   value={updatePasswordData.password}
                   placeholder="Enter current password"
-                  //  autoComplete="new-password"
+                  autoComplete="new-password"
                   onChange={handleUpdatePasswordChange}
                 />
                 <input

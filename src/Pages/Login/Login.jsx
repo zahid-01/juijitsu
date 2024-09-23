@@ -11,18 +11,24 @@ import { PulseLoader } from "react-spinners";
 import toast from "react-hot-toast";
 import { userCartActions } from "../../Store/cartSlice";
 import { useDispatch } from "react-redux";
+import "./Login.css";
 
 export default function Login() {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [emailVerify, setEmailVerify] = useState([]);
+
   const [data, setData] = useState({
     email: "",
     password: "",
   });
   const navigate = useNavigate();
   const location = useLocation();
+  const [popupMessage, setPopupMessage] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -79,6 +85,53 @@ export default function Login() {
     window.location.href = `${BASE_URI}/api/v1/auth/google`;
   };
 
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+  //   axios
+  //     .post(`${BASE_URI}/api/v1/auth/login`, data)
+  //     .then((resp) => {
+  //       localStorage.setItem("user", JSON.stringify(resp.data.Data));
+  //       localStorage.setItem("userType", resp.data.Data.user_type);
+  //       localStorage.setItem("token", resp.data.token);
+
+  //       setData({
+  //         email: "",
+  //         password: "",
+  //       });
+  //       axios({
+  //         method: "GET",
+  //         url: `${BASE_URI}/api/v1/cart`,
+  //         headers: {
+  //           Authorization: "Bearer " + resp.data.token,
+  //         },
+  //       }).then(
+  //         (res) => {
+  //           console.log(res.data.cart);
+  //           dispatch(userCartActions.setCart(res.data.cart));
+  //         },
+  //         () => {}
+  //       );
+  //       toast.success("Logged In Successfully!");
+  //       if (resp.data.Data.user_type === "expert") {
+  //         // navigate("/courses");
+  //         window.location.reload();
+  //       } else if (resp.data.Data.user_type === "user") {
+  //         // history.push("/courses");
+  //         window.location.reload();
+  //       } else if (resp.data.Data.user_type === "admin") {
+  //         window.location.reload();
+  //       }
+  //       setIsLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err?.response?.data?.message);
+  //       setIsLoading(false);
+  //       toast.error(`Error: ${err?.response?.data?.message}`);
+  //     });
+
+  // };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -108,10 +161,8 @@ export default function Login() {
         );
         toast.success("Logged In Successfully!");
         if (resp.data.Data.user_type === "expert") {
-          // navigate("/courses");
           window.location.reload();
         } else if (resp.data.Data.user_type === "user") {
-          // history.push("/courses");
           window.location.reload();
         } else if (resp.data.Data.user_type === "admin") {
           window.location.reload();
@@ -121,8 +172,37 @@ export default function Login() {
       .catch((err) => {
         console.log(err?.response?.data?.message);
         setIsLoading(false);
-        toast.error(`Error: ${err?.response?.data?.message}`);
+
+        // Check for specific error message
+        if (err?.response?.data?.message === "email is not verified yet") {
+          setPopupMessage(
+            "Your email is not verified yet. Please verify your email to proceed."
+          );
+          setShowPopup(true);
+        } else {
+          toast.error(`Error: ${err?.response?.data?.message}`);
+        }
       });
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+
+  const emailVerifyRequest = async () => {
+    console.log(data.email);
+    try {
+      const response = await axios.get(
+        `${BASE_URI}/api/v1/auth/email/verifyEmail`,
+        { email: data.email }
+      );
+      setEmailVerify(response.data?.data?.history || []);
+    } catch (err) {
+      console.log(err)
+      // setError(err?.response?.data?.message);
+    } finally {
+      // setLoading(false);
+    }
   };
 
   // if (localStorage.getItem("rememberMe")) {
@@ -284,6 +364,24 @@ export default function Login() {
           </div>
         </div>
       </div>
+
+      {/* Popup for unverified email */}
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-box custom-popup">
+            <p className="popUpMessage">{popupMessage}</p>
+            <button onClick={closePopup} className="cancel-buttonn">
+              Close
+            </button>
+            <button
+              className="send-request-button"
+              onClick={emailVerifyRequest}
+            >
+              Send Request
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
