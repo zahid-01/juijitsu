@@ -281,6 +281,10 @@ const UserPurchasedCourse = () => {
       })
       setEditRatingPopUp(false)
       setIs_rated(false)
+
+      setReview(null)
+      setSelectedRating(null)
+
       toast.success("Rating deleted successfully");
     }
     catch(error){
@@ -387,7 +391,7 @@ const UserPurchasedCourse = () => {
         <p>Add to favorites</p>
       </span>
       {
-        courseData?.course?.is_rated ? 
+        is_rated ? 
         <span onClick={handleEditClick} className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom">
           <FontAwesomeIcon icon={faPencil} />
           <p>Edit Your Rating</p>
