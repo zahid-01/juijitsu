@@ -280,23 +280,25 @@ const UserPurchasedCourse = () => {
   //     console.error(error);
   //   }
 
-  const deleteRating = async () => {
-    try {
+
+  const deleteRating = async()=>{
+    try{
       const response = await axios({
-        method: "DELETE",
+        method: 'DELETE',
         url: `${BASE_URI}/api/v1/reviews/${courseData?.course?.review_id}`,
         headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      setEditRatingPopUp(false);
+          Authorization: 'Bearer ' + token
+        }
+      })
+      setEditRatingPopUp(false)
+      setIs_rated(false)
       toast.success("Rating deleted successfully");
-    } catch (error) {
+    }
+    catch(error){
       toast.error(error.response.data.message);
       console.error(error);
     }
-  };
-
+  }
   const handlePrint = async (id) => {
     try {
       const url = `${BASE_URI}/api/v1/users/certificates/${id}`;
@@ -317,6 +319,7 @@ const UserPurchasedCourse = () => {
     }
 
     const printContent = `
+
     <html>
     <head>
    <link rel="stylesheet" type="text/css" href="/src/Pages/UserPurchasedCourse/UserPurchasedCourse.css">
@@ -701,16 +704,16 @@ const UserPurchasedCourse = () => {
                     backgroundColor: "transparent",
                   }}
                 >
+
                   <CircularProgressbar
-                    value={percentage}
-                    strokeWidth={50}
-                    styles={buildStyles({
-                      strokeLinecap: "butt",
-                      pathColor: "#112940",
-                      backgroundColor: "white",
-                      trailColor: "white",
-                    })}
-                  />
+                  styles={buildStyles({   
+                    textSize: '2rem',
+                    pathTransitionDuration: 0.5,
+                    pathColor: `#00000)`,
+                    textColor: '#fff',
+                    trailColor: '#fff',
+                  })}
+                  value={percentage} text={`${Math.floor(percentage)}%`} />
                 </div>
 
                 <h6>Your Progress</h6>
