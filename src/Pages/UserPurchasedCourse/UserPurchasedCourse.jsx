@@ -132,13 +132,15 @@ const UserPurchasedCourse = () => {
   const courseData = useMemo(() => data?.data || [], [data]);
   console.log(courseData);
 
+
   useEffect(()=>{
     setIs_rated(courseData?.course?.is_rated)
     if(courseData?.course?.is_rated){
       setSelectedRating(courseData?.course?.rating)
+
       setReview(courseData?.course?.comment);
     }
-  },[courseData])
+  }, [courseData]);
 
   const percentage =
     (courseData?.course?.lessons_completed /
@@ -239,7 +241,8 @@ const UserPurchasedCourse = () => {
   };
 
 
-  const updateRating = async()=>{
+  const updateRating = async () => {
+
     try {
       const url = `${BASE_URI}/api/v1/reviews/${courseData?.course?.review_id}`;
       const response = await axios({
@@ -249,11 +252,11 @@ const UserPurchasedCourse = () => {
           Authorization: "Bearer " + token,
         },
         data: {
-          "rating": selectedRating,
-          "comment":review
+          rating: selectedRating,
+          comment: review,
         },
       });
-      toast.success("Rating updated successfully")
+      toast.success("Rating updated successfully");
       setReviewData(response.data);
       setEditRatingPopUp(false);
       refetch();
@@ -261,7 +264,10 @@ const UserPurchasedCourse = () => {
       toast.error(error.response.data.message);
       console.error(error);
     }
-  }
+
+  };
+
+
 
 
   const deleteRating = async()=>{
@@ -274,6 +280,7 @@ const UserPurchasedCourse = () => {
         }
       })
       setEditRatingPopUp(false)
+      setIs_rated(false)
       toast.success("Rating deleted successfully");
     }
     catch(error){
@@ -281,27 +288,28 @@ const UserPurchasedCourse = () => {
       console.error(error);
     }
   }
+  const handlePrint = async (id) => {
+    try {
+      const url = `${BASE_URI}/api/v1/users/certificates/${id}`;
+      const response = await axios({
+        method: "GET",
+        url,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      setcertificate(response?.data?.data);
+      console.log(response?.data?.data);
+    } catch (error) {
+      toast .error(
+        "Certificate cant be generated as the course is not completed yet!."
+      );
+      // alert("No certificate found for the provided ID.");
+    }
+
+    const printContent = `
 
 
-
-
-const handlePrint = async (id) => {
-  try {
-    const url = `${BASE_URI}/api/v1/users/certificates/${id}`;
-    const response = await axios({
-      method: "GET",
-      url,
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    setcertificate(response?.data?.data);
-    console.log(response?.data?.data);
-  } catch (error) {
-    alert("No certificate found for the provided ID.");
-  }
-
-  const printContent = `
     <html>
     <head>
    <link rel="stylesheet" type="text/css" href="/src/Pages/UserPurchasedCourse/UserPurchasedCourse.css">
@@ -310,17 +318,29 @@ const handlePrint = async (id) => {
     <div class="certificate">
       <div class="certificate-container">
         <div>
-          <div class="certificate-number">Certificate no: <strong> ${certificate.certificate_id}</strong></div>
+          <div class="certificate-number">Certificate no: <strong> ${
+            certificate.certificate_id
+          }</strong></div>
           <div class="firstHeader" >jiujitsux</div>
         </div>
         <div class="header">Certificate of Completion</div>
         <div class="title">${certificate.title}</div>
-        <div class="instructors">Instructors: <strong>${certificate.expert_name}</strong></div>
+        <div class="instructors">Instructors: <strong>${
+          certificate.expert_name
+        }</strong></div>
         <div class="description">
-          This certificate above verifies that <strong>${certificate.user}</strong> successfully completed the course ${certificate.title} on 11/09/2024 as taught by <strong>${certificate.expert_name}</strong> on Juijitsux. The certificate indicates the entire course was completed as validated by the student. The course duration represents the total video hours of the course at time of most recent completion.
+          This certificate above verifies that <strong>${
+            certificate.user
+          }</strong> successfully completed the course ${
+      certificate.title
+    } on 11/09/2024 as taught by <strong>${
+      certificate.expert_name
+    }</strong> on Juijitsux. The certificate indicates the entire course was completed as validated by the student. The course duration represents the total video hours of the course at time of most recent completion.
         </div>
         <div class="signature"><strong>${certificate.expert_name}</strong></div>
-        <div class="date"> Date: <strong>${new Date(certificate.created_at).toLocaleDateString('en-GB')}</strong></div>
+        <div class="date"> Date: <strong>${new Date(
+          certificate.created_at
+        ).toLocaleDateString("en-GB")}</strong></div>
         <div class="length">Length: <strong>
           ${Math.floor(certificate.total_duration / 3600)} hours 
           ${Math.floor((certificate.total_duration % 3600) / 60)} minutes
@@ -332,14 +352,13 @@ const handlePrint = async (id) => {
     </html>
   `;
 
-  const newWindow = window.open("", "_blank", "width=600,height=400");
-  newWindow.document.open();
-  newWindow.document.write(printContent);
-  newWindow.document.close();
-  newWindow.focus(); // Ensure the new window is focused before printing
-  newWindow.print();
-};
-
+    const newWindow = window.open("", "_blank", "width=600,height=400");
+    newWindow.document.open();
+    newWindow.document.write(printContent);
+    newWindow.document.close();
+    newWindow.focus(); // Ensure the new window is focused before printing
+    newWindow.print();
+  };
 
   // console.log(courseData?.review?.userReviews)
   return (
@@ -356,7 +375,7 @@ const handlePrint = async (id) => {
         ></l-grid>
       ) : (
         <div className="wrapper-purchasedCourse">
-          {
+{
   optionsPopUp && 
   <div onClick={() => setOptionsPopUp(false)} className="rating-popup d-flex justify-content-center align-items-center">
     <div 
@@ -463,7 +482,6 @@ const handlePrint = async (id) => {
       </div>
     </div>
 }
-          
 
           <div className="top-purchasedCourse">
             <h4>Course Overview</h4>
