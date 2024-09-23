@@ -48,14 +48,6 @@ const PurchaseHistory = () => {
           >
             Courses
           </h5>
-          <h5
-            className={`text-white px-3 pb-2 fw-light cursor-pointer ${
-              activeTab === "refund" ? "border-bottom border-4" : ""
-            }`}
-            onClick={() => setActiveTab("refund")}
-          >
-            Refund
-          </h5>
         </div>
       </header>
       <div className="tab-content px-3 py-4 custom-box rounded-top-0" style={{ backgroundColor: "white" }}>
@@ -117,19 +109,7 @@ const PurchaseHistory = () => {
               </table>
             </div>
           )}
-          {activeTab === "refund" && (
-            <div className="tab-pane active">
-              <div
-                className="d-flex flex-column align-items-center justify-content-center gap-4"
-                style={{ minHeight: "25rem" }}
-              >
-                <h3>You don’t have any refunds </h3>
-                <h5 className="fw-light">
-                  Any refunds will be processed to the original mode of payment
-                </h5>
-              </div>
-            </div>
-          )}
+          
         </div>
       </div>
     </div>

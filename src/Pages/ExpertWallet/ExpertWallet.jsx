@@ -19,6 +19,7 @@ export default function ExpertWallet() {
   const [editable, setEditable] = useState(false);
   const [withDrawPopup, setWithDrawPopup] = useState(false);
   const [withdrawalAmount, setWithdrawalAmount] = useState(null);
+  const [withdrawalHistory, setWithdrawalHistory] = useState(false);
   useEffect(() => {
     async function fetchWalletData() {
       try {
@@ -274,6 +275,24 @@ export default function ExpertWallet() {
     }
   };
 
+  const withdrawlHistoryClick = async()=>{
+    try {
+      const response = await axios.get(
+        `${BASE_URI}/api/v1/expert/withdrawalHistory`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response?.data?.data);
+      setWithdrawalHistory(response?.data);
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.response?.data?.message);
+    }
+  }
+
   // console.log(accountType)
   return (
     <div className="w-100 position-relative">
@@ -364,10 +383,26 @@ export default function ExpertWallet() {
               }
               onClick={() => setActiveTab("activity")}
             >
-              Activity
+              Purchase History
             </h5>
           </div>
-
+          <div onClick={withdrawlHistoryClick}
+            className="d-flex gap-5 px-4 border-bottom">
+            <h5
+              className={
+                activeTab !== "withdrawl-history"
+                  ? `text-white fw-light px-3 cursor-pointer pt-2`
+                  : `text-white px-3 pb-2 fw-light cursor-pointer ${
+                      activeTab === "withdrawl-history"
+                        ? "border-bottom border-4 pt-2 rounded-top"
+                        : ""
+                    }`
+              }
+              onClick={() => setActiveTab("withdrawl-history")}
+            >
+              Withdrawal History
+            </h5>
+          </div>
           <div onClick={bankClick} className="d-flex gap-5 px-4 border-bottom">
             <h5
               className={
@@ -384,6 +419,7 @@ export default function ExpertWallet() {
               Bank account
             </h5>
           </div>
+          
         </div>
         {activeTab === "activity" && (
           <div className="tab-pane active" style={{ overflowX: "auto" }}>
@@ -443,6 +479,50 @@ export default function ExpertWallet() {
             </table>
           </div>
         )}
+{activeTab === "withdrawl-history" && (
+          <div className="tab-pane active" style={{ overflowX: "auto" }}>
+            <table className="table w-md-reverse-50">
+              <thead>
+                <tr>
+                  <th scope="col" className="text-center py-3">
+                    Date
+                  </th>
+                  <th scope="col" className="text-center py-3">
+                    Amount
+                  </th>
+                  <th scope="col" className="text-center py-3">
+                    Transaction id
+                  </th>
+                  <th scope="col" className="text-center py-3">
+                    Withdrawal Status
+                  </th>
+                  
+                </tr>
+              </thead>
+              <tbody>
+                {withdrawalHistory?.data?.map((order, index) => (
+                  <tr key={index}>
+                    
+                    <td className="text-center align-middle fs-small">
+                      {formatDate(order?.withdrawal_date)}
+                    </td>
+                    <td className="text-center align-middle fs-small text-capitalize">
+                    ${order?.withdrawal_amount}
+                    </td>
+                    <td className="text-center align-middle fs-small text-capitalize">
+                      {order?.transaction_id}
+                    </td>
+                    <td className="text-center align-middle fs-small">
+                      {order?.withdrawal_status}
+                    </td>
+                    
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         {activeTab === "bank-account" && (
           <div className="grid-col-2">
             <span className="d-block">

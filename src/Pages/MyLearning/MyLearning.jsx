@@ -309,7 +309,7 @@ if(status === 'purchased'){
             error?.response?.data?.message === "No courses found" ? (
               <div className="no-courses-myLearning">
                 <div>
-                <h1>No Courses Purchased Yet!</h1>
+                <h1 className="fs-2">No Courses Purchased Yet!</h1>
                 <h5>Purchase a course and join the world of athletes!</h5>
                 <Link to="/userCourses" className="text-decoration-none text-white">
                   <FontAwesomeIcon icon={faSquarePlus} className="add-icon-courses" />
