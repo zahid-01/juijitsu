@@ -18,6 +18,7 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     width: 30%; /* adjust the width as needed */
+    position: relative;
   }
 /* Custom popup styles from SweetAlert2 */
 .custom-popup {
@@ -25,18 +26,16 @@
     box-shadow: none !important; /* Remove shadow */
 }
 
-/* Close button with the same styles as cancel button */
+
 .cancel-buttonn {
-    box-shadow: 0px 0px 4px 0.2px #908e8e40;
-    background: #b3b1b1; /* Custom background color */
-    border-radius: 0.25rem; /* Rounded corners */
+    position: absolute;
+    top: 10px;  /* Adjust the value to control vertical positioning */
+    right: 5px;  /* Adjust the value to control horizontal positioning */
+    background: none;
+    border: none;
     cursor: pointer;
-    padding: 0.4rem;
-    /* display: flex; */
-    justify-content: center;
-    margin-right: 13vw ;
-    border: none !important;
-}
+    padding: 0;
+  }
 
 /* Send Request button styled similarly to the original one */
 .send-request-button {
@@ -53,3 +52,7 @@
 .popUpMessage{
     margin-bottom: 2vh;
 }
+.cancel-buttonn svg {
+    width: 20px;  /* Adjust size as needed */
+    height: 20px;
+  }

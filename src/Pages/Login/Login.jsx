@@ -3,6 +3,7 @@ import learnImg from "../../assets/learnImg.avif";
 import { MdOutlineEmail } from "react-icons/md";
 import { IoKeyOutline } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
+import { RxCross2 } from "react-icons/rx";
 import { Link, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { FaApple, FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
@@ -20,6 +21,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
 
   const [emailVerify, setEmailVerify] = useState([]);
+  const [showSendRequestButton, setShowSendRequestButton] = useState(true);
 
   const [data, setData] = useState({
     email: "",
@@ -187,21 +189,31 @@ export default function Login() {
 
   const closePopup = () => {
     setShowPopup(false);
+    setShowSendRequestButton(true); 
   };
 
   const emailVerifyRequest = async () => {
     console.log(data.email);
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         `${BASE_URI}/api/v1/auth/email/verifyEmail`,
         { email: data.email }
       );
+      console.log(response);
+
       setEmailVerify(response.data?.data?.history || []);
+
+      // Change the popup message after successful request
+      setPopupMessage(
+        response.data?.message || "A verification link is sent to your email"
+      );
+      setShowSendRequestButton(false);
     } catch (err) {
-      console.log(err)
-      // setError(err?.response?.data?.message);
+      console.log(err);
+      setPopupMessage("Failed to send verification email");
     } finally {
-      // setLoading(false);
+      // Show the popup after the request
+      setShowPopup(true);
     }
   };
 
@@ -371,14 +383,16 @@ export default function Login() {
           <div className="popup-box custom-popup">
             <p className="popUpMessage">{popupMessage}</p>
             <button onClick={closePopup} className="cancel-buttonn">
-              Close
+            <RxCross2 />
             </button>
-            <button
-              className="send-request-button"
-              onClick={emailVerifyRequest}
-            >
-              Send Request
-            </button>
+            {showSendRequestButton && (
+              <button
+                className="send-request-button"
+                onClick={emailVerifyRequest}
+              >
+                Send Request
+              </button>
+            )}
           </div>
         </div>
       )}
