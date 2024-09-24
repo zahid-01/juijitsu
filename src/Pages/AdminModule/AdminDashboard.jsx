@@ -33,6 +33,7 @@ function AdminDashboard() {
   const [courseCompletion, setCourseCompletion] = useState({});
   const [mostBoughtCourses, setMostBoughtCourses] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
+  const [type, setType] = useState("week");
   const [revenue, setRevenue] = useState([]);
 
   const token = localStorage.getItem("token");
@@ -79,7 +80,7 @@ function AdminDashboard() {
     console.log(reqData);
     const adminData = await axios({
       method: "GET",
-      url: `${BASE_URI}/api/v1/admin/adminDashboard?from=${from}&to=${to}`,
+      url: `${BASE_URI}/api/v1/admin/adminDashboard`,
       headers: {
         Authorization: "Bearer " + token,
       },
@@ -121,94 +122,206 @@ function AdminDashboard() {
   const fetchGraphDashboard = async () => {
     const adminGraphData = await axios({
       method: "GET",
-      url: `${BASE_URI}/api/v1/admin/adminDashboardGraphs?from=${from}&to=${to}&type=week`,
+      url: `${BASE_URI}/api/v1/admin/adminDashboardGraphs?type=${type}`,
       headers: {
         Authorization: "Bearer " + token,
       },
     });
-    // console.log(adminGraphData?.data?.data?.Enrolled[0]?.monthly_enrolled)
-    setEnrollments([
-      {
-        day: "Mon",
-        value: adminGraphData?.data?.data?.Enrolled[0]?.daily_enrolled,
-      },
-      {
-        day: "Tue",
-        value: adminGraphData?.data?.data?.Enrolled[1]?.daily_enrolled,
-      },
-      {
-        day: "Wed",
-        value: adminGraphData?.data?.data?.Enrolled[2]?.daily_enrolled,
-      },
-      {
-        day: "Thu",
-        value: adminGraphData?.data?.data?.Enrolled[3]?.daily_enrolled,
-      },
-      {
-        day: "Fri",
-        value: adminGraphData?.data?.data?.Enrolled[4]?.daily_enrolled,
-      },
-      {
-        day: "Sat",
-        value: adminGraphData?.data?.data?.Enrolled[5]?.daily_enrolled,
-      },
-      {
-        day: "Sun",
-        value: adminGraphData?.data?.data?.Enrolled[6]?.daily_enrolled,
-      },
-    ]);
-    setRevenue([
-      {
-        day: "Mon",
-        value: adminGraphData?.data?.data?.Revenue[0]?.daily_revenue,
-      },
-      {
-        day: "Tue",
-        value: adminGraphData?.data?.data?.Revenue[1]?.daily_revenue,
-      },
-      {
-        day: "Wed",
-        value: adminGraphData?.data?.data?.Revenue[2]?.daily_revenue,
-      },
-      {
-        day: "Thu",
-        value: adminGraphData?.data?.data?.Revenue[3]?.daily_revenue,
-      },
-      {
-        day: "Fri",
-        value: adminGraphData?.data?.data?.Revenue[4]?.daily_revenue,
-      },
-      {
-        day: "Sat",
-        value: adminGraphData?.data?.data?.Revenue[5]?.daily_revenue,
-      },
-      {
-        day: "Sun",
-        value: adminGraphData?.data?.data?.Revenue[6]?.daily_revenue,
-      },
-    ]);
-    // console.log( adminGraphData?.data?.data?.Enrolled[0]?.daily_enrolled)
+    console.log(adminGraphData?.data?.data);
+  
+    if (type === "week") {
+      // Handling weekly data
+      setEnrollments([
+        { day: "Mon", value: adminGraphData?.data?.data?.Enrolled[0]?.daily_enrolled },
+        { day: "Tue", value: adminGraphData?.data?.data?.Enrolled[1]?.daily_enrolled },
+        { day: "Wed", value: adminGraphData?.data?.data?.Enrolled[2]?.daily_enrolled },
+        { day: "Thu", value: adminGraphData?.data?.data?.Enrolled[3]?.daily_enrolled },
+        { day: "Fri", value: adminGraphData?.data?.data?.Enrolled[4]?.daily_enrolled },
+        { day: "Sat", value: adminGraphData?.data?.data?.Enrolled[5]?.daily_enrolled },
+        { day: "Sun", value: adminGraphData?.data?.data?.Enrolled[6]?.daily_enrolled },
+      ]);
+  
+      setRevenue([
+        { day: "Mon", value: adminGraphData?.data?.data?.Revenue[0]?.daily_revenue },
+        { day: "Tue", value: adminGraphData?.data?.data?.Revenue[1]?.daily_revenue },
+        { day: "Wed", value: adminGraphData?.data?.data?.Revenue[2]?.daily_revenue },
+        { day: "Thu", value: adminGraphData?.data?.data?.Revenue[3]?.daily_revenue },
+        { day: "Fri", value: adminGraphData?.data?.data?.Revenue[4]?.daily_revenue },
+        { day: "Sat", value: adminGraphData?.data?.data?.Revenue[5]?.daily_revenue },
+        { day: "Sun", value: adminGraphData?.data?.data?.Revenue[6]?.daily_revenue },
+      ]);
+    }
+  
+    if (type === "month") {
+      // Handling monthly data
+      const weeks = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
+      const getWeekIndex = (weekStart) => {
+        const date = new Date(weekStart);
+        const day = date.getDate();
+        return Math.floor((day - 1) / 7);
+      };
+      
+      const monthlyEnrollments = Array(5).fill(0);
+      const monthlyRevenue = Array(5).fill(0);
+  
+      adminGraphData?.data?.data?.Enrolled?.forEach((item) => {
+        const weekIndex = getWeekIndex(item.week_start);
+        if (weekIndex >= 0 && weekIndex < 5) {
+          monthlyEnrollments[weekIndex] += item.weekly_enrolled;
+        }
+      });
+  
+      adminGraphData?.data?.data?.Revenue?.forEach((item) => {
+        const weekIndex = getWeekIndex(item.week_start);
+        if (weekIndex >= 0 && weekIndex < 5) {
+          monthlyRevenue[weekIndex] += parseFloat(item.weekly_revenue);
+        }
+      });
+  
+      setEnrollments(
+        weeks.map((week, index) => ({
+          week: week,
+          value: monthlyEnrollments[index],
+        }))
+      );
+  
+      setRevenue(
+        weeks.map((week, index) => ({
+          week: week,
+          value: monthlyRevenue[index].toFixed(2),
+        }))
+      );
+    }
+  
+    if (type === "year") {
+      // Handling yearly data
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+      const yearlyEnrollments = Array(12).fill(0);
+      const yearlyRevenue = Array(12).fill(0);
+  
+      adminGraphData?.data?.data?.Enrolled?.forEach((item, index) => {
+        yearlyEnrollments[index] = item.monthly_enrolled;
+      });
+  
+      adminGraphData?.data?.data?.Revenue?.forEach((item, index) => {
+        yearlyRevenue[index] = parseFloat(item.monthly_revenue);
+      });
+  
+      setEnrollments(
+        months.map((month, index) => ({
+          month: month,
+          value: yearlyEnrollments[index],
+        }))
+      );
+  
+      setRevenue(
+        months.map((month, index) => ({
+          month: month,
+          value: yearlyRevenue[index].toFixed(2),
+        }))
+      );
+    }
+  
+    if (type === "all time") {
+      // Handling all-time data
+      const currentYear = new Date().getFullYear();
+      const yearsRange = [];
+      
+      // Create an array of years from two years before to two years after the current year
+      for (let i = currentYear - 2; i <= currentYear + 2; i++) {
+        yearsRange.push(i);
+      }
+    
+      const allTimeEnrollments = yearsRange.map(year => {
+        const yearData = adminGraphData?.data?.data?.Enrolled.find(item => item.year === year);
+        return {
+          year: year,
+          value: yearData ? yearData.yearly_enrolled : 0, // Default to 0 if no data for that year
+        };
+      });
+    
+      const allTimeRevenue = yearsRange.map(year => {
+        const yearData = adminGraphData?.data?.data?.Revenue.find(item => item.year === year);
+        return {
+          year: year,
+          value: yearData ? parseFloat(yearData.yearly_revenue).toFixed(2) : "0.00", // Default to "0.00" if no data for that year
+        };
+      });
+    
+      setEnrollments(allTimeEnrollments);
+      setRevenue(allTimeRevenue);
+    }
+    
   };
-
+  
   useEffect(() => {
     fetchDashboard();
     fetchGraphDashboard();
-  }, []);
+  }, [type]);
+  
+  // Enrollment chart data
+const enrollmentData = {
+  labels: type === "week"
+    ? enrollments.map((e) => e.day)
+    : type === "month"
+    ? enrollments.map((e) => e.week)
+    : type === "year"
+    ? enrollments.map((e) => e.month)
+    : enrollments.map((e) => e.year), // For 'all time'
+  datasets: [
+    {
+      label: "Enrollments",
+      data: enrollments.map((e) => e.value),
+      backgroundColor: "rgba(75,192,192,0.2)",
+      borderColor: "rgba(75,192,192,1)",
+      fill: true,
+      tension: 0.4,
+    },
+  ],
+};
+
+// Revenue chart data
+const revenueData = {
+  labels: type === "week"
+    ? revenue.map((r) => r.day)
+    : type === "month"
+    ? revenue.map((r) => r.week)
+    : type === "year"
+    ? revenue.map((r) => r.month)
+    : revenue.map((r) => r.year), // For 'all time'
+  datasets: [
+    {
+      label: "Revenue",
+      data: revenue.map((r) => r.value),
+      backgroundColor: "rgba(153,102,255,0.2)",
+      borderColor: "rgba(153,102,255,1)",
+      fill: true,
+      tension: 0.4,
+    },
+  ],
+};
+
+  
+  
+  
 
   // Enrollment and revenue chart data
-  const enrollmentData = {
-    labels: enrollments.map((e) => e.day),
-    datasets: [
-      {
-        label: "Enrollments",
-        data: enrollments.map((e) => e.value),
-        backgroundColor: "rgba(75,192,192,0.2)",
-        borderColor: "rgba(75,192,192,1)",
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
+  // if(type === 'week'){
+  //   const enrollmentData = {
+  //     labels: enrollments.map((e) => e.day),
+  //     datasets: [
+  //       {
+  //         label: "Enrollments",
+  //         data: enrollments.map((e) => e.value),
+  //         backgroundColor: "rgba(75,192,192,0.2)",
+  //         borderColor: "rgba(75,192,192,1)",
+  //         fill: true,
+  //         tension: 0.4,
+  //       },
+  //     ],
+  //   // };
+  // }
 
   const [startDate, setStartDate] = useState(new Date());
 
@@ -231,19 +344,19 @@ function AdminDashboard() {
     return `${format(startDate, "MMM-d")} - ${format(endOfWeek, "MMM-d")}`;
   };
 
-  const revenueData = {
-    labels: revenue.map((r) => r.day),
-    datasets: [
-      {
-        label: "Revenue",
-        data: revenue.map((r) => r.value),
-        backgroundColor: "rgba(153,102,255,0.2)",
-        borderColor: "rgba(153,102,255,1)",
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
+  // const revenueData = {
+  //   labels: revenue.map((r) => r.day),
+  //   datasets: [
+  //     {
+  //       label: "Revenue",
+  //       data: revenue.map((r) => r.value),
+  //       backgroundColor: "rgba(153,102,255,0.2)",
+  //       borderColor: "rgba(153,102,255,1)",
+  //       fill: true,
+  //       tension: 0.4,
+  //     },
+  //   ],
+  // };
 
   // Course completion doughnut data
   const courseCompletionData = {
@@ -331,7 +444,18 @@ function AdminDashboard() {
         ))}
       </div>
 
-      <div className="row">
+      <div className="row position-relative">
+      <select 
+  style={{ top: "-10%", right: "7.5%", width: "7rem" }} 
+  className="position-absolute w-10"
+  value={type} // This binds the select element to the state
+  onChange={(e) => setType(e.target.value)} // Handle change here
+>
+  <option value="week">Week</option>
+  <option value="month">Month</option>
+  <option value="year">Year</option>
+  <option value="all time">All Time</option>
+</select>
         <div className="col-md-6">
           <div className="card shadow-sm mb-4">
             <div className="card-body">
