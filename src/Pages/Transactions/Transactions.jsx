@@ -4,6 +4,8 @@ import { BASE_URI } from "../../Config/url";
 import axios from "axios";
 
 import { FaCalendar } from "react-icons/fa6";
+import { HiArrowCircleRight } from "react-icons/hi";
+import { HiArrowCircleLeft } from "react-icons/hi";
 import { FaPen } from "react-icons/fa";
 import "./Transactions.css";
 import { useDispatch } from "react-redux";
@@ -16,6 +18,7 @@ const UserManagement = () => {
   const token = localStorage.getItem("token");
 
   const transactionsUrl = `${BASE_URI}/api/v1/admin/adminPayHistory`;
+
   const payoutRequestsUrl = `${BASE_URI}/api/v1/admin/payoutRequest`; // New URL for payout requests
   const getCommissionUrl = `${BASE_URI}/api/v1/admin/commission`;
 
@@ -35,6 +38,12 @@ const UserManagement = () => {
   const [error, setError] = useState(null);
   const [payoutSuccess, setPayoutSuccess] = useState(false);
 
+  
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(2);
+  console.log('totalPages:', totalPages);
+  const [limit, setLimit] = useState(7); 
+
   const fetchPayoutRequests = async () => {
     // New function to fetch payout requests
     try {
@@ -42,8 +51,14 @@ const UserManagement = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      
+        params: {
+          page: pageNumber,
+          limit: limit,
+        },
       });
       setPayoutRequests(response?.data?.data || []);
+      setTotalPages(Math.ceil(response?.data?.total / limit)); 
     } catch (err) {
       setError(err?.response?.data?.message);
     } finally {
@@ -51,23 +66,45 @@ const UserManagement = () => {
     }
   };
 
-  const fetchTransactions = async () => {
+  // const fetchTransactions = async () => {
+  //   try {
+  //     const response = await axios.get(transactionsUrl, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       }
+  //     });
+  //     console.log(response)
+  //     setTransactions(response.data?.data?.history || []);
+  
+
+  //     // console.log(response.data?.data?.history); // Log the data to check structure
+  //   } catch (err) {
+  //     setError(err?.response?.data?.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+  const fetchTransactions = async (pageNumber) => {
     try {
       const response = await axios.get(transactionsUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        params: {
+          page: pageNumber,
+          limit: 5, // Set the limit to 10
+        },
       });
-      setTransactions(response.data?.data?.history || []);
-
-      // console.log(response.data?.data?.history); // Log the data to check structure
+      setTransactions(response.data.data.history || []);
+      setTotalPages(2);
     } catch (err) {
       setError(err?.response?.data?.message);
     } finally {
       setLoading(false);
     }
   };
-
   const fetchEditCommission = async () => {
     try {
       const response = await axios.get(getCommissionUrl, {
@@ -95,7 +132,7 @@ const UserManagement = () => {
     } else if (activeTab === "editCommission") {
       fetchEditCommission();
     }
-  }, [activeTab]);
+  }, [activeTab,pageNumber]);
 
   const handleAction = async (request) => {
     console.log(` expert:`, request, token);
@@ -162,6 +199,13 @@ const UserManagement = () => {
     }, 0);
   };
 
+
+
+
+  const handlePageClick = (pageNumber) => {
+    setPageNumber(pageNumber);
+    fetchTransactions(pageNumber);
+  };
   return (
     <div className="w-100">
       {payoutSuccess && (
@@ -196,8 +240,8 @@ const UserManagement = () => {
         </div> */}
       </div>
       <header
-        className="header-container p-3 pb-0 rounded-bottom-0 custom-box"
-        style={{ backgroundColor: "white" }}
+        className="header-container p-3 pb-0 rounded-bottom-0 custom-box  "
+        style={{ backgroundColor: "white" , overflowX: "auto" }} 
       >
         <div className="d-flex gap-5 px-4">
           {[
@@ -231,7 +275,7 @@ const UserManagement = () => {
             {activeTab === "payoutRequests" &&
               (error === "no requests found" ? (
                 <>
-                  <div className="no-courses-userCourses">
+                  <div className="no-courses-transactions">
                     <div>
                       <h1>No Payment Requests Found</h1>
                     </div>
@@ -298,6 +342,8 @@ const UserManagement = () => {
                       ))}
                     </tbody>
                   </table>
+                                  
+            
                 </div>
               ))}
           </div>
@@ -308,7 +354,7 @@ const UserManagement = () => {
             {activeTab === "transactions" &&
               (error === "no transactions found" ? (
                 <>
-                  <div className="no-courses-userCourses">
+                  <div className="no-courses-transactions">
                     <div>
                       <h1>No Transactions Found</h1>
                     </div>
@@ -386,6 +432,23 @@ const UserManagement = () => {
                       ))}
                     </tbody>
                   </table>
+                                  
+         <div className="pagination">
+  {loading ? (
+    <div>Loading...</div>
+  ) : (
+    totalPages > 0 && Array.from({ length: totalPages }, (_, i) => (
+      <button
+        key={i + 1}
+        className={`btn-pagination ${pageNumber === i + 1 ? "active" : ""}`}
+       
+        onClick={() => handlePageClick(i + 1)}
+      >
+        {i + 1}
+      </button>
+    ))
+  )}
+</div>
                 </div>
               ))}
           </div>
