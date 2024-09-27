@@ -118,9 +118,25 @@ input::placeholder {
   font-weight: bold;
   transform: translate(-50%, -50%);
 }
+
+
+
+
 .navbar.collapsed .admin-cart-container{
-  margin-left: 72vw;
+  margin-left: 70vw;
+} 
+ .navbar-expand-lg .admin-cart-container{
+  margin-left: 55vw;
+} 
+@media  (min-width:911px) and (max-width: 1082px) {
+  .navbar-expand-lg .admin-cart-container {
+    margin-left: 60vw !important;
+  }
 }
-.navbar-expand-lg .admin-cart-container{
-  margin-left: 58vw;
+@media  (min-width:1081px) and (max-width: 1200px) {
+  .navbar-expand-lg .admin-cart-container {
+    margin-left: 67vw !important;
+  }
 }
+
+

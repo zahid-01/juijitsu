@@ -4,11 +4,16 @@ import Logout from "../Pages/Logout/Logout";
 import Experts from "../Pages/Experts/Experts";
 import Students from "../Pages/Students/Students";
 import Transactions from "../Pages/Transactions/Transactions";
-import Settings from "../Pages/Settings/Settings";
+import Settings from "../Pages/Settings/Settings"; 
+
+
+
 
 export default function AdminRoutes() {
   return (
     <Routes>
+     
+      
       <Route path="/adminDashboard" element={<AdminDashboard />} />
       <Route path="/logout" element={<Logout />} />
       <Route path="/experts" element={<Experts />} />
