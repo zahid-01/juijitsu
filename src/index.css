@@ -110,6 +110,7 @@ input::placeholder {
 .pl-1{
 padding-left: 5%;
 }
+
 .grid-col-2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Creates 2 equal columns */
@@ -129,6 +130,7 @@ padding-left: 5%;
     width: 40%;
   }
 }
+
 @media (max-width: 578px) {
   .w-md-25 {
     width: 100%;
