@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
+import "./AdminDashboard.css";
 import { Line, Doughnut } from "react-chartjs-2";
+
 import {
   Chart as ChartJS,
   LineElement,
@@ -35,6 +37,7 @@ function AdminDashboard() {
   const [enrollments, setEnrollments] = useState([]);
   const [type, setType] = useState("week");
   const [revenue, setRevenue] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   const token = localStorage.getItem("token");
   // console.log(token);
@@ -405,9 +408,9 @@ const revenueData = {
         {/* <h5 className="fw-normal">{formatWeekRange()}</h5> */}
         {/* </div> */}
       </div>
-      <div className="row">
+      <div className="row admin-card-row">
         {Object.keys(data).map((key) => (
-          <div key={key} className="col-md-4">
+          <div key={key} className="col-md-4 card-md-4">
             <div
               className="card shadow-sm mb-3"
               style={{ width: "300px", margin: "auto" }}
@@ -447,17 +450,21 @@ const revenueData = {
       <div className="row position-relative">
       <select 
   style={{ top: "-10%", right: "7.5%", width: "7rem" }} 
-  className="position-absolute w-10"
+  className="position-absolute w-10 p-second  "
   value={type} // This binds the select element to the state
   onChange={(e) => setType(e.target.value)} // Handle change here
 >
-  <option value="week">Week</option>
-  <option value="month">Month</option>
-  <option value="year">Year</option>
-  <option value="all time">All Time</option>
+  <option  className="custom-option" value="week">Week</option>
+  <option   className="custom-option"value="month">Month</option>
+  <option   className="custom-option"value="year">Year</option>
+  <option  className="custom-option" value="all time">All Time</option>
 </select>
+
+
+  
+
         <div className="col-md-6">
-          <div className="card shadow-sm mb-4">
+          <div className="card shadow-sm mb-4 admin-card">
             <div className="card-body">
               <h5 className="card-title text-center">New Enrollments</h5>
               <Line data={enrollmentData} />
@@ -465,7 +472,7 @@ const revenueData = {
           </div>
         </div>
         <div className="col-md-6">
-          <div className="card shadow-sm mb-4">
+          <div className="card shadow-sm mb-4 admin-card">
             <div className="card-body">
               <h5 className="card-title text-center">Revenue</h5>
               <Line data={revenueData} />
