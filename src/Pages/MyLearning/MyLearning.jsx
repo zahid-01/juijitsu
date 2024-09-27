@@ -15,7 +15,6 @@ const ShimmerCard = () => (
   <div className="card-bottom-userCourses shimmer-card-usercourses">
     <div className="shimmer-content-usercourses short"></div>
     <div className="shimmer-content-usercourses long"></div>
-
     <div className="shimmer-content-usercourses medium"></div>
     <div className="shimmer-content-usercourses long"></div>
   </div>
@@ -263,10 +262,11 @@ if(status === 'purchased'){
         <div className="wrapper-myLearning">
           <header className="bg-gradient-custom-div p-3 pb-0 rounded-bottom-3.5 custom-box">
             <h3 className="pb-5">My Learning</h3>
-            <div className="d-flex gap-5 px-4">
+            <div style={{overflowX:'scroll',scrollbarWidth:"none"}} className="d-flex gap-5 px-4">
               {/* Tab headers */}
               <h5
-                className={`text-white px-3 pb-2 fw-light cursor-pointer ${
+              style={{whiteSpace:"nowrap"}}
+                className={`text-white px-2 pb-2 fw-light cursor-pointer ${
                   activeTab === "" ? "border-bottom border-4" : ""
                 }`}
                 onClick={() => setActiveTab("")}
@@ -274,6 +274,7 @@ if(status === 'purchased'){
                 All Courses
               </h5>
               <h5
+              style={{whiteSpace:"nowrap"}}
                 className={`text-white px-3 pb-2 fw-light cursor-pointer ${
                   activeTab === "ongoing" ? "border-bottom border-4" : ""
                 }`}
@@ -282,6 +283,7 @@ if(status === 'purchased'){
                 In - Progress
               </h5>
               <h5
+              style={{whiteSpace:"nowrap"}}
                 className={`text-white px-3 pb-2 fw-light cursor-pointer ${
                   activeTab === "favourite" ? "border-bottom border-4" : ""
                 }`}
@@ -290,6 +292,7 @@ if(status === 'purchased'){
                 Favorites
               </h5>
               <h5
+              style={{whiteSpace:"nowrap"}}
                 className={`text-white px-3 pb-2 fw-light cursor-pointer ${
                   activeTab === "completed" ? "border-bottom border-4" : ""
                 }`}

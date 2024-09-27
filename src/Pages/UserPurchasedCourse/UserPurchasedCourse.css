@@ -545,7 +545,7 @@
 
 
 
-@media (max-width: 768px) {
+@media (max-width: 780px) {
   .top-purchasedCourse{
     padding: 0 2.8vw 0 1.5vw;
   }
@@ -693,7 +693,13 @@
     width: 100%;
     
   }
-  
+  .top-purchasedCourse span div{
+    height: 2vh;
+    width: max-content;
+    
+    
+  }
+ 
 }
 @media (max-width: 530px) {
   

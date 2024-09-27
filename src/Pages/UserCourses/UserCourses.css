@@ -187,7 +187,7 @@
   margin-top: 0.5vh;
 }
 .card-bottom-userCourses h5 {
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 .card-bottom-userCourses h4 {
   font-size: 0.9rem;
@@ -343,11 +343,63 @@
   .categories-userCourses {
     padding-inline: 0.8rem;
   }
-
+  .card-bottom-userCourses p{
+    font-size: 1.5rem;
+  }
+  .middle-sec-card-userCourses div{
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .pricing-card-userCourses h5:first-child{
+    font-size: 0.7rem;
+  }
+  .bottom-card-useruserCourses span h5:first-child{
+    font-size: 0.9rem;
+  }
+  .card-bottom-userCourses h5{
+    font-size: 1.3rem;
+  }
+  .bottom-card-useruserCourses div{
+    padding: 1.2rem 0;
+    height: 0;
+  }
+  .no-courses-userCourses{
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    padding-right: 1.5rem;
+  }
+  .no-courses-userCourses div{
+    width: 90%;
+    height: max-content;
+    padding: 3.5rem 1.5rem;
+  }
 
 }
 @media (max-width: 530px) {
   .bottom-userCourses {
     grid-template-columns: repeat(1, 1fr);
+  }
+  .card-bottom-userCourses{
+    width: 90vw;
+    gap: 1rem;
+  }
+  .card-bottom-userCourses span img{
+    height: 100%;
+  }
+  .no-courses-userCourses div{
+    width: 90%;
+    height: max-content;
+    padding: 2.5rem 3rem;
+  }
+  .no-courses-userCourses div h1{
+    font-size: 1.1rem;
+  }
+  .bottom-userCourses{
+    justify-content: center;
+    align-items: center;
+    padding-left: 2rem;
+    padding-right: 1rem;
+    
   }
 }

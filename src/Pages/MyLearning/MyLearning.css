@@ -213,3 +213,77 @@
 .bottom-card-usermyLearning div p:last-child{
     text-decoration-line: underline;
 }
+
+
+
+@media (max-width: 780px) {
+  .bottom-myLearning{
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .middle-sec-card-myLearning div{
+    height: max-content;
+    padding: 0.8rem  1.5rem;
+    border-radius: 0.4rem;
+    width: max-content;
+  }
+  .card-bottom-myLearning span img{
+    border-radius: 0.7rem;
+  }
+  .card-bottom-myLearning h6{
+    font-size: 1rem;
+    
+  }
+  .card-bottom-myLearning p{
+    font-size: 1rem;
+  }
+  .card-bottom-myLearning h4{
+    font-weight: 500;
+  }
+  .pricing-card-myLearning h5:first-child{
+    font-size: 0.7rem;
+  }
+  .bottom-card-usermyLearning span{
+    height: 1.1rem;
+  }
+
+
+}
+@media (max-width: 530px) {
+  .bottom-myLearning {
+    grid-template-columns: repeat(1, 1fr);
+    width: 90vw;
+    gap: 1rem;
+  }
+  .card-bottom-userCourses{
+    width: 20rem;
+    gap: 1rem;
+  }
+  .card-bottom-userCourses span img{
+    height: 100%;
+  }
+  .no-courses-myLearning div{
+    width: 90%;
+    height: max-content;
+    padding: 2.5rem 3rem;
+  }
+  .no-courses-myLearning div h1{
+    font-size: 1.1rem;
+  }
+  .bottom-userCourses{
+    justify-content: center;
+    align-items: center;
+    padding-left: 2rem;
+    padding-right: 1rem;
+  }
+  .bottom-myLearning{
+    padding-left: 2rem;
+    padding-right: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+  /* .shimmer-card-usercourses{
+    padding-left: 2rem;
+    padding-right: 1rem;
+  } */
+}

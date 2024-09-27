@@ -281,10 +281,8 @@ const UserPurchasedCourse = () => {
       })
       setEditRatingPopUp(false)
       setIs_rated(false)
-
       setReview(null)
       setSelectedRating(null)
-
       toast.success("Rating deleted successfully");
     }
     catch(error){
@@ -312,8 +310,6 @@ const UserPurchasedCourse = () => {
     }
 
     const printContent = `
-
-
     <html>
     <head>
    <link rel="stylesheet" type="text/css" href="/src/Pages/UserPurchasedCourse/UserPurchasedCourse.css">

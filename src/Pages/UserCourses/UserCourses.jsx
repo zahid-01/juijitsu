@@ -120,7 +120,7 @@ const Card = ({
         </div>
       </div>
       <p>{expert}</p>
-      <h5 style={{ fontSize: "1.2vw", fontWeight: "600" }}>{title}</h5>
+      <h5 style={{fontWeight: "600" }}>{title}</h5>
       {/* <h4
         dangerouslySetInnerHTML={{
           __html: description

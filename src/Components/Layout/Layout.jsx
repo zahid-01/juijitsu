@@ -15,7 +15,7 @@ export const Layout = ({ children, search, setSearch, cartItemNumber }) => {
   localStorage.removeItem("role");
   return (
     <>
-      <div className="layout">
+      <div className="layout position-relative">
         <div className="responsive-md">
           <SmallerScreenNavbar />
         </div>
@@ -33,7 +33,7 @@ export const Layout = ({ children, search, setSearch, cartItemNumber }) => {
         <main className={`content ${collapsed ? "collapsed" : ""}`}>
           {children}
         </main>
-        <div className="responsive-md">
+        <div style={{top:"95.5%", position:"fixed"}} className="responsive-md ">
           <SmallerScreenSidebar />
         </div>
       </div>
