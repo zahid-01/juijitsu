@@ -487,7 +487,7 @@ const revenueData = {
             <div className="card-body">
               <h5 className="card-title text-center">Course Completion Rate</h5>
               <div className="d-flex align-items-center justify-content-center">
-                <div style={{ width: "20rem", height: "20rem" }}>
+                <div className="completion-class" style={{ width: "20rem", height: "20rem" }}>
                   <Doughnut data={courseCompletionData} />
                 </div>
               </div>
@@ -499,7 +499,7 @@ const revenueData = {
             <div className="card-body">
               <h5 className="card-title text-center">Most Bought Courses</h5>
               <div className="d-flex align-items-center justify-content-center">
-                <div style={{ width: "20rem", height: "20rem" }}>
+                <div  className="bought-class"style={{ width: "20rem", height: "20rem" }}>
                   <Doughnut data={mostBoughtCoursesData} />
                 </div>
               </div>

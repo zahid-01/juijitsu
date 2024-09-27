@@ -411,7 +411,7 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
               >
                 <RiBookFill className="fs-5" />
               </motion.div>
-              {!collapsed && <span className="text">My Learning</span>}
+              {!collapsed && <span className="text">Purchased Courses</span>}
             </Link>
           </motion.div>
           <motion.div variants={sidebarAnimation}>

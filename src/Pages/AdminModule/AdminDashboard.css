@@ -25,6 +25,12 @@
         margin-bottom: 30px;
 
       }
+      .completion-class{
+        width: 18rem !important;
+      }
+      .bought-class{
+        width: 19rem !important;
+      }
       
     }
     @media (max-width: 1280px){

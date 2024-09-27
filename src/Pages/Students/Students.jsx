@@ -106,7 +106,7 @@ const UserManagement = () => {
       </div>
 
       <div className="tab-content px-3 py-3 custom-box rounded-top-0"  style={{backgroundColor:"white"}}>
-        <div className="px-4">
+        <div className="px-4 exp">
           {activeTab === "users" && 
            
            (error === "no students found" ? (
@@ -120,10 +120,10 @@ const UserManagement = () => {
             </>
           ) :(
             <div className="tab-pane active" style={{ overflowX: "auto" }}>
-              <table className="table w-md-reverse-50">
+              <table className="table w-md-reverse-50 w-new">
                 <thead>
                   <tr>
-                    <th scope="col">
+                    <th scope="col ">
                       Name
                     
                     </th>

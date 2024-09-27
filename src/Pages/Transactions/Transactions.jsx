@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { BASE_URI } from "../../Config/url";
 import axios from "axios";
@@ -38,11 +37,10 @@ const UserManagement = () => {
   const [error, setError] = useState(null);
   const [payoutSuccess, setPayoutSuccess] = useState(false);
 
-  
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
-  console.log('totalPages:', totalPages);
-  const [limit, setLimit] = useState(7); 
+  console.log("totalPages:", totalPages);
+  const [limit, setLimit] = useState(7);
 
   const fetchPayoutRequests = async () => {
     // New function to fetch payout requests
@@ -51,14 +49,14 @@ const UserManagement = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      
+
         params: {
           page: pageNumber,
           limit: limit,
         },
       });
       setPayoutRequests(response?.data?.data || []);
-      setTotalPages(Math.ceil(response?.data?.total / limit)); 
+      setTotalPages(Math.ceil(response?.data?.total / limit));
     } catch (err) {
       setError(err?.response?.data?.message);
     } finally {
@@ -75,7 +73,6 @@ const UserManagement = () => {
   //     });
   //     console.log(response)
   //     setTransactions(response.data?.data?.history || []);
-  
 
   //     // console.log(response.data?.data?.history); // Log the data to check structure
   //   } catch (err) {
@@ -84,7 +81,6 @@ const UserManagement = () => {
   //     setLoading(false);
   //   }
   // };
-
 
   const fetchTransactions = async (pageNumber) => {
     try {
@@ -132,7 +128,7 @@ const UserManagement = () => {
     } else if (activeTab === "editCommission") {
       fetchEditCommission();
     }
-  }, [activeTab,pageNumber]);
+  }, [activeTab, pageNumber]);
 
   const handleAction = async (request) => {
     console.log(` expert:`, request, token);
@@ -199,9 +195,6 @@ const UserManagement = () => {
     }, 0);
   };
 
-
-
-
   const handlePageClick = (pageNumber) => {
     setPageNumber(pageNumber);
     fetchTransactions(pageNumber);
@@ -241,7 +234,7 @@ const UserManagement = () => {
       </div>
       <header
         className="header-container p-3 pb-0 rounded-bottom-0 custom-box  "
-        style={{ backgroundColor: "white" , overflowX: "auto" }} 
+        style={{ backgroundColor: "white", overflowX: "auto" }}
       >
         <div className="d-flex gap-5 px-4">
           {[
@@ -342,8 +335,6 @@ const UserManagement = () => {
                       ))}
                     </tbody>
                   </table>
-                                  
-            
                 </div>
               ))}
           </div>
@@ -361,8 +352,9 @@ const UserManagement = () => {
                   </div>
                 </>
               ) : (
-                <div className="tab-pane active" style={{ overflowX: "auto" }}>
-                  <table className="table w-md-reverse-50">
+                <div className="tab-pane active" >
+                 <div style={{ overflowX: "auto" }}> 
+                 <table className="table w-md-reverse-50">
                     <thead>
                       <tr>
                         <th scope="col">Name</th>
@@ -432,23 +424,26 @@ const UserManagement = () => {
                       ))}
                     </tbody>
                   </table>
-                                  
-         <div className="pagination">
-  {loading ? (
-    <div>Loading...</div>
-  ) : (
-    totalPages > 0 && Array.from({ length: totalPages }, (_, i) => (
-      <button
-        key={i + 1}
-        className={`btn-pagination ${pageNumber === i + 1 ? "active" : ""}`}
-       
-        onClick={() => handlePageClick(i + 1)}
-      >
-        {i + 1}
-      </button>
-    ))
-  )}
-</div>
+                 </div>
+
+                  <div className="pagination">
+                    {loading ? (
+                      <div>Loading...</div>
+                    ) : (
+                      totalPages > 0 &&
+                      Array.from({ length: totalPages }, (_, i) => (
+                        <button
+                          key={i + 1}
+                          className={`btn-pagination ${
+                            pageNumber === i + 1 ? "active" : ""
+                          }`}
+                          onClick={() => handlePageClick(i + 1)}
+                        >
+                          {i + 1}
+                        </button>
+                      ))
+                    )}
+                  </div>
                 </div>
               ))}
           </div>
@@ -470,7 +465,7 @@ const UserManagement = () => {
                       type="text"
                       placeholder="Enter Percentage"
                       id="commission"
-                      className="form-control"
+                      className="form-control f-new"
                       value={editCommission.commission || ""} // Access the commission property inside the commission object
                       onChange={(e) =>
                         setEditCommission((prev) => ({
@@ -482,9 +477,9 @@ const UserManagement = () => {
                     />
                     <div className="col-12 button-group">
                       {isEditable ? (
-                        <>
+                        <div className="button-btn">
                           <button
-                            className="btn"
+                            className="btn comission-button"
                             style={{
                               background:
                                 "linear-gradient(92.36deg, #0c243c 0%, #7e8c9c 98.67%)",
@@ -495,7 +490,7 @@ const UserManagement = () => {
                             Save
                           </button>
                           <button
-                            className="btn btn-secondary ms-2"
+                            className="btn btn-secondary ms-2 comission-button"
                             style={{
                               background: "white",
                               color: "black",
@@ -506,10 +501,10 @@ const UserManagement = () => {
                           >
                             Discard
                           </button>
-                        </>
+                        </div>
                       ) : (
                         <button
-                          className="btn btn-secondary ms-2 input-group-text h-100  px-4 bg-light-custom cursor-pointer"
+                          className="btn btn-secondary ms-2 input-group-text h-100  px-4 bg-light-custom cursor-pointer edit-button"
                           style={{
                             background:
                               "linear-gradient(92.36deg, #0c243c 0%, #7e8c9c 98.67%)",
