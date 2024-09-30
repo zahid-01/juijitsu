@@ -19,10 +19,11 @@
   border-top-left-radius: 1vw;
   color: white;
   display: flex;
-  flex-direction: column;
-  gap: 1vh;
-  justify-content: center;
+  
+  justify-content: space-between;
+  padding-top: 3vh;
   padding-left: 2vw;
+  padding-right: 2rem;
   overflow-y: auto;
 }
 .top-userCourseview h3 {
@@ -45,27 +46,32 @@
 }
 .mid-userCourseview {
   width: 100%;
-  height: 120vh;
+  height: max-content;
   /* background-color: greenyellow; */
   display: flex;
 }
 .left-mid-userCourseview {
-  width: 60%;
+  width: 40%;
   height: 100%;
   /* background-color: aqua; */
-  border-right: #7e8c9c86 1.5px solid;
-  border-bottom: #7e8c9c86 1.5px solid;
+  /* border-right: #7e8c9c86 1.5px solid;
+  border-bottom: #7e8c9c86 1.5px solid; */
   padding-left: 1vw;
   padding-top: 1vh;
 }
 .left-top-mid-userCourseview {
   width: 100%;
+  /* margin-left: 3vw; */
   /* background-color: yellow; */
   display: flex;
-  height: 25vw;
-  overflow-y: auto;
+  /* height: 25vw; */
+  /* overflow-y: auto; */
   flex-direction: column;
-  border-bottom: 1px solid #7e8c9c;
+  margin-top: 2vh;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 4vh 1vw;
+  border-radius: 0.5vw;
+  /* border-bottom: 1px solid #7e8c9c; */
   gap: 0.6vh;
 }
 
@@ -110,38 +116,13 @@
 }
 .left-bottom-mid-userCourseview {
   /* background-color: blue; */
-  padding-top: 2vh;
+  padding-top: 1vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 2.3vh;
-}
-.left-bottom-mid-userCourseview div {
-  overflow-y: auto;
-  height: 55vh;
-  /* transition: all 0.3s ease; */
-  /* background-color: #FFE500; */
-}
-/* Custom scrollbar for .left-top-mid-userCourseview */
-.left-bottom-mid-userCourseview div::-webkit-scrollbar {
-  width: 5px; /* Adjusts the scrollbar width */
+  gap: 1.2vh;
 }
 
-.left-bottom-mid-userCourseview div::-webkit-scrollbar-track {
-  background: transparent; /* Transparent background for the track */
-
-  /* border-radius: 10px;  Rounded corners for the track */
-}
-
-.left-bottom-mid-userCourseview div::-webkit-scrollbar-thumb {
-  background-color: rgb(155, 155, 155); /* White scrollbar thumb */
-  border-radius: 50px; /* Rounded corners for the thumb */
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5); /* Soft shadow around the thumb */
-}
-
-.left-bottom-mid-userCourseview div::-webkit-scrollbar-thumb:hover {
-  background-color: #e0e0e0; /* Lighter color on hover */
-}
 
 .left-bottom-mid-userCourseview div details {
   border: 1px solid #7e8c9c;
@@ -175,7 +156,6 @@
   align-items: center;
   gap: 2vw;
 }
-
 .left-bottom-mid-userCourseview div details summary {
   list-style: none;
   position: relative;
@@ -203,25 +183,26 @@
   display: none;
 }
 .right-mid-userCourseview {
-  width: 40%;
-  height: 100%;
+  width: 70%;
+  height: max-content;
   /* background-color: aquamarine; */
   position: relative;
 }
-.right-mid-userCourseview .tumbnail-userCourseview {
+.tumbnail-userCourseview {
   position: absolute;
-  height: 27vh;
+  height: 22.5rem;
   border-radius: 1vw;
-  top: -10vh;
-  left: 2.5vw;
+  top: -5rem;
+  left: 3%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 75%;
+  width: 94%;
   background-size: auto;
   object-fit: cover;
+  /* background-color: blue; */
 }
 .pricing-right-mid-userCourseview {
   /* background-color: #FFE500; */
-  margin-top: 17vh;
+  
   height: 10vh;
   display: flex;
   align-items: center;
@@ -252,17 +233,19 @@
   cursor: pointer;
 }
 .details-right-mid-userCourseview {
-  height: 27%;
-  width: 75%;
+  /* height: 27%; */
+  margin-top: 17.5rem;
+  width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 0.5vw;
-  margin-left: 3vw;
+  /* margin-left: 3vw; */
   display: flex;
   flex-direction: column;
   gap: 3vh;
   justify-content: center;
-  padding-left: 1.5vw;
-  margin-top: 1vh;
+  padding: 4vh 1vw;
+  /* padding-left: 1.5vw; */
+  /* margin-top: 1vh; */
 }
 .details-right-mid-userCourseview span {
   display: flex;
@@ -302,16 +285,16 @@
 }
 .ratings-right-mid-userCourseview {
   /* background-color: #ff0000; */
-  height: 48.5vh;
+  /* height: 48.5vh; */
   padding-top: 4vh;
   padding-left: 1vw;
   padding-right: 1vw;
-  margin-top: 6.85vh;
+  margin-top: 1.85vh;
 }
 .ratings-right-mid-userCourseview .map-ratings-right-mid-userCourseview {
-  overflow-y: auto;
+  
   margin-top: 3%;
-  height: 94.4%;
+  
   /* background-color: blue; */
 }
 .ratings-right-mid-userCourseview div div {
@@ -322,7 +305,7 @@
   margin-top: 1vh;
 }
 .ratings-right-mid-userCourseview h5:first-child {
-  margin-left: 2vw;
+  margin-left: 0;
 }
 .ratings-right-mid-userCourseview div div div:first-child img {
   height: 2.5vw;
@@ -594,10 +577,10 @@
   color: white;
   cursor: pointer;
 }
-.right-mid-userCourseview-responsive{
-  display: none;
-  /* display: flex; */
-}
+/* .right-mid-userCourseview-responsive{
+  
+ 
+} */
 
 
 
@@ -666,6 +649,7 @@ padding: 0;
     padding-bottom: 2vh;
 
   }
+  
   .left-top-mid-userCourseview div{
     width: 97%;
     font-size: 2vw;
@@ -684,6 +668,7 @@ padding: 0;
     height: max-content;
     padding-bottom: 2vh;
   }
+  
   .top-userCourseview h3{
     font-size: 3vw;
   }
@@ -738,6 +723,7 @@ padding: 0;
 }
 .right-mid-userCourseview-responsive .tumbnail-userCourseview{
   width:94% !important;
+
 
 }
 .content-wrapper-mid-userCourseview {

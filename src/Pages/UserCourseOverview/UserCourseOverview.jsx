@@ -128,12 +128,25 @@ const UserCourseOverview = () => {
         <div className="wrapper-userCourseview">
 
           
-          <div className="top-userCourseview">
+          <div className="top-userCourseview d-flex">
             <h3 className="text-uppercase">
               {courseData?.course?.title || "No title available"}
             </h3>
 
-            <h6
+            
+                <span className="d-flex gap-2">
+                  <h5 style={{textDecoration:'line-through', fontSize:'1rem'}}>${courseData?.course?.price || "No price available"}</h5>
+                  <h5 style={{fontSize:'1.5rem', fontWeight:'bold'}}>
+                    $
+                    {courseData?.course?.discounted_price ||
+                      "No discount available"}
+                  </h5>
+                </span>
+
+                
+            
+
+            {/* <h6
               dangerouslySetInnerHTML={{
                 __html: courseData?.course?.description
                   ? courseData.course.description
@@ -148,32 +161,21 @@ const UserCourseOverview = () => {
               {courseData?.review?.totalReviews || 0} reviews (
               {courseData?.review?.averageRating || 0}{" "}
               <FontAwesomeIcon icon={faStar} className="staricon" />)
-            </h6>
+            </h6> */}
           </div>
           <div className="mid-userCourseview">
-          <div className="right-mid-userCourseview-responsive">
+          <div className="right-mid-userCourseview p-3">
               {/* <VideoPlayer
                 videoUrl={video_url}
                 videoType={viseo_type}
                 className="tumbnail-userCourseview"
               /> */}
-              {viseo_type === "youtube" ? (
-                <ReactPlayer
-                  url={video_url}
-                  className="tumbnail-userCourseview"
-                  controls={true}
-                />
-              ) : (
-                <video
-                  src={video_url}
-                  className="tumbnail-userCourseview"
-                  controls
-                >
-                  Your browser does not support the video tag.
-                </video>
-              )}
-
-              <div className="content-wrapper-mid-userCourseview">
+               <VideoPlayer
+                videoUrl={video_url}
+                videoType={viseo_type}
+                className="tumbnail-userCourseview"
+              />
+              
               <div className="details-right-mid-userCourseview">
                 <span>
                   <h5>Access:</h5>
@@ -194,29 +196,6 @@ const UserCourseOverview = () => {
                   </h6>
                 </span>
               </div>
-              <div className="pricing-right-mid-userCourseview">
-                <span>
-                  <h5>${courseData?.course?.price || "No price available"}</h5>
-                  <h5>
-                    $
-                    {courseData?.course?.discounted_price ||
-                      "No discount available"}
-                  </h5>
-                </span>
-
-                <div onClick={(e) => handleCart(id, e)}>
-                  {isLoding ? (
-                    <l-bouncy size="35" speed="1.2" color="white"></l-bouncy>
-                  ) : (
-                    <p>Add to Cart</p>
-                  )}
-                </div>
-              </div>
-              
-              </div>
-            </div>
-
-            <div className="left-mid-userCourseview">
               <div className="left-top-mid-userCourseview">
                 <h3>Description</h3>
                 <div
@@ -231,6 +210,10 @@ const UserCourseOverview = () => {
                   <FontAwesomeIcon icon={faArrowRight} />
                 </h4>
               </div>
+            </div>
+
+            <div className="left-mid-userCourseview">
+              
               <div className="left-bottom-mid-userCourseview">
                 <h4>Course Lessons</h4>
                 <div>
@@ -301,9 +284,51 @@ const UserCourseOverview = () => {
                   )}
                 </div>
               </div>
+              <div className="ratings-right-mid-userCourseview">
+                <h5>Reviews & Ratings:</h5>
+                <div className="map-ratings-right-mid-userCourseview">
+                  {courseData?.review?.userReviews?.length > 0 ? (
+                    courseData.review.userReviews.map((review, index) => (
+                      <div key={index}>
+                        <div>
+                          {review?.profile_picture ? (
+                            <img
+                            loading="lazy"
+                              src={review?.profile_picture}
+                              alt="profile image"
+                            />
+                          ) : (
+                            <FaUserCircle className="fs-1" />
+                          )}
+                          <h5>{review?.name || "No name available"}</h5>
+                          <p>
+                            {review?.review_date
+                              ? review?.review_date.split("T")[0]
+                              : "No review date"}
+                          </p>
+                        </div>
+                        <div>
+                          <span>
+                            {[...Array(5)].map((_, i) =>
+                              i < review.rating ? (
+                                <AiFillStar key={i} className="staricon" />
+                              ) : (
+                                <AiOutlineStar key={i} className="staricon" />
+                              )
+                            )}
+                          </span>
+                          <p>{review.comment || "No comment available"}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No reviews available!</p>
+                  )}
+                </div>
+              </div>
             </div>
-            <div className="right-mid-userCourseview">
-              <VideoPlayer
+            {/* <div className="right-mid-userCourseview"> */}
+              {/* <VideoPlayer
                 videoUrl={video_url}
                 videoType={viseo_type}
                 className="tumbnail-userCourseview"
@@ -347,49 +372,9 @@ const UserCourseOverview = () => {
                   </h6>
                 </span>
               </div>
-              <div className="ratings-right-mid-userCourseview">
-                <h5>Reviews & Ratings:</h5>
-                <div className="map-ratings-right-mid-userCourseview">
-                  {courseData?.review?.userReviews?.length > 0 ? (
-                    courseData.review.userReviews.map((review, index) => (
-                      <div key={index}>
-                        <div>
-                          {review?.profile_picture ? (
-                            <img
-                            loading="lazy"
-                              src={review?.profile_picture}
-                              alt="profile image"
-                            />
-                          ) : (
-                            <FaUserCircle className="fs-1" />
-                          )}
-                          <h5>{review?.name || "No name available"}</h5>
-                          <p>
-                            {review?.review_date
-                              ? review?.review_date.split("T")[0]
-                              : "No review date"}
-                          </p>
-                        </div>
-                        <div>
-                          <span>
-                            {[...Array(5)].map((_, i) =>
-                              i < review.rating ? (
-                                <AiFillStar key={i} className="staricon" />
-                              ) : (
-                                <AiOutlineStar key={i} className="staricon" />
-                              )
-                            )}
-                          </span>
-                          <p>{review.comment || "No comment available"}</p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p style={{marginLeft:"2vw"}}>No reviews available!</p>
-                  )}
-                </div>
-              </div>
-            </div>
+              */}
+               
+            {/* </div> */}
           </div>
           <div className="bottom-userCourseview">
             <h3>Other Courses You Might Like</h3>

@@ -1,7 +1,9 @@
 /* VideoComponent.css */
-.video-container-purchasedCourse .tumbnail-userCourseview {
+.video-container-purchasedCourse .tumbnail-purchasedCourse {
   width: 100% !important;
   height: auto;
+  overflow: hidden;
+  border-radius: 0.5rem;
 }
 
 
