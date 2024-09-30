@@ -215,4 +215,26 @@
   .bottom-courses {
     grid-template-columns: repeat(1, 1fr);
   }
+  .card-bottom-courses{
+    width: 90vw;
+    gap: 1rem;
+  }
+  .card-bottom-courses  img{
+    height: 23vh;
+  }
+  .no-courses-courses  div{
+    width: 90%;
+    height: max-content;
+    padding: 2.5rem 3rem;
+  }
+  .no-courses-courses  div h1{
+    font-size: 1.1rem;
+  }
+  .bottom-courses{
+    justify-content: center;
+    align-items: center;
+    padding-left: 2rem;
+    padding-right: 1rem;
+    
+  }
 }

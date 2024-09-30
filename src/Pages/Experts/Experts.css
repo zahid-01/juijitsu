@@ -1,0 +1,9 @@
+@media (max-width:500px){
+    .exp{
+        padding-left: 0% !important;
+        padding-right: 0% !important;
+    }
+    .w-new{
+        min-width: 35rem !important;
+    }
+}

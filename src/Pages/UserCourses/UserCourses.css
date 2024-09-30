@@ -249,7 +249,9 @@
   border-radius: 0.26rem;
   color: white;
   cursor: pointer;
+  padding: 1.2rem 0.2rem;
 }
+
 
 /* Shimmer effect */
 @keyframes shimmer {
@@ -359,10 +361,15 @@
   .card-bottom-userCourses h5{
     font-size: 1.3rem;
   }
-  .bottom-card-useruserCourses div{
+  /* .bottom-card-useruserCourses div{
     padding: 1.2rem 0;
     height: 0;
-  }
+  } */
+
+      .bottom-card-useruserCourses div {
+        padding: 1.2rem 0.2rem;
+        height: 0;
+    }
   .no-courses-userCourses{
     width: 100vw;
     display: flex;

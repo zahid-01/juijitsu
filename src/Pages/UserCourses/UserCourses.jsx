@@ -3,7 +3,7 @@ import "./UserCourses.css";
 import cardImage from "../../assets/coursesCard.png";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { CiHeart } from "react-icons/ci";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -49,14 +49,13 @@ const Card = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hearted, setHearted] = useState(heartedAPI);
-  console.log(heartedAPI);
-  // const dispatch = useDispatch();
-  // const hearted = false
-  const handleAddToCart = async (e) => {
-    e.stopPropagation();
-    setIsLoading(true);
-    await onAddToCart(id, setIsLoading);
-  };
+  const location = useLocation();
+
+  // const handleAddToCart = async (e) => {
+  //   e.stopPropagation();
+  //   setIsLoading(true);
+  //   await onAddToCart(id, setIsLoading);
+  // };
 
   const handleFavrouite = async (e) => {
     e.stopPropagation();
@@ -72,7 +71,6 @@ const Card = ({
           Authorization: "Bearer " + token,
         },
       });
-      // console.log("ok here")
     } catch (err) {
       console.log(err);
       toast.error("Failed to add to favorites");
@@ -120,38 +118,26 @@ const Card = ({
         </div>
       </div>
       <p>{expert}</p>
-      <h5 style={{fontWeight: "600" }}>{title}</h5>
-      {/* <h4
-        dangerouslySetInnerHTML={{
-          __html: description
-            ? description.split(" ").slice(0, 5.5).join(" ") + "..."
-            : "No description found",
-        }}
-      ></h4> */}
+      <h5 style={{ fontWeight: "600" }}>{title}</h5>
       <div className="bottom-card-useruserCourses">
         <span>
           <h5>{`$${price}`}</h5>
           <h5>{`$${(price * (1 - discount / 100)).toFixed(2)}`}</h5>
         </span>
         <div
-          onClick={
-            purchase
-              ? () => handlePurchase(id)
-              : carted
-              ? () => handleCarted()
-              : handleAddToCart
-          }
+          onClick={() => {
+            navigate("/userCourses/userCourseView");
+            navigate(location.pathname);
+          }}
         >
           {purchase ? (
             <h6>Purchased!</h6>
-          ) : carted ? (
-            <h6>In Cart!</h6>
           ) : (
             <h6>
               {isLoading ? (
                 <l-bouncy size="30" speed="1.5" color="white"></l-bouncy>
               ) : (
-                "Add to Cart"
+                "Go To Courses"
               )}
             </h6>
           )}
@@ -160,6 +146,7 @@ const Card = ({
     </div>
   );
 };
+
 const UserCourses = ({ search }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -209,13 +196,21 @@ const UserCourses = ({ search }) => {
 
   const coursesData = useMemo(() => data?.data || [], [data]);
 
+  // const handleNavigate = (id, status) => {
+  //   if (!status) {
+  //     navigate(`/userCourses/userCourseView/${id}`);
+  //   } else if (status === "Purchased") {
+  //     navigate(`/userPurchasedCourses/${id}`);
+  //   } else if (status === "carted") {
+  //     navigate(`/userPurchasedCourses/${id}`);
+  //   }
+  // };
   const handleNavigate = (id, status) => {
+    console.log("Navigating with ID:", id, "Status:", status);
     if (!status) {
       navigate(`/userCourses/userCourseView/${id}`);
     } else if (status === "Purchased") {
       navigate(`/userPurchasedCourses/${id}`);
-    } else if (status === "carted") {
-      navigate(`/userCart`);
     }
   };
 
@@ -238,19 +233,7 @@ const UserCourses = ({ search }) => {
       );
       setIsLoading(false);
       toast.success(`${response.data.message}`);
-
-      axios({
-        method: "GET",
-        url: `${BASE_URI}/api/v1/cart`,
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      }).then(
-        (res) => {
-          dispatch(userCartActions.setCart(res.data.cart));
-        },
-        () => {}
-      );
+      navigate(`/userPurchasedCourses/${id}`);
     } catch (err) {
       setIsLoading(false);
       toast.error(`Error: ${err?.response?.data?.message}`);
@@ -261,9 +244,9 @@ const UserCourses = ({ search }) => {
     navigate(`/userPurchasedCourses/${id}`);
   };
 
-  const handleCarted = () => {
-    navigate(`/userCart`);
-  };
+  // const handleCarted = () => {
+  //   navigate(`/userPurchasedCourses/`);
+  // };
 
   return (
     <>
@@ -277,28 +260,28 @@ const UserCourses = ({ search }) => {
       ) : (
         <div className="wrapper-userCourses w-100">
           <div className="bg-gradient-custom-div px-3 rounded">
-          <div className="top-userCourses">
-            <h4>Courses</h4>
-          </div>
+            <div className="top-userCourses">
+              <h4>Courses</h4>
+            </div>
 
-          <div className="categories-userCourses">
-            {["All", ...categories.map((category) => category.name)].map(
-              (category, index) => (
-                <div
-                  key={index}
-                  className={
-                    selectedCategory === category ||
-                    (category === "All" && selectedCategory === "")
-                      ? "button-categories-userCourses border-bottom border-4"
-                      : "not-button-categories-userCourses"
-                  }
-                  onClick={() => handleCategoryClick(category)}
-                >
-                  <h4>{category}</h4>
-                </div>
-              )
-            )}
-          </div>
+            <div className="categories-userCourses">
+              {["All", ...categories.map((category) => category.name)].map(
+                (category, index) => (
+                  <div
+                    key={index}
+                    className={
+                      selectedCategory === category ||
+                      (category === "All" && selectedCategory === "")
+                        ? "button-categories-userCourses border-bottom border-4"
+                        : "not-button-categories-userCourses"
+                    }
+                    onClick={() => handleCategoryClick(category)}
+                  >
+                    <h4>{category}</h4>
+                  </div>
+                )
+              )}
+            </div>
           </div>
 
           <div className="bottom-userCourses">

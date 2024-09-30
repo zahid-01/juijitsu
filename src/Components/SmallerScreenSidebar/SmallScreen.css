@@ -1,0 +1,9 @@
+.small-screen{
+   top: 94.7% !important;
+
+}
+@media (max-width:376px){
+    .small-screen{
+        top: 93% !important;
+    }
+}

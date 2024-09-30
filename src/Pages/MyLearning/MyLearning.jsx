@@ -271,9 +271,9 @@ if(status === 'purchased'){
                 }`}
                 onClick={() => setActiveTab("")}
               >
-                All Courses
+                Purchased Courses
               </h5>
-              <h5
+              {/* <h5
               style={{whiteSpace:"nowrap"}}
                 className={`text-white px-3 pb-2 fw-light cursor-pointer ${
                   activeTab === "ongoing" ? "border-bottom border-4" : ""
@@ -281,7 +281,7 @@ if(status === 'purchased'){
                 onClick={() => setActiveTab("ongoing")}
               >
                 In - Progress
-              </h5>
+              </h5> */}
               <h5
               style={{whiteSpace:"nowrap"}}
                 className={`text-white px-3 pb-2 fw-light cursor-pointer ${
@@ -289,9 +289,9 @@ if(status === 'purchased'){
                 }`}
                 onClick={() => setActiveTab("favourite")}
               >
-                Favorites
+                Wish List
               </h5>
-              <h5
+              {/* <h5
               style={{whiteSpace:"nowrap"}}
                 className={`text-white px-3 pb-2 fw-light cursor-pointer ${
                   activeTab === "completed" ? "border-bottom border-4" : ""
@@ -299,7 +299,7 @@ if(status === 'purchased'){
                 onClick={() => setActiveTab("completed")}
               >
                 Completed
-              </h5>
+              </h5> */}
             </div>
           </header>
 
