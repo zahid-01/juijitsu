@@ -240,6 +240,7 @@ const UserPurchasedCourse = () => {
     }
   };
 
+  
 
   const updateRating = async () => {
 
@@ -567,8 +568,8 @@ const UserPurchasedCourse = () => {
                 {video_type === "youtube" ? (
                   <ReactPlayer
                     url={video_url}
-                    className="tumbnail-userCourseview"
-                    style={{ width: "100% !important" }}
+                    className="tumbnail-purchasedCourse"
+                    style={{ width: "100%" }}
                     controls={true}
                   />
                 ) : (
