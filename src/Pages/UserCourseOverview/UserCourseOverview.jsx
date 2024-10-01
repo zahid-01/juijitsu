@@ -134,7 +134,7 @@ const UserCourseOverview = () => {
             </h3>
 
             
-                <span className="d-flex gap-2">
+                <span className="d-flex gap-2 d-new">
                   <h5 style={{textDecoration:'line-through', fontSize:'1rem'}}>${courseData?.course?.price || "No price available"}</h5>
                   <h5 style={{fontSize:'1.5rem', fontWeight:'bold'}}>
                     $
@@ -175,8 +175,92 @@ const UserCourseOverview = () => {
                 videoType={viseo_type}
                 className="tumbnail-userCourseview"
               />
+
+<div className="left-bottom-mid-userCourseview second-leftuserCourse">
+                <h4>Course Lessons</h4>
+                <div>
+                  {courseData?.courseChapters?.chapters?.length > 0 ? (
+                    chapters.map((chapter, chapterIndex) => (
+                      <details
+                        key={chapter?.chapter_id}
+                        open={
+                          (chapterIndex === 0 && true) ||
+                          openChapters[chapterIndex]
+                        }
+                        onToggle={() => handleLeftToggle(chapterIndex)}
+                      >
+                        <summary>
+                          <FontAwesomeIcon
+                            icon={faAngleDown}
+                            className={
+                              openChapters[chapterIndex]
+                                ? "up-icon"
+                                : "down-icon"
+                            }
+                          />
+                          <h6>
+                            {chapter.chapter_no || "No chapter number"}.{" "}
+                            {chapter.chapterTitle || "No chapter title"}
+                          </h6>
+                        </summary>
+                        {chapter?.lessons.map((lesson, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() =>
+                              handleVideoChange(
+                                lesson?.video_url,
+                                lesson?.thumbnail,
+                                lesson?.lesson_id
+                              )
+                            }
+                            style={{
+                              cursor: "pointer",
+                              color:
+                                selectedLesson === lesson?.lesson_id && "red",
+                            }}
+                          >
+                            <h6>
+                              <FaYoutube
+                                color="black"
+                                style={{
+                                  cursor: "pointer",
+                                  color:
+                                    selectedLesson === lesson?.lesson_id &&
+                                    "red",
+                                  transition: "all ease-in-out 0.5s",
+                                }}
+                              />
+                              Lesson {idx + 1}:{" "}
+                              {lesson?.lessonTitle || "No lesson title"}
+                            </h6>
+                            <h6>
+                              {formatTime(lesson?.duration) ||
+                                "No duration available"}
+                            </h6>
+                          </div>
+                        ))}
+                      </details>
+                    ))
+                  ) : (
+                    <div>No chapters found</div>
+                  )}
+                </div>
+              </div>
+
+              
               
               <div className="details-right-mid-userCourseview">
+              <span>
+              <img 
+              src={courseData?.course?.profile_picture} 
+              alt="Profile" 
+              style={{ width: '8%', height: '8%', borderRadius: '50%' }} 
+                />
+                  <h6>
+                    {courseData?.course?.name}
+                  </h6>
+                </span>
+                
                 <span>
                   <h5>Access:</h5>
                   <h6>
@@ -198,7 +282,7 @@ const UserCourseOverview = () => {
               </div>
               <div className="left-top-mid-userCourseview">
                 <h3>Description</h3>
-                <div
+                <div className="description-data"
                   dangerouslySetInnerHTML={{
                     __html:
                       courseData?.course?.description ||
@@ -214,7 +298,7 @@ const UserCourseOverview = () => {
 
             <div className="left-mid-userCourseview">
               
-              <div className="left-bottom-mid-userCourseview">
+              <div className="left-bottom-mid-userCourseview new-left">
                 <h4>Course Lessons</h4>
                 <div>
                   {courseData?.courseChapters?.chapters?.length > 0 ? (
@@ -423,9 +507,8 @@ const UserCourseOverview = () => {
                         onClick={(e) =>
                           course?.is_purchased
                             ? navigate(`/userPurchasedCourses/${course?.id}`)
-                            : course?.is_in_cart
-                            ? navigate("/userCart")
-                            : handleCart(course?.id, e)
+                            :  navigate(`/userCourses/userPurchasedCourse/${course?.id}`)
+                           
                         }
                       >
                         {loadingItems === course?.id ? (
@@ -436,10 +519,8 @@ const UserCourseOverview = () => {
                           ></l-bouncy>
                         ) : course?.is_purchased ? (
                           <h6>Purchased!</h6>
-                        ) : course?.is_in_cart ? (
-                          <h6>In Cart!</h6>
                         ) : (
-                          <h6>Add to Cart</h6>
+                          <h6>Go to courses</h6>
                         )}
                       </div>
                       {/* <div onClick={() => handleCart(course?.id)}>{loadingItems[course?.id] ? <PulseLoader size={8} color="white"/> :<h6> Add to Cart </h6>}</div> */}

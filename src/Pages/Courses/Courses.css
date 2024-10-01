@@ -197,6 +197,10 @@
   width: 100%;
 }
 
+
+
+
+
 @media (max-width: 768px) {
   .top-courses {
     display: none;
@@ -207,10 +211,13 @@
   .categories-courses {
     padding-inline: 0.8rem;
   }
-  .card-bottom-courses img {
-    height: 50vh;
-  }
+ 
+ 
+    .card-bottom-courses img {
+        height: 22vh;
+    }
 }
+
 @media (max-width: 530px) {
   .bottom-courses {
     grid-template-columns: repeat(1, 1fr);
@@ -236,5 +243,8 @@
     padding-left: 2rem;
     padding-right: 1rem;
     
+  }
+  .card-bottom-courses img {
+    height: 30vh;
   }
 }

@@ -8,7 +8,9 @@ import useFetch from "../../hooks/useFetch";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { PulseLoader } from "react-spinners";
+import "./Settings.css";
 import { useNavigate } from "react-router-dom";
+import { RxCross2 } from "react-icons/rx";
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("accountSecurity");
@@ -31,6 +33,15 @@ export default function Settings() {
   const [isReadOnly, setIsReadOnly] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [oldpassword, setOldPassword] = useState("");
+  const [categoryName, setCategoryName] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [previousCategoryName, setPreviousCategoryName] = useState("");
+  const [updateCategoryData, setUpdateCategoryData] = useState({
+    id: "",
+    newName: "",
+  });
 
   const [userData, setUserData] = useState({
     users: {
@@ -88,7 +99,6 @@ export default function Settings() {
       });
     }
   }, [data]);
-  console.log(data);
 
   const handlePasswordUpdateAction = () => {
     axios
@@ -110,6 +120,35 @@ export default function Settings() {
       .catch((err) => {
         toast.error(err?.response?.data?.message);
       });
+  };
+
+  const handleSaveCat = async () => {
+    if (!categoryName) {
+      toast.error("Category name cannot be empty!");
+      return;
+    }
+
+    const categoryData = {
+      name: categoryName, // Payload for the API
+    };
+
+    try {
+      const response = await axios.post(
+        `${BASE_URI}/api/v1/category`,
+        categoryData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(response.data);
+      toast.success(response.data.message);
+      setCategoryName(""); // Clear input after saving
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to create category");
+    }
   };
 
   const handleUpdateProfilePicture = async (e) => {
@@ -243,6 +282,12 @@ export default function Settings() {
       [name]: value,
     }));
   };
+  const handleInputChange = (event) => {
+    setUpdateCategoryData({
+      ...updateCategoryData,
+      newName: event.target.value,
+    });
+  };
 
   // const handleVerifyClick = async () => {
   //   try {
@@ -282,7 +327,61 @@ export default function Settings() {
     }
   };
 
-  // console.log(profilePicture);
+  const addedcategories = async () => {
+    try {
+      const response = await axios.get(`${BASE_URI}/api/v1/category`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("API response data:", response.data.data);
+      setCategories(response.data.data); // Update state with API data (adjust if necessary)
+      console.log("Updated categories state:", categories);
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+      // setError("Failed to load categories"); // Set error state
+    } finally {
+      // setLoading(false); // Stop loading once the API call is done
+    }
+  };
+
+  useEffect(() => {
+    addedcategories(); // Fetch categories when the component mounts
+  }, []);
+
+  const categoryEdit = (category) => {
+    setPopupVisible(true);
+    setPreviousCategoryName(category.name);
+    setUpdateCategoryData({ id: category.id, newName: category.name });
+  };
+
+  const closePopup = () => {
+    setPopupVisible(false); // Hide the popup
+    setSelectedCategory(null); // Reset selected category
+    setUpdateCategoryData({ newName: "" }); // Reset new name input
+    setPreviousCategoryName(""); // Reset previous name
+  };
+
+  const handleUpdateCategory = async () => {
+    console.log();
+    try {
+      const response = await axios.patch(
+        `${BASE_URI}/api/v1/category/${updateCategoryData.id}`,
+        { name: updateCategoryData.newName }, // The data to be sent
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // The headers should be passed as a separate parameter
+          },
+        }
+      );
+      console.log("API response data:", response.data);
+      addedcategories();
+      setPopupVisible(false);
+    } catch (err) {
+      console.error("Error updating category:", err);
+    }
+  };
 
   return (
     <div className="w-100">
@@ -317,6 +416,16 @@ export default function Settings() {
                 onClick={() => setActiveTab("closeAccount")}
               >
                 Close Account
+              </h5>
+            )}
+            {role == "admin" && (
+              <h5
+                className={`text-white px-3 pb-2 fw-light cursor-pointer ${
+                  activeTab === "addCategories" ? "border-bottom border-4" : ""
+                }`}
+                onClick={() => setActiveTab("addCategories")}
+              >
+                Add categories
               </h5>
             )}
           </div>
@@ -903,56 +1012,95 @@ export default function Settings() {
             </div>
           )}
 
-          {/* {activeTab === "closeAccount" && (
+          {activeTab === "addCategories" && (
             <div className="tab-pane active" style={{ minHeight: "25rem" }}>
-              <div
-                className="pb-5 d-flex flex-column align-items-start justify-content-between w-md-50 h-100"
-                style={{ minHeight: "23rem" }}
-              >
-                <p>
-                  If you close your account, you will be unsubscribed from all
-                  of your courses and will lose access to your account and data
-                  associated with your account forever, even if you choose to
-                  create a new account using the same email address in the
-                  future.
-                </p>
-                <button
-                  className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
-                  onClick={() => setIsModalDelete(true)}
-                >
-                  Close Account
-                </button>
-              </div>
-
-              <Modal
-                show={isModalDelete}
-                onClose={closeModalDelete}
-                btnName="Close Account"
-                heading="Close Account?"
-                handleClickAction={handleNextAction}
-              >
-                <div className="form-group text-start">
-                  <label
-                    htmlFor="formBasicPassword"
-                    className="mb-2 fw-light fs-small"
-                  >
-                    Are you sure you want to delete your account?
-                  </label>
+              <div className="addCategory">
+                <div className="input-category">
+                  <label htmlFor="category-name">Category Name</label>
                   <input
-                    type="password"
-                    className="form-control py-3"
-                    id="formBasicPassword"
-                    placeholder="Enter your password"
-                    // autoComplete="new-password"
+                    type="text"
+                    id="category-name"
+                    placeholder="Enter Category Name"
+                    value={categoryName}
+                    onChange={(e) => setCategoryName(e.target.value)}
                   />
                 </div>
-              </Modal>
-
-              <Modal show={finalDelete} path="/" btnName="Continue">
-                Your account has been successfully deleted!
-              </Modal>
+                <div className="button-category">
+                  <button
+                    className="cancel-cat"
+                    onClick={() => setCategoryName("")}
+                  >
+                    Cancel
+                  </button>
+                  <button className="save-cat" onClick={handleSaveCat}>
+                    Save
+                  </button>
+                </div>
+              </div>
+              <div className="categories">
+                <label
+                  style={{
+                    fontWeight: "600",
+                    marginTop: "5vh",
+                    marginBottom: "5vh",
+                  }}
+                >
+                  Added Categories
+                </label>
+                <div className="category-list">
+                  {categories.length > 0 ? (
+                    categories.map((category) => (
+                      <button
+                        key={category.id}
+                        className="category-item"
+                        onClick={() => categoryEdit(category)}
+                      >
+                        {category.name}
+                      </button>
+                    ))
+                  ) : (
+                    <div>No categories found</div>
+                  )}
+                </div>
+              </div>
+              {isPopupVisible && (
+                <div className="popup">
+                  <div className="popup-content-cat">
+                    <label
+                      style={{
+                        fontWeight: "600",
+                        marginTop: "-15vh",
+                        marginBottom: "5vh",
+                      }}
+                    >
+                      Update Categories
+                    </label>
+                    <div className="input-categoryy">
+                      <input
+                        type="text"
+                        id="category-name"
+                        placeholder="Previous Category Name"
+                        value={previousCategoryName}
+                        disabled
+                        style={{ marginBottom: "2vh" }}
+                      />
+                      <input
+                        type="text"
+                        id="new-category-name"
+                        placeholder="Enter New Category Name"
+                        // value={updateCategoryData.newName}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <button onClick={handleUpdateCategory}>Update</button>
+                    <button onClick={closePopup} className="cancel-buttonn">
+                    <RxCross2 />
+                      </button>
+                  </div>
+                </div>
+              )}
             </div>
-          )} */}
+          )}
 
           {role !== "admin" && activeTab === "closeAccount" && (
             <div className="tab-pane active" style={{ minHeight: "25rem" }}>
