@@ -294,7 +294,7 @@ const UserCourses = ({ search }) => {
   });
 
   const coursesData = useMemo(() => data?.data || [], [data]);
-console.log(coursesData);
+
   // const handleNavigate = (id, status) => {
   //   if (!status) {
   //     navigate(`/userCourses/userCourseView/${id}`);

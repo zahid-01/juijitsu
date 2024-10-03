@@ -369,7 +369,7 @@ export default function ExpertWallet() {
             </div>
           </div>
         </div>
-        <div className="d-flex gap-1 bg-gradient-custom-div">
+        <div className="d-flex gap-1 bg-gradient-custom-div" style={{overflowX:"auto"}}>
           <div className="d-flex gap-5 px-4 border-bottom">
             <h5
               className={
