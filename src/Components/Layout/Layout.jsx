@@ -12,7 +12,7 @@ export const Layout = ({ children, search, setSearch, cartItemNumber }) => {
   const handleToggle = () => {
     setCollapsed(!collapsed);
   };
-  localStorage.removeItem("role");
+  // localStorage.removeItem("role");
   return (
     <>
       <div className="layout position-relative">

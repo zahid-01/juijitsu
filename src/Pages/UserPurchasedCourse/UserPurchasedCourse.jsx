@@ -11,6 +11,9 @@ import {
   faChevronRight,
   faPencil,
   faCircleInfo,
+  faHeart,
+  faEdit,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
@@ -29,6 +32,7 @@ import ReactPlayer from "react-player";
 import { FaUserCircle, FaStar } from "react-icons/fa";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import toast from "react-hot-toast";
+import { CiHeart } from "react-icons/ci";
 // import { bouncy } from "ldrs";
 
 const UserPurchasedCourse = () => {
@@ -53,7 +57,7 @@ const UserPurchasedCourse = () => {
   const [review, setReview] = useState("");
   const [selectedRating, setSelectedRating] = useState(0);
   const [certificate, setcertificate] = useState(null);
-
+  const [hearted, setHearted] = useState(null);
   const handleMouseEnter = () => {
     setShow(true);
     setIsEnter(true);
@@ -135,6 +139,7 @@ const UserPurchasedCourse = () => {
 
   useEffect(()=>{
     setIs_rated(courseData?.course?.is_rated)
+    setHearted(courseData?.course?.is_favourite);
     if(courseData?.course?.is_rated){
       setSelectedRating(courseData?.course?.rating)
 
@@ -361,6 +366,26 @@ const UserPurchasedCourse = () => {
     newWindow.print();
   };
 
+
+  const handleFavrouite = async (e) => {
+    e.stopPropagation();
+    if (!token) {
+      navigate("/");
+    }
+    try {
+      setHearted(!hearted);
+      await axios({
+        method: "post",
+        url: `${BASE_URI}/api/v1/courses/favouriteCourse/${id}`,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to add to favorites");
+    }
+  };
   // console.log(courseData?.review?.userReviews)
   return (
     <>
@@ -483,10 +508,8 @@ const UserPurchasedCourse = () => {
       </div>
     </div>
 }
-
           <div className="top-purchasedCourse">
             <h4>Course Overview</h4>
-
             <span
               style={{
                 display: "flex",
@@ -514,7 +537,6 @@ const UserPurchasedCourse = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   color: "black",
-
                   flexDirection: "column",
                 }}
               >
@@ -555,11 +577,33 @@ const UserPurchasedCourse = () => {
 
                 <h6>Your Progress</h6>
               </div>
-              <FontAwesomeIcon
+              {/* <FontAwesomeIcon
                 onClick={() => setOptionsPopUp(true)}
                 icon={faEllipsisVertical}
                 style={{ height: "100%", width: "2.5%", cursor: "pointer" }}
-              />
+              /> */}
+              {hearted ? (
+          <FontAwesomeIcon
+            onClick={handleFavrouite}
+            id="heart-PurchasedCourses"
+            icon={faHeart}
+            style={{zIndex:"10"}}
+          />
+        ) : (
+          <CiHeart style={{zIndex:"10", color:"black"}} onClick={handleFavrouite} id="unHeart-PurchasedCourses" />
+        )}
+              {
+        is_rated ? 
+       
+          <FontAwesomeIcon className="cursor-pointer" onClick={handleEditClick} icon={faPencil} />
+         
+        
+        :
+       
+          <FontAwesomeIcon className="cursor-pointer"  onClick={handleAddRatingClick} icon={faPlus} />
+        
+        
+      }
             </span>
           </div>
           <div className="content-container-purchasedCourse">

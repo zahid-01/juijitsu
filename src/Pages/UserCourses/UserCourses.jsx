@@ -10,12 +10,13 @@ import toast from "react-hot-toast";
 import { PulseLoader, SyncLoader } from "react-spinners";
 import { Outlet } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faSquarePlus } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faSquarePlus, faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import "ldrs/grid";
 import "ldrs/bouncy";
 import { useDispatch } from "react-redux";
 import { userCartActions } from "../../Store/cartSlice";
+import ReactPlayer from "react-player";
 
 const ShimmerCard = () => (
   <div className="card-bottom-userCourses shimmer-card-usercourses">
@@ -37,11 +38,11 @@ const Card = ({
   tags,
   thumbnail,
   onClick,
-  onAddToCart,
   carted,
   purchase,
   handleCarted,
   handlePurchase,
+  video,
   title,
   heartedAPI,
   navigate,
@@ -49,13 +50,11 @@ const Card = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hearted, setHearted] = useState(heartedAPI);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const location = useLocation();
 
-  // const handleAddToCart = async (e) => {
-  //   e.stopPropagation();
-  //   setIsLoading(true);
-  //   await onAddToCart(id, setIsLoading);
-  // };
+  
 
   const handleFavrouite = async (e) => {
     e.stopPropagation();
@@ -76,21 +75,83 @@ const Card = ({
       toast.error("Failed to add to favorites");
     }
   };
+  
+
+  // const [isHovered, setIsHovered] = useState(false);
+  // const [isMuted, setIsMuted] = useState(true); // Muted by default
+
+  const toggleMute = (e) => {
+    e.stopPropagation();
+    setIsMuted((prevMuted) => !prevMuted);
+  };
 
   return (
     <div
       className="card-bottom-userCourses"
+      onMouseEnter={() => setIsHovered(true)}  // Start playing on hover
+      onMouseLeave={() => setIsHovered(false)} // Stop playing when not hovered
       onClick={() => {
         if (purchase) {
           onClick(id, "Purchased");
-        } else if (carted) {
-          onClick(id, "carted");
         } else {
           onClick(id);
         }
       }}
     >
-      <span>
+
+    <span style={{position:"relative"}}>
+        {hearted ? (
+          <FontAwesomeIcon
+            onClick={handleFavrouite}
+            id="heart-userCourses"
+            icon={faHeart}
+            style={{zIndex:"10"}}
+          />
+        ) : (
+          <CiHeart style={{zIndex:"10"}} onClick={handleFavrouite} id="unHeart-userCourses" />
+        )}
+
+        {/* Video Thumbnail or Video Player */}
+        <ReactPlayer
+            url={video}
+            className="tumbnail-userCourses"
+            // style={{ width: "100%" }}
+            playing={isHovered} // Play when hovered
+            muted={isMuted} // Muted by default
+            controls={false} // Hide controls
+            volume={1} // Max volume when unmuted
+            loop={true} // Loop the video
+          />
+
+        {/* Optional thumbnail (if you have one) */}
+        {!isHovered && (
+            <img
+              loading="lazy"
+              src={thumbnail}
+              alt="Course image"
+              style={{ objectFit: "cover",zIndex:"9", width: "100%", position: "absolute", top:"0"}}
+            />
+          )}
+          {isHovered && (
+            <button
+              onClick={toggleMute}
+              style={{
+                position: "absolute",
+                bottom: 10,
+                left: 10,
+                background: "rgba(0, 0, 0, 0.5)",
+                border: "none",
+                padding: "7px",
+                borderRadius: "50%",
+                cursor: "pointer",
+                color: "#fff",
+              }}
+            >
+              <FontAwesomeIcon icon={isMuted ? faVolumeMute : faVolumeUp} />
+            </button> 
+          )} 
+      </span>
+      {/* <span>
         {hearted ? (
           <FontAwesomeIcon
             onClick={handleFavrouite}
@@ -101,13 +162,51 @@ const Card = ({
           <CiHeart onClick={handleFavrouite} id="unHeart-userCourses" />
         )}
 
-        <img
-          loading="lazy"
-          src={thumbnail}
-          alt="Course image"
-          style={{ objectFit: "cover" }}
-        />
-      </span>
+        {/* Video Player */}
+        {/* <div className="video-container" style={{ position: "relative" }}> */}
+          {/* <ReactPlayer
+            url={video}
+            className="tumbnail-userCourses"
+            // style={{ width: "100%" }}
+            playing={isHovered} // Play when hovered
+            muted={isMuted} // Muted by default
+            controls={false} // Hide controls
+            volume={1} // Max volume when unmuted
+            loop={true} // Loop the video
+            thumbnail={thumbnail}
+          />
+
+          {/* Thumbnail only when not hovered */}
+          {/* {!isHovered && (
+            <img
+              loading="lazy"
+              src={thumbnail}
+              alt="Course image"
+              // style={{ objectFit: "cover", width: "100%" }}
+            />
+          )} */}
+
+          {/* Mute/Unmute button when hovered */}
+          {/* {isHovered && (
+            <button
+              onClick={toggleMute}
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                background: "rgba(0, 0, 0, 0.5)",
+                border: "none",
+                padding: "8px",
+                borderRadius: "50%",
+                cursor: "pointer",
+                color: "#fff",
+              }}
+            >
+              <FontAwesomeIcon icon={isMuted ? faVolumeMute : faVolumeUp} />
+            </button> 
+          )} 
+        {/* </div> */}
+      {/* </span> */}
 
       <div className="middle-sec-card-userCourses">
         <div className="addCourse-card-userCourses">
@@ -188,14 +287,14 @@ const UserCourses = ({ search }) => {
       : ""
   }`;
 
-  console.log(url);
+  // console.log(url);
 
   const { data, error, refetch, isLoading } = useFetch(url, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
 
   const coursesData = useMemo(() => data?.data || [], [data]);
-
+console.log(coursesData);
   // const handleNavigate = (id, status) => {
   //   if (!status) {
   //     navigate(`/userCourses/userCourseView/${id}`);
@@ -206,7 +305,7 @@ const UserCourses = ({ search }) => {
   //   }
   // };
   const handleNavigate = (id, status) => {
-    console.log("Navigating with ID:", id, "Status:", status);
+    // console.log("Navigating with ID:", id, "Status:", status);
     if (!status) {
       navigate(`/userCourses/userCourseView/${id}`);
     } else if (status === "Purchased") {
@@ -214,39 +313,10 @@ const UserCourses = ({ search }) => {
     }
   };
 
-  const handleCart = async (id, setIsLoading) => {
-    if (!token) {
-      setIsLoading(false);
-      navigate(`/`);
-      return toast.error(`Error: Please Login First!`);
-    }
+  
 
-    try {
-      const response = await axios.post(
-        `${BASE_URI}/api/v1/cart`,
-        { course_id: id },
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
-      setIsLoading(false);
-      toast.success(`${response.data.message}`);
-      navigate(`/userPurchasedCourses/${id}`);
-    } catch (err) {
-      setIsLoading(false);
-      toast.error(`Error: ${err?.response?.data?.message}`);
-    }
-  };
-
-  const handlePurchase = (id) => {
-    navigate(`/userPurchasedCourses/${id}`);
-  };
-
-  // const handleCarted = () => {
-  //   navigate(`/userPurchasedCourses/`);
-  // };
+ 
+  
 
   return (
     <>
@@ -309,11 +379,11 @@ const UserCourses = ({ search }) => {
                   description={course.description}
                   expert={course.expert}
                   price={course.price}
+                  video={course.first_lesson_video_url}
                   discount={course.discount}
                   tags={course.tags}
                   thumbnail={course.thumbnail}
                   onClick={handleNavigate}
-                  onAddToCart={handleCart}
                   purchase={course.is_purchased}
                   carted={course.in_cart}
                   heartedAPI={course.is_favourite}

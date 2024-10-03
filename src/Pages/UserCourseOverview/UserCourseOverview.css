@@ -440,8 +440,8 @@
   display: none; /* Safari and Chrome */
 }
 .card-bottom-userCourseview {
-  height: 55vh;
-  min-width: 19vw;
+  height: 50vh;
+  min-width: 21vw;
   background-color: white;
   border-radius: 0.5vw;
   padding: 1vw;
@@ -466,6 +466,7 @@
   height: 100%;
   width: 100%;
   border-radius: 0.5vw;
+  object-fit: cover;
 }
 .middle-sec-card-userCourseview {
   height: 7%;

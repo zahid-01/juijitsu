@@ -12,6 +12,7 @@ import {
   RiSettings4Fill,
   RiHome4Fill,
   RiGridFill,
+  RiMessageLine,
 } from "react-icons/ri";
 import { motion, useAnimation } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -414,11 +415,12 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
               {!collapsed && <span className="text">Purchased Courses</span>}
             </Link>
           </motion.div>
+
           <motion.div variants={sidebarAnimation}>
             <Link
-              to="/myCertificates"
+              to="/messages"
               className={`menu-item d-flex align-items-center p-3 ${
-                location.pathname === "/myCertificates"
+                location.pathname === "/messages"
                   ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
                   : ""
               }`}
@@ -427,21 +429,22 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                 animate={controls}
                 variants={linkAnimation}
                 className={`me-4 ${
-                  location.pathname === "/myCertificates"
+                  location.pathname === "/messages"
                     ? "text-white"
                     : "primary-color"
                 }`}
               >
-                <RiGraduationCapFill className="fs-5" />
+                <RiMessage2Fill className="fs-5" />
               </motion.div>
-              {!collapsed && <span className="text">Certificates</span>}
+              {!collapsed && <span className="text">Messages</span>}
             </Link>
           </motion.div>
+          
           <motion.div variants={sidebarAnimation}>
             <Link
-              to="/purchaseHistory"
+              to="/userWallet"
               className={`menu-item d-flex align-items-center p-3 ${
-                location.pathname === "/purchaseHistory"
+                location.pathname === "/userWallet"
                   ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
                   : ""
               }`}
@@ -450,14 +453,14 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                 animate={controls}
                 variants={linkAnimation}
                 className={`me-4 ${
-                  location.pathname === "/purchaseHistory"
+                  location.pathname === "/userWallet"
                     ? "text-white"
                     : "primary-color"
                 }`}
               >
-                <RiHistoryFill className="fs-5" />
+                <RiWallet2Fill className="fs-5" />
               </motion.div>
-              {!collapsed && <span className="text">Purchase History</span>}
+              {!collapsed && <span className="text">Wallet</span>}
             </Link>
           </motion.div>
         </>

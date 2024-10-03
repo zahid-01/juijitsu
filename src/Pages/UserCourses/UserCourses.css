@@ -144,6 +144,15 @@
   border-radius: 0.5rem;
   object-fit: cover;
 }
+.tumbnail-userCourses {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  width: 100%;
+  
+  object-fit: cover;
+}
 .middle-sec-card-userCourses {
   height: 3.6vh;
   display: flex;

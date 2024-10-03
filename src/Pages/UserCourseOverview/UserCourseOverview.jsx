@@ -6,6 +6,11 @@ import {
   faAngleDown,
   faStar,
   faArrowRight,
+  faCoins,
+  faCross,
+  faCut,
+  faXmark,
+  faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FaYoutube } from "react-icons/fa";
 import cardImage from "../../assets/coursesCard.png";
@@ -15,6 +20,8 @@ import { BASE_URI } from "../../Config/url";
 import toast from "react-hot-toast";
 import "ldrs/grid";
 import "ldrs/bouncy";
+import {useGSAP} from "@gsap/react"
+import gsap from "gsap";
 import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
 import ReactPlayer from "react-player";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
@@ -29,7 +36,7 @@ const UserCourseOverview = () => {
   const [viseo_type, setVideo_type] = useState("");
   const { id } = useParams();
   const navigate = useNavigate();
-
+const {contextSafe} = useGSAP();
   const handleLeftToggle = (chapterIndex) => {
     setOpenChapters((prevOpenChapters) => ({
       ...prevOpenChapters,
@@ -109,7 +116,24 @@ const UserCourseOverview = () => {
     }
   };
 
-  const handleVideoChange = useCallback((video_url, video_thumb, lesson_id) => {
+  const paymentPopUpClick = contextSafe(()=>{
+    console.log("popup has been clicked");
+    gsap.to(".paymentPopUp", {
+      scale:1,
+      duration:0.3,
+      ease:"back.in"
+    })
+  })
+  const removePayPopUp = contextSafe(()=>{
+    console.log("popup has been removed");
+    gsap.to(".paymentPopUp", {
+      scale:0,
+      duration:0.4,
+      ease:"back.inOut"
+    })
+  })
+
+  const handleVideoChange = useCallback((video_url, video_thumb, lesson_id, noLesson) => {
     setVideo_url(video_url);
     setVideo_thumb(video_thumb);
     setSelectedLesson(lesson_id);
@@ -125,23 +149,109 @@ const UserCourseOverview = () => {
           color="black"
         ></l-grid>
       ) : (
-        <div className="wrapper-userCourseview">
+        <div className="wrapper-userCourseview position-relative">
 
-          
+<div
+    style={{
+      top:0,
+      left:0,
+      scale: 0, // Scale to 1 to show it at full size
+      height: "100vh", // Full viewport height
+      width: "100vw",  // Full viewport width
+      position: "fixed", // Fixed to cover the entire viewport
+      zIndex: 100,
+      backgroundColor: "transparent", // Ensure background color covers the area
+      display: "flex", // Center the content inside
+      alignItems: "center",
+      justifyContent: "center",
+      
+    }}
+    className="paymentPopUp"
+  >
+    <div style={{zIndex:101,padding:"2%", backgroundColor:"white", borderRadius:"1rem", height:"60%", width:"50%"
+    }}>
+      <div className="flex justify-content-between pb-3 align-items-center">
+         <span><h5>Unlock this course by</h5></span> 
+      <FontAwesomeIcon onClick={removePayPopUp} className="fs-5 cursor-pointer" icon={faXmarkCircle}/>
+      </div>
+      <div style={{height:"87%"}} className="rounded border flex justify-content-evenly align-items-center">
+        <div className="rounded flex flex-column bg-gradient-custom-div justify-content-center gap-5 w-40 p-3">
+          <h6>UnLock by Coins <FontAwesomeIcon icon={faCoins}/></h6>
+          <div className="flex flex-column gap-2">
+          <h2><FontAwesomeIcon icon={faCoins}/> {courseData?.course?.coins}</h2>
+          <div className="rounded bg-white text-black p-2 flex justify-content-center cursor-pointer">
+            <p>Buy</p>
+          </div>
+          </div>
+        </div>
+        <h5>OR</h5>
+        <div className="rounded flex flex-column bg-gradient-custom-div justify-content-center gap-5 w-40 p-3">
+          <h6>UnLock by payment</h6>
+          <div className="flex flex-column gap-2">
+          <h2>${courseData?.course?.price}</h2>
+          <div className="rounded bg-white text-black p-2 flex justify-content-center cursor-pointer">
+            <p>Checkout</p>
+          </div>
+          </div>    
+        </div>
+      </div>
+     
+    </div>
+    <div
+    style={{
+      opacity:0.3,
+      zIndex:100,
+      top: 0,
+      left: 0,
+      height: "100vh", // Full viewport height
+      width: "100vw",  // Full viewport width
+      position: "fixed", // Fixed to cover the entire viewport
+      zIndex: 100,
+      backgroundColor: "grey", // Ensure background color covers the area
+      display: "flex", // Center the content inside
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+    >
+
+
+    </div>
+  </div>
           <div className="top-userCourseview d-flex">
             <h3 className="text-uppercase">
               {courseData?.course?.title || "No title available"}
             </h3>
 
             
-                <span className="d-flex gap-2">
-                  <h5 style={{textDecoration:'line-through', fontSize:'1rem'}}>${courseData?.course?.price || "No price available"}</h5>
-                  <h5 style={{fontSize:'1.5rem', fontWeight:'bold'}}>
+                <span className="gap-3 flex align-items-center">
+                <div>
+                  <span className="d-flex justify-content-between align-items-center p-1">
+                    
+                  <h5 style={{fontSize:'1.3rem', fontWeight:'bold'}}>
+                    
+                  <FontAwesomeIcon icon={faCoins}/> {courseData?.course?.coins}
+                  </h5></span>
+                  <div style={{width:"max-content"}} className="cursor-pointer rounded bg-white d-flex justify-content-between p-2">
+                    <p className="text-black">Checkout <FontAwesomeIcon icon={faCoins}/> {courseData?.course?.discounted_price}</p>
+                  </div>
+                  </div>
+                 <p>OR</p>
+                  <div>
+                  <span className="d-flex justify-content-between align-items-center p-1">
+                    <h5 style={{textDecoration:'line-through', fontSize:'1rem'}}>
+                      ${courseData?.course?.price || "No price available"}
+                      </h5>
+                  <h5 style={{fontSize:'1.3rem', fontWeight:'bold'}}>
                     $
                     {courseData?.course?.discounted_price ||
                       "No discount available"}
-                  </h5>
+                  </h5></span>
+                  <div style={{width:"max-content"}} className="cursor-pointer bg-white rounded  d-flex justify-content-between p-2">
+                    <p className="text-black">Checkout ${courseData?.course?.discounted_price}</p>
+                  </div>
+                  </div>
                 </span>
+                
 
                 
             
@@ -217,72 +327,77 @@ const UserCourseOverview = () => {
               <div className="left-bottom-mid-userCourseview">
                 <h4>Course Lessons</h4>
                 <div>
-                  {courseData?.courseChapters?.chapters?.length > 0 ? (
-                    chapters.map((chapter, chapterIndex) => (
-                      <details
-                        key={chapter?.chapter_id}
-                        open={
-                          (chapterIndex === 0 && true) ||
-                          openChapters[chapterIndex]
-                        }
-                        onToggle={() => handleLeftToggle(chapterIndex)}
-                      >
-                        <summary>
-                          <FontAwesomeIcon
-                            icon={faAngleDown}
-                            className={
-                              openChapters[chapterIndex]
-                                ? "up-icon"
-                                : "down-icon"
-                            }
-                          />
-                          <h6>
-                            {chapter.chapter_no || "No chapter number"}.{" "}
-                            {chapter.chapterTitle || "No chapter title"}
-                          </h6>
-                        </summary>
-                        {chapter?.lessons.map((lesson, idx) => (
-                          <div
-                            key={idx}
-                            onClick={() =>
-                              handleVideoChange(
-                                lesson?.video_url,
-                                lesson?.thumbnail,
-                                lesson?.lesson_id
-                              )
-                            }
-                            style={{
-                              cursor: "pointer",
-                              color:
-                                selectedLesson === lesson?.lesson_id && "red",
-                            }}
-                          >
-                            <h6>
-                              <FaYoutube
-                                color="black"
-                                style={{
-                                  cursor: "pointer",
-                                  color:
-                                    selectedLesson === lesson?.lesson_id &&
-                                    "red",
-                                  transition: "all ease-in-out 0.5s",
-                                }}
-                              />
-                              Lesson {idx + 1}:{" "}
-                              {lesson?.lessonTitle || "No lesson title"}
-                            </h6>
-                            <h6>
-                              {formatTime(lesson?.duration) ||
-                                "No duration available"}
-                            </h6>
-                          </div>
-                        ))}
-                      </details>
-                    ))
-                  ) : (
-                    <div>No chapters found</div>
-                  )}
-                </div>
+  {courseData?.courseChapters?.chapters?.length > 0 ? (
+    chapters.map((chapter, chapterIndex) => (
+      <details
+        key={chapter?.chapter_id}
+        open={
+          (chapterIndex === 0 && true) ||
+          openChapters[chapterIndex]
+        }
+        onToggle={() => handleLeftToggle(chapterIndex)}
+      >
+        <summary>
+          <FontAwesomeIcon
+            icon={faAngleDown}
+            className={
+              openChapters[chapterIndex]
+                ? "up-icon"
+                : "down-icon"
+            }
+          />
+          <h6>
+            {chapter.chapter_no || "No chapter number"}.{" "}
+            {chapter.chapterTitle || "No chapter title"}
+          </h6>
+        </summary>
+        {chapter?.lessons.map((lesson, idx) => (
+          <div
+            key={idx}
+            onClick={() => {
+              if (chapterIndex >= 1) { // Assuming 2nd course has index 1
+                paymentPopUpClick();
+              } else {
+                handleVideoChange(
+                  lesson?.video_url,
+                  lesson?.thumbnail,
+                  lesson?.lesson_id
+                );
+              }
+            }}
+            style={{
+              cursor: "pointer",
+              color:
+                selectedLesson === lesson?.lesson_id && "red",
+            }}
+          >
+            <h6>
+              <FaYoutube
+                color="black"
+                style={{
+                  cursor: "pointer",
+                  color:
+                    selectedLesson === lesson?.lesson_id &&
+                    "red",
+                  transition: "all ease-in-out 0.5s",
+                }}
+              />
+              Lesson {idx + 1}:{" "}
+              {lesson?.lessonTitle || "No lesson title"}
+            </h6>
+            <h6>
+              {formatTime(lesson?.duration) ||
+                "No duration available"}
+            </h6>
+          </div>
+        ))}
+      </details>
+    ))
+  ) : (
+    <div>No chapters found</div>
+  )}
+</div>
+
               </div>
               <div className="ratings-right-mid-userCourseview">
                 <h5>Reviews & Ratings:</h5>
