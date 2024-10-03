@@ -11,6 +11,7 @@ import { PulseLoader } from "react-spinners";
 import "./Settings.css";
 import { useNavigate } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
+import { GoArrowDown } from "react-icons/go";
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("accountSecurity");
@@ -20,6 +21,8 @@ export default function Settings() {
   const [isModalPasswordChange, setIsModalPasswordChange] = useState(false);
   const [isModalEmailChange, setIsModalEmailChange] = useState(false);
   //
+
+  const [course, setCourse] = useState([]);
   const [newEmail, setNewEmail] = useState("");
   const [newpassword, setPassword] = useState("");
   const navigate = useNavigate();
@@ -63,6 +66,7 @@ export default function Settings() {
   const bioRef = useRef(null);
 
   const token = localStorage.getItem("token");
+
   const role = localStorage.getItem("userType");
   const profileUrl = `${BASE_URI}/api/v1/users/profile`;
 
@@ -289,15 +293,6 @@ export default function Settings() {
     });
   };
 
-  // const handleVerifyClick = async () => {
-  //   try {
-  //     const response = await axios.patch('${BASE_URI}/api/v1/email/updateEmail', { email });
-  //     setMessage('Verification email sent! Please check your inbox.');
-  //     console.log(response)
-  //   } catch (error) {
-  //     setMessage('Failed to send verification email. Please try again.');
-  //   }
-  // };
   const handleVerifyClick = async () => {
     try {
       console.log(newEmail, newpassword);
@@ -335,9 +330,9 @@ export default function Settings() {
         },
       });
 
-      console.log("API response data:", response.data.data);
+      // console.log("API response data:", response.data.data);
       setCategories(response.data.data); // Update state with API data (adjust if necessary)
-      console.log("Updated categories state:", categories);
+      // console.log("Updated categories state:", categories);
     } catch (err) {
       console.error("Error fetching categories:", err);
       // setError("Failed to load categories"); // Set error state
@@ -383,6 +378,8 @@ export default function Settings() {
     }
   };
 
+ 
+
   return (
     <div className="w-100">
       <header
@@ -391,12 +388,13 @@ export default function Settings() {
       >
         <div style={{ width: "37rem" }}>
           <h3 className="pb-5">Settings</h3>
-          <div className="d-flex gap-5 px-4">
+          <div className="d-flex gap-5 px-3" >
             <h5
               className={`text-white px-3 pb-2 fw-light cursor-pointer ${
                 activeTab === "accountSecurity" ? "border-bottom border-4" : ""
-              }`}
+              }` } 
               onClick={() => setActiveTab("accountSecurity")}
+              
             >
               Account Security
             </h5>
@@ -418,20 +416,30 @@ export default function Settings() {
                 Close Account
               </h5>
             )}
-            {role == "admin" && (
-              <h5
-                className={`text-white px-3 pb-2 fw-light cursor-pointer ${
-                  activeTab === "addCategories" ? "border-bottom border-4" : ""
-                }`}
-                onClick={() => setActiveTab("addCategories")}
-              >
-                Add categories
-              </h5>
+
+            {role === "admin" && (
+              <>
+                <h5
+                  className={`text-white px-3 pb-2 fw-light cursor-pointer ${
+                    activeTab === "addCategories"
+                      ? "border-bottom border-4"
+                      : ""
+                  }`}
+                  onClick={() => setActiveTab("addCategories")}
+                >
+                  Add categories
+                </h5>
+
+                
+              </>
             )}
           </div>
         </div>
       </header>
-      <div className="tab-content px-3 py-4 custom-box rounded-top-0">
+      <div
+        className="tab-content px-3 py-4 custom-box rounded-top-0"
+        style={{ background: "white" }}
+      >
         <div className="px-4">
           {activeTab === "accountSecurity" && (
             <div className="tab-pane active" style={{ minHeight: "25rem" }}>
@@ -1075,7 +1083,14 @@ export default function Settings() {
                     >
                       Update Categories
                     </label>
-                    <div className="input-categoryy">
+                    <div
+                      className="input-categoryy"
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "2vh",
+                      }}
+                    >
                       <input
                         type="text"
                         id="category-name"
@@ -1094,8 +1109,8 @@ export default function Settings() {
                     </div>
                     <button onClick={handleUpdateCategory}>Update</button>
                     <button onClick={closePopup} className="cancel-buttonn">
-                    <RxCross2 />
-                      </button>
+                      <RxCross2 />
+                    </button>
                   </div>
                 </div>
               )}
@@ -1153,6 +1168,8 @@ export default function Settings() {
             </div>
           )}
         </div>
+
+        
       </div>
     </div>
   );
