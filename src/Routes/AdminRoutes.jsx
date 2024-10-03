@@ -5,6 +5,7 @@ import Experts from "../Pages/Experts/Experts";
 import Students from "../Pages/Students/Students";
 import Transactions from "../Pages/Transactions/Transactions";
 import Settings from "../Pages/Settings/Settings"; 
+import AdminReview from "../Pages/AdminReview/AdminReview";
 
 
 
@@ -19,6 +20,7 @@ export default function AdminRoutes() {
       <Route path="/transactions" element={<Transactions />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/adminPayouts" element={<Transactions />} />
+      <Route path="/adminReview" element={<AdminReview/>} />
     </Routes>
   );
 }

@@ -6,7 +6,7 @@ import useFetch from "../../hooks/useFetch";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import toast from "react-hot-toast/headless";
+import toast from "react-hot-toast";
 import { RiGalleryUploadFill } from "react-icons/ri";
 import { useDropzone } from "react-dropzone";
 import { IoCloudUploadOutline } from "react-icons/io5";
@@ -408,6 +408,23 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
     // console.log(lesson);
     setSelectedLesson(lesson);
   };
+
+  async function handleSendApproval(){
+    console.log(id)
+    try {
+      await axios.post(`${BASE_URI}/api/v1/expert/reviewRequest`, 
+        {course_id: id}, 
+        {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      toast.success("Course sent for approval successfully!");
+    } catch (err) {
+      console.log(err)
+      toast.error(err.response.data.err);
+    }
+  }
 
   if (isLoading) {
     return <ShimmerPostDetails card cta variant="SIMPLE" />;
@@ -882,12 +899,15 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
           )}
 
           {chapters?.length > 0 && (
-            <div className="w-100 text-start">
+            <div className="w-100 text-start flex justify-content-between">
               <button
                 className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
                 onClick={() => setIsAddChapter(true)}
               >
                 Add Chapter
+              </button>
+              <button onClick={handleSendApproval} style={{border:"none", borderRadius:"0.5rem",backgroundColor:"white", boxShadow: "2px 0px 10px 2px #00000040"}} className="py-2 px-3 fw-lightBold mb-0 h-auto">
+                Send Approval Request
               </button>
             </div>
           )}

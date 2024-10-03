@@ -342,9 +342,11 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                 {!collapsed && <span className="text">Transactions</span>}
               </Link>
             </motion.div>
-            {/* <motion.div variants={sidebarAnimation}>
+            {/*  */}
+
+            <motion.div variants={sidebarAnimation}>
               <Link
-                to="/"
+                to="/adminReview"
                 className={`menu-item d-flex align-items-center p-3 ${
                   location.pathname === "/purchaseHistory"
                     ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
@@ -360,11 +362,12 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                       : "primary-color"
                   }`}
                 >
-                  <FaUserAlt className="fs-5" />
+                  <FaFileInvoice className="fs-5" />
                 </motion.div>
-                {!collapsed && <span className="text">Support</span>}
+                {!collapsed && <span className="text">Review Courses</span>}
               </Link>
-            </motion.div> */}
+            </motion.div>
+           
           </>
         )}
       
