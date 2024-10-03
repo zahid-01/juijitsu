@@ -158,16 +158,17 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
         </div>
       )}
       {/* {userType === "user" && ( */}
-      {userType === "user" && (
-        <div className="cart-container">
-          {/* //           <Link to="/userCart">
-//             <BsFillCartFill className="primary-color fs-2 ms-5 cursor-pointer" />
-//           </Link> */}
-          <Cart />
+      {/* {userType === "user" && ( */}
+{/* //         <div className="cart-container"> */}
+//           {/* //           <Link to="/userCart">
+// //             <BsFillCartFill className="primary-color fs-2 ms-5 cursor-pointer" />
+// //           </Link> */}
+{/* //           <Cart /> */}
 
-          {/* <div className="cart-badge">{cartItemNumber}</div>{" "} */}
-        </div>
-      )}
+        {/* <div className="cart-badge">{cartItemNumber}</div>{" "} */}
+{/* //         </div> */}
+<></>
+      {/* )} */}
 
       {userType === "admin" && (
         <div className="cart-container  admin-cart-container" >
