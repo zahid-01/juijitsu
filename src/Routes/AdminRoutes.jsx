@@ -12,8 +12,6 @@ import Settings from "../Pages/Settings/Settings";
 export default function AdminRoutes() {
   return (
     <Routes>
-     
-      
       <Route path="/adminDashboard" element={<AdminDashboard />} />
       <Route path="/logout" element={<Logout />} />
       <Route path="/experts" element={<Experts />} />

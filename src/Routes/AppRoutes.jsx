@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Login from "../Pages/Login/Login";
 import { SignUp } from "../Pages/SignUppage/SignUp";
 import { VerifyEmail } from "../Pages/veryEmail/VerifyEmail";
@@ -9,21 +9,28 @@ import UserRoutes from "./UserRoutes";
 import UserCourses from "../Pages/UserCourses/UserCourses";
 import UserCourseOverview from "../Pages/UserCourseOverview/UserCourseOverview";
 
-import PurchaseHistory from "../Pages/PurchaseHistory/PurchaseHistory";
+import UserWallet from "../Pages/userWallet/UserWallet";
 import AdminRoutes from "./AdminRoutes";
 
 const AppRoutes = ({ search }) => {
-  const [role, setRole] = useState(null);
+  const userRole = localStorage.getItem("userType");
+  const [role, setRole] = useState(userRole);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const userRole = localStorage.getItem("userType");
-    setRole(userRole);
+useEffect(() => {
+  const userRole = localStorage.getItem("userType");
+  console.log("Setting role:", userRole); // Log the role before setting
+  setRole(userRole);
+  // setLoading(false);
+  // window.location.reload();
 
-    // if (!userRole) {
-    //   navigate("/");
-    // }
   }, [navigate]);
+
+  // if (loading) {
+  //   return <div style={{color:"black"}}>Loading...</div>; // Don't render routes until role is set
+  // }
+  
 
   return (
     <Routes>
@@ -32,7 +39,7 @@ const AppRoutes = ({ search }) => {
       <Route path="/verifyEmail" element={<VerifyEmail />} />
 
       <Route path="/userCourses" element={<UserCourses search={search} />} />
-      <Route path="/purchaseHistory" element={<PurchaseHistory />} />
+      <Route path="/userWallet" element={<UserWallet/>} />
 
       <Route
         path="/userCourses/userCourseView/:id"

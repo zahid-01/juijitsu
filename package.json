@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "host": "vite --host"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -21,6 +22,7 @@
     "chart.js": "^4.4.4",
     "dompurify": "^3.1.6",
     "framer-motion": "^11.3.21",
+    "gsap": "^3.12.5",
     "ldrs": "^1.0.2",
     "react": "^18.3.1",
     "react-beautiful-dnd": "^13.1.1",
