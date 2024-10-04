@@ -72,10 +72,10 @@ input[type="password"][autocomplete="current-password"] {
   padding: 30px;
   border-radius: 8px;
   text-align: center;
-  width: 40%;
-  max-width: 600px;
-  height: 40%;
-  max-height: 500px;
+  width: 33vw;
+  /* max-width: 30vw; */
+  height: 47vh;
+  /* max-height: 55vh; */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
 }
@@ -92,8 +92,8 @@ input[type="password"][autocomplete="current-password"] {
 
 .cancel-buttonn {
   position: absolute;
-  top: 25vh;  /* Adjust the value to control vertical positioning */
-  right: 30vw;  /* Adjust the value to control horizontal positioning */
+  top: 35vh;  /* Adjust the value to control vertical positioning */
+  right: 35vw;  /* Adjust the value to control horizontal positioning */
   background: none;
   border: none;
   cursor: pointer;

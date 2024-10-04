@@ -18,7 +18,7 @@ import { motion, useAnimation } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Sidebar.css";
 import { MdAssignmentInd, MdDashboard } from "react-icons/md";
-import { FaFileInvoice, FaUserAlt, FaUsers, FaUserTie } from "react-icons/fa";
+import { FaFileInvoice, FaUserAlt, FaUsers, FaUserTie ,FaBookReader} from "react-icons/fa";
 
 // Animation variants
 const sidebarAnimation = {
@@ -362,7 +362,7 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                       : "primary-color"
                   }`}
                 >
-                  <FaFileInvoice className="fs-5" />
+                  <FaBookReader className="fs-5" />
                 </motion.div>
                 {!collapsed && <span className="text">Review Courses</span>}
               </Link>
