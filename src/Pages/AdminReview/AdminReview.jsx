@@ -1,7 +1,17 @@
+import axios from "axios";
 import "./AdminReview.css"
 import { GoArrowDown } from "react-icons/go";
+import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { BASE_URI } from "../../Config/url";
+import { useNavigate } from "react-router-dom";
+
 export default function AdminReview() {
-  //
+  const [Approvals, setApprovals] = useState();
+  const navigate = useNavigate()
+
+
+
   const courses = [
     {
       id: 1,
@@ -28,6 +38,57 @@ export default function AdminReview() {
       price: "$121.5",
     },
   ];
+
+const token = localStorage.getItem('token');
+
+const getApproval = async()=>{
+  console.log("again");
+  try{
+    const response = await axios({
+      method: 'GET',
+      url: `${BASE_URI}/api/v1/admin/approveCourse`,
+      headers: {
+        Authorization: "Bearer " + token,
+      }
+    })
+        setApprovals(response?.data?.data)
+        console.log(response?.data?.data)
+        console.log(Approvals)
+
+  }
+  catch(error){
+    toast.error(error?.response?.data?.message)
+  }
+}
+
+ useEffect(()=>{
+  getApproval()
+ },[]);
+
+ 
+
+ async function aproveRequest(is_approved,request_id){
+  console.log(is_approved,request_id )
+  try{
+    const response = await axios({
+      method: 'PATCH',
+      url: `${BASE_URI}/api/v1/admin/approveCourse/${request_id}`,
+      data:{
+        "is_approved":is_approved
+      },
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+      
+    })
+        toast.success(response?.data?.message)
+        getApproval()
+ }
+ catch(err){
+  toast.error(err?.response?.data?.message)
+ }
+}
+
   return (
     <div className="w-100">
       <header
@@ -44,6 +105,7 @@ export default function AdminReview() {
         style={{ background: "white" }}
       >
        
+
        
           <div className="tab-pane active" style={{ minHeight: "25rem" }}>
             <div className="container-courseRequest">
@@ -52,18 +114,18 @@ export default function AdminReview() {
                   To Approve  <GoArrowDown />
                 </label>
               </div>
-              {courses.map((course) => (
-                <div className="course-req" key={course.id}>
-                  <img src={course.image} />
+              {Approvals?.map((Approvals) => (
+                <div className="course-req" key={Approvals?.course_id}>
+                  <img src={Approvals?.thumbnail} />
                   <div className="course-details">
-                    <h3>{course.title}</h3>
-                    <p>{course.author}</p>
-                    <span>{course.price}</span>
+                    <h3>{Approvals?.title}</h3>
+                    <p>{Approvals?.expert}</p>
+                    <span>{Approvals?.price}</span>
                   </div>
                   <div className="course-actions">
-                    <button className="overview">Overview</button>
-                    <button className="approve">Approve</button>
-                    <button className="decline">Decline</button>
+                    <button onClick={()=> navigate(`/courses/courseView/${Approvals?.course_id}`)} className="overview">Overview</button>
+                    <button onClick={()=>aproveRequest(1,Approvals?.request_id)} className="approve">Approve</button>
+                    <button onClick={()=>aproveRequest(0,Approvals?.request_id)} className="decline">Decline</button>
                   </div>
                 </div>
               ))}
