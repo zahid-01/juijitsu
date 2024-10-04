@@ -454,13 +454,18 @@
 
 
 .video-container-purchasedCourse {
-  position: relative;
-  width: 100%;
+  background-color: white;
+  /* height: 55vh; */
+  width: 92%;
+  border-radius: 0.56vw;
 }
 
-.video-container-purchasedCourse .tumbnail-userCourseview {
-  width: 100%;
-  height: auto; /* Maintain aspect ratio */
+
+.video-container-Courseview .tumbnail-CourseView {
+  width: 100% !important;
+  height: auto;
+  overflow: hidden;
+  border-radius: 0.5rem;
 }
 
 @media (max-width: 768px) {

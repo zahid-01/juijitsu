@@ -169,14 +169,14 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                 {video_type === "youtube" ? (
                   <ReactPlayer
                     url={video_url}
-                    className="tumbnail-userCourseview"  
+                    className="tumbnail-purchasedCourse"  
                     style={{ width: '100%', height: '0' }}
                     controls={true}
                   />
                 ) : (
                   <video
                     src={video_url}
-                    className="tumbnail-userCourseview" 
+                    className="tumbnail-Courseview" 
                     style={{ width: '100%', height: 'auto' }}
                     controls
                   >
