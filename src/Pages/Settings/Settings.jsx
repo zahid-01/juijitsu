@@ -1108,9 +1108,9 @@ export default function Settings() {
                       />
                     </div>
                     <button onClick={handleUpdateCategory}>Update</button>
-                    <button onClick={closePopup} className="cancel-buttonn">
+                    <div onClick={closePopup} className="cancel-buttonn">
                       <RxCross2 />
-                    </button>
+                    </div>
                   </div>
                 </div>
               )}

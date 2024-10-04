@@ -382,7 +382,7 @@ export default function Login() {
         <div className="popup-overlay">
           <div className="popup-box custom-popup">
             <p className="popUpMessage">{popupMessage}</p>
-            <button onClick={closePopup} className="cancel-buttonn">
+            <button onClick={closePopup} className="cancel-buttonn-login ">
             <RxCross2 />
             </button>
             {showSendRequestButton && (
