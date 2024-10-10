@@ -13,7 +13,7 @@ export default function AdminReview() {
   const [selectedCourse, setSelectedCourse] = useState(null); // To track the course to be declined
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [request_id, setRequest_id] = useState(null)
- 
+ const [review, setReview] = useState("");
  
   // Toggle function to expand/collapse courses
   const toggleCourses = () => {
@@ -47,7 +47,7 @@ export default function AdminReview() {
 
   const token = localStorage.getItem('token');
 const getApproval = async()=>{
-  console.log("again");
+  // console.log("again");
   try{
     const response = await axios({
       method: 'GET',
@@ -58,10 +58,11 @@ const getApproval = async()=>{
     })
         setApprovals(response?.data?.data)
         console.log(response?.data?.data)
-        console.log(Approvals)
+        // console.log(Approvals)
   }
   catch(error){
-    toast.error(error?.response?.data?.message)
+    console.log(error)
+    // toast.error(error?.response?.data?.message)
   }
 }
  useEffect(()=>{
@@ -75,7 +76,8 @@ const getApproval = async()=>{
       method: 'PATCH',
       url: `${BASE_URI}/api/v1/admin/approveCourse/${request_id}`,
       data:{
-        "is_approved":selectedCourse
+        "status":selectedCourse,
+        "remarks":review
       },
       headers: {
         Authorization: "Bearer " + token,
@@ -83,7 +85,7 @@ const getApproval = async()=>{
     })
         toast.success(response?.data?.message)
         setShowDeclinePopup(false);
-        getApproval()
+        
  }
  catch(err){
   toast.error(err?.response?.data?.message)
@@ -132,10 +134,10 @@ const getApproval = async()=>{
                   </div>
                   <div className="course-actions">
                   <button onClick={()=> navigate(`/courses/courseView/${Approvals?.course_id}`)} className="overview">Overview</button>
-                    <button onClick={() => handleDeclineClick(1,Approvals?.request_id)} className="approve">Approve</button>
+                    <button onClick={() => handleDeclineClick("approved",Approvals?.request_id)} className="approve">Approve</button>
                     <button
                       className="decline"
-                      onClick={() => handleDeclineClick(0,Approvals?.request_id)}
+                      onClick={() => handleDeclineClick("declined",Approvals?.request_id)}
                     >
                       Decline
                     </button>
@@ -153,9 +155,10 @@ const getApproval = async()=>{
       {/* Decline confirmation popup */}
       {showDeclinePopup && (
         <div className="popup ">
-          <div className="popup-content-review ">
-            <h5 style={{fontWeight:"500"}}>Are you sure you want to {selectedCourse === 1 ? "approve" : "decline"} the request?</h5>
-            <div className="popup-buttons-review" >
+          <div className="popup-content-review">
+            <h5 style={{fontWeight:"500"}}>Are you sure you want to {selectedCourse === "approved" ? "approve" : "decline"} the request?</h5>
+            {selectedCourse === "declined" && <textarea onChange={(e)=>setReview(e.target.value)} placeholder="Enter decline message"></textarea>}
+            <div className="popup-buttons-review">
               <button className="cancel-button-review" onClick={handleDeclineCancel}>
                 Cancel
               </button>

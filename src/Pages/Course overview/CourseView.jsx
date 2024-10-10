@@ -18,13 +18,13 @@ import axios from "axios";
 import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
 import { FaChevronRight } from "react-icons/fa";
 import ReactPlayer from "react-player";
+import toast from "react-hot-toast";
 
 const CourseView = ({ setEditCourse, setCourseId }) => {
   const { id } = useParams();
   console.log(id);
   const [buttonPick, setButtonPick] = useState("Overview");
   const [openDetails, setOpenDetails] = useState({});
-
   const [openChapters, setOpenChapters] = useState({ 0: true });
   const [video_url, setVideo_url] = useState("");
   const [video_type, setVideo_type] = useState("");
@@ -103,7 +103,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
   //  setData(data.data[0]);
   //  console.log(data);
   const courseData = useMemo(() => data?.data?.chapters || [], [data]);
-
+console.log(courseData);
   const url2 = `${BASE_URI}/api/v1/courses/${id}`;
   // const token2 = localStorage.getItem("token");
   const {
@@ -119,7 +119,8 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
   // console.log(data2)
 
   const courseData2 = useMemo(() => data2?.data || [], [data2]);
-  //   console.log(courseData[0]?.lessons[0]?.video_url);
+  // console.log(courseData2[0]?.status)
+    // console.log(courseData[0]?.lessons[0]?.video_url);
 
   useEffect(() => {
     setVideo_url(courseData[0]?.lessons[0]?.video_url);
@@ -142,6 +143,23 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
     navigate(`/courses/addLesson/${id}`);
   };
 
+  async function handleSendApproval(){
+    console.log(id)
+    try {
+      await axios.post(`${BASE_URI}/api/v1/expert/reviewRequest`, 
+        {course_id: id}, 
+        {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      toast.success("Course sent for approval successfully!");
+    } catch (err) {
+      console.log(err)
+      toast.error(err?.response?.data?.message);
+    }
+  }
+
 
 
   return (
@@ -159,13 +177,44 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
         <div className="wrapper-courseview">
           <div className="top-courseview">
             <h4>Course Overview</h4>
-            <div>
+           
+              {
+                courseData2[0]?.status === "approved" ?
+                <div >
               <h6 onClick={handleEditCourse}>Edit Course</h6>
+           
             </div>
+            :
+            <span
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                position: "relative",
+                transition: "all 0.5s ease-in-out",
+                width:"30%",
+                height:"100%",
+                // backgroundColor:"blue"
+              }}
+            >
+              <div onClick={handleSendApproval}>
+                <h6 style={{ color:"black"}}>Send Approval Request</h6>
+              </div>
+              
+              
+              <div >
+              <h6 onClick={handleEditCourse}>Edit Course</h6>
+           
+            </div>
+            </span>
+
+              }
+            
+            
           </div>
           <div className="bottom-courseview">
-            <div className="left-bottom-courseview" >
-              <div className="video-container-purchasedCourse" >
+            <div className="left-bottom-courseview">
+              <div className="video-container-purchasedCourse">
                 {video_type === "youtube" ? (
                   <ReactPlayer
                     url={video_url}
@@ -349,7 +398,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                         <div className="right-ratings-courseview">
                           <h6>Detailed Ratings</h6>
                           <div>
-                            <h6>{reviewData?.data?.ratingPercentages[5]}%</h6>
+                            <h6>{Math.floor(reviewData?.data?.ratingPercentages[5])}%</h6>
                             <span>
                               <FontAwesomeIcon
                                 icon={faStar}
@@ -382,7 +431,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                             </div>
                           </div>
                           <div>
-                            <h6>{reviewData?.data?.ratingPercentages[4]}%</h6>
+                            <h6>{Math.floor(reviewData?.data?.ratingPercentages[4])}%</h6>
                             <span>
                               <FontAwesomeIcon
                                 icon={faStar}
@@ -411,7 +460,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                             </div>
                           </div>
                           <div>
-                            <h6>{reviewData?.data?.ratingPercentages[3]}%</h6>
+                            <h6>{Math.floor(reviewData?.data?.ratingPercentages[3])}%</h6>
                             <span>
                               <FontAwesomeIcon
                                 icon={faStar}
@@ -436,7 +485,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                             </div>
                           </div>
                           <div>
-                            <h6>{reviewData?.data?.ratingPercentages[2]}%</h6>
+                            <h6>{Math.floor(reviewData?.data?.ratingPercentages[2])}%</h6>
                             <span>
                               <FontAwesomeIcon
                                 icon={faStar}
@@ -457,7 +506,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                             </div>
                           </div>
                           <div>
-                            <h6>{reviewData?.data?.ratingPercentages[1]}%</h6>
+                            <h6>{Math.floor(reviewData?.data?.ratingPercentages[1])}%</h6>
                             <span>
                               <FontAwesomeIcon
                                 icon={faStar}
