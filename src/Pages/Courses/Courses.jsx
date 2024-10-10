@@ -28,6 +28,10 @@ const Card = ({
   thumbnail,
   name,
   category,
+  reason,
+  editClick,
+  reasonClick,
+  activeTab
 }) => (
   <div className="card-bottom-courses" onClick={() => onClick(id)}>
     <img loading="lazy" src={thumbnail || cardImage} alt="Course image" />
@@ -38,7 +42,7 @@ const Card = ({
       </div>
       <div className="pricing-card-courses">
         <h5>${price}</h5>
-        <h5>${price - (price * discount) / 100}</h5>
+        <h5>${discount}</h5>
       </div>
     </div>
     
@@ -48,14 +52,24 @@ const Card = ({
         __html: description?.split(" ").slice(0, 6).join(" ") + "...",
       }}
     ></h4>
+    {
+      activeTab === "declined" && 
+      <div className="flex justify-content-between">
+      <div className="border rounded p-1" onClick={(e)=>editClick(e,id)}>Edit Course</div>
+      <div className="border rounded p-1" onClick={(e)=>reasonClick(e,reason,id)}>View Reason</div>
+    </div>
+    }
+   
   </div>
 );
 
-const Courses = ({ search, setEditCourse }) => {
+const Courses = ({ search, setEditCourse , setCourseId}) => {
   const navigate = useNavigate();
-  const [course, setcourse] = useState(true);
-
-  const url = `${BASE_URI}/api/v1/courses/expertCourses?search=${search}`;
+  const [reason, setReason] = useState("");
+  const [reasonPopUp, setReasonPopUp] = useState(false);
+  const [activeId , setActiveId] = useState(null)
+  const [activeTab, setActiveTab] = useState("live");
+  const url = `${BASE_URI}/api/v1/courses/expertCourses?tab=${activeTab}`;
   const token = localStorage.getItem("token");
   const { data, isLoading, error, refetch } = useFetch(url, {
     headers: {
@@ -70,6 +84,27 @@ const Courses = ({ search, setEditCourse }) => {
   const handleCardClick = (id) => {
     navigate(`/courses/courseView/${id}`);
   };
+  const handleEditCourse = (e,id) => {
+    console.log(id)
+    e.stopPropagation()
+    navigate(`/courses/addLesson/${id}`);
+    // setEditCourse(true);
+    // setCourseId(id);
+  };
+  const handleCancelReason = ()=>{
+    setReasonPopUp(false)
+  }
+  const handleReasonPopUp = (e, reason, id) => {
+    
+    e.stopPropagation();
+    
+    setReason(reason); // Set reason correctly
+    setActiveId(id); // Set id correctly
+   
+    setReasonPopUp(true); // Open the popup
+    console.log(id, reason)
+  };
+  
 
   const cards = coursesData.map((course, index) => (
     <Card
@@ -82,9 +117,15 @@ const Courses = ({ search, setEditCourse }) => {
       discount={course.discount}
       thumbnail={course.thumbnail}
       category={course.category}
+      reason={course.remarks} // Correct field
       name={course.name}
+      activeTab={activeTab}
+      editClick={(e) => handleEditCourse(e, course.id)}
+      reasonClick={(e) => handleReasonPopUp(e, course.remarks, course.id)} // Pass remarks here
     />
   ));
+  
+  
 
   const handleAddCourse = () => {
     navigate(`/courses/courseCreation`);
@@ -94,11 +135,70 @@ const Courses = ({ search, setEditCourse }) => {
   return (
     <>
       <div className="wrapper-courses">
-        <div className="top-courses">
-          <h4>Courses</h4>
+      {reasonPopUp && (
+        <div className="popup ">
+          <div className="popup-content-review">
+           
+            <div className="popup-buttons-review">
+            <h5 style={{maxHeight:"12rem",border:"1px solid grey", padding:"0.5rem",borderRadius:"0.5rem", whiteSpace: "normal", wordWrap: "break-word", overflowWrap: "break-word" ,overflowY:"auto",scrollbarWidth:"none"}}>
+            {reason}
+          </h5>
+                        <button onClick={handleCancelReason} className="cancel-button-review" >
+                Cancel
+              </button>
+              <button className="continue-button-review" onClick={(e)=>handleEditCourse(e,activeId)} >
+                Edit Course
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+        <div className="bg-gradient-custom-div rounded">
+          <div className="top-courses">
+          <h4>My Courses</h4>
           <div className="top-button">
             <h6 onClick={handleAddCourse}>Add Course</h6>
           </div>
+          </div>
+          <div style={{overflowX:'scroll',scrollbarWidth:"none"}} className="mt-4 d-flex gap-5 px-4">
+              {/* Tab headers */}
+              <h5
+              style={{whiteSpace:"nowrap"}}
+                className={`text-white px-2 pb-2 fw-light cursor-pointer ${
+                  activeTab === "live" ? "border-bottom border-4" : ""
+                }`}
+                onClick={() => setActiveTab("live")}
+              >
+                Live Courses
+              </h5>
+              <h5
+              style={{whiteSpace:"nowrap"}}
+                className={`text-white px-3 pb-2 fw-light cursor-pointer ${
+                  activeTab === "requested" ? "border-bottom border-4" : ""
+                }`}
+                onClick={() => setActiveTab("requested")}
+              >
+                Sent for Approval
+              </h5>
+              <h5
+              style={{whiteSpace:"nowrap"}}
+                className={`text-white px-3 pb-2 fw-light cursor-pointer ${
+                  activeTab === "declined" ? "border-bottom border-4" : ""
+                }`}
+                onClick={() => setActiveTab("declined")}
+              >
+                Declined Courses
+              </h5>
+              <h5
+              style={{whiteSpace:"nowrap"}}
+                className={`text-white px-3 pb-2 fw-light cursor-pointer ${
+                  activeTab === "incomplete" ? "border-bottom border-4" : ""
+                }`}
+                onClick={() => setActiveTab("incomplete")}
+              >
+                InComplete Courses
+              </h5>
+            </div>
         </div>
 
         {error?.response?.data?.message !== "no courses found" ? (

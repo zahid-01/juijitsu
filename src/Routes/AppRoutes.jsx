@@ -5,10 +5,8 @@ import { SignUp } from "../Pages/SignUppage/SignUp";
 import { VerifyEmail } from "../Pages/veryEmail/VerifyEmail";
 import ExpertRoutes from "./ExpertRoutes";
 import UserRoutes from "./UserRoutes";
-
 import UserCourses from "../Pages/UserCourses/UserCourses";
 import UserCourseOverview from "../Pages/UserCourseOverview/UserCourseOverview";
-
 import UserWallet from "../Pages/userWallet/UserWallet";
 import AdminRoutes from "./AdminRoutes";
 
@@ -37,10 +35,8 @@ useEffect(() => {
       <Route path="/" element={<Login />} />
       <Route path="/signUp" element={<SignUp />} />
       <Route path="/verifyEmail" element={<VerifyEmail />} />
-
       <Route path="/userCourses" element={<UserCourses search={search} />} />
       <Route path="/userWallet" element={<UserWallet/>} />
-
       <Route
         path="/userCourses/userCourseView/:id"
         element={<UserCourseOverview />}

@@ -422,7 +422,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
       toast.success("Course sent for approval successfully!");
     } catch (err) {
       console.log(err)
-      toast.error(err.response.data.err);
+      toast.error(err?.response?.data?.message);
     }
   }
 

@@ -1,5 +1,5 @@
 .wrapper-courses {
-  width: 105%;
+  width: 100%;
   /* padding: 0; */
 }
 
@@ -11,29 +11,29 @@
   margin-top: 5vh;
   justify-content: space-between;
   align-items: center;
-  padding: 0 3vw 0 1.5vw;
+  padding: 0 1.5vw 0 1.5vw;
 }
 .top-courses h4 {
   font-weight: 700;
   font-size: 1.6rem; /* Converted */
 }
 .top-button {
-  background: linear-gradient(97.89deg, #0c243c 0%, #7e8c9c 95.36%);
-  height: 60%;
-  width: 11%;
+  padding: 0.5rem 0.5rem;
+  background-color: white;
+  width: max-content;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 0.26vw;
-  color: white;
   cursor: pointer;
 }
 .top-button h6 {
   font-weight: 400;
-  font-size: 1.2rem; /* Converted */
+  font-size: 1rem; /* Converted */
+  color: black;
 }
 .bottom-courses {
-  padding: 0 2vw 0 1.5vw;
+  /* padding: 0 2vw 0 1.5vw; */
   margin-top: 2vh;
   display: grid;
   grid-template-columns: repeat(4, 1fr);

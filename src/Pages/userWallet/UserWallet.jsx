@@ -145,7 +145,7 @@ export default function UserWallet() {
   const [withDrawPopup, setWithDrawPopup] = useState(false);
   const [withdrawalAmount, setWithdrawalAmount] = useState(null);
   const [withdrawalHistory, setWithdrawalHistory] = useState(false);
-
+  const [coinCost, setCoinCost]=useState(null);
 
   useEffect(() => {
     async function fetchWalletData() {
@@ -158,10 +158,10 @@ export default function UserWallet() {
             },
           }
         );
-
-        setWalletData(response.data.data);
+console.log(response?.data)
+        setWalletData(response?.data?.data);
       } catch (error) {
-        console.error("Error fetching wallet data:", error);
+        console.log("Error fetching wallet data:", error);
       } finally {
         setLoading(false);
       }
@@ -276,11 +276,10 @@ console.log(orders);
     );
   }
 
-  if (!walletData) {
-    return <div>No data available</div>;
-  }
 
-  const { last_purchase, total_points } = walletData[0];
+
+const last_purchase = walletData[0]?.last_purchase; 
+const total_points = walletData[0]?.total_points;
  
   const recentPayout = last_purchase;
 
@@ -399,6 +398,26 @@ console.log(orders);
     setEditable(!editable);
   };
 
+  const handleCoinCost = async(withdrawAmount) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URI}/api/v1/users/coinCost/${withdrawAmount}`,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      console.log(response?.data);
+      setCoinCost(response?.data?.amount);
+    } catch (err) {
+      console.log(err);
+      // toast.error(err?.response?.data?.message);
+    }
+  }
+
+  
+
   const handleWithdraw = async () => {
     try {
       const response = await axios.post(
@@ -470,10 +489,10 @@ console.log(orders);
                 type="text"
                 placeholder="Enter Amount"
                 value={withdrawalAmount}
-                onChange={(e) => setWithdrawalAmount(e.target.value)}
+                onChange={(e) => handleCoinCost(e.target.value)}
               />
             </span>
-            <p className="text-red">{"* Please enter amount >= $50"}</p>
+            {coinCost && <p className="text-red">{`You will get ${coinCost} coins!`}</p>}
             <div className=" d-flex justify-content-between">
               <div
                 onClick={() => setWithDrawPopup(false)}
@@ -511,14 +530,14 @@ console.log(orders);
             </h5>
             
             <h5 className="mb-3 fw-normal">
-              Recent Purchase: <span className="fw-light"><FontAwesomeIcon icon={faCoins}/> {recentPayout}</span>
+              Recent Purchase: <span className="fw-light"><FontAwesomeIcon icon={faCoins}/> {recentPayout ? recentPayout : 0}</span>
             </h5>
           </div>
           <div style={{boxShadow: "0px 0px 12px 0px #FFFFFF80"}} className="bg-white text-center text-black p-4 w-md-25 rounded position-relative">
             <h5 className="mb-4 fw-light ">Account Balance</h5>
             <div className="mb-4 d-flex align-items-center justify-content-center">
               <h2 style={{filter: "blur(1px)", transform:"rotate(-30deg)", fontSize:"1.3rem", position:"absolute", bottom:"40%", left:"5%"}}>💰</h2>
-              <h5><FontAwesomeIcon icon={faCoins}/> {accountBalance}</h5>
+              <h5><FontAwesomeIcon icon={faCoins}/> {accountBalance ? accountBalance : 0} </h5>
               <h2  style={{filter: "blur(1px)", transform:"rotate(-30deg)", fontSize:"1.3rem", position:"absolute", bottom:"55%", right:"5%"}}>💰</h2>
             </div>
             <div
@@ -588,7 +607,8 @@ console.log(orders);
                              </tr>
                            </thead>
                            <tbody>
-                             {orders.map((order, index) => (
+                            
+                             {orders.length === 0 ? <div className="w-100 d-flex justify-content-center">No data avalable!</div > : orders.map((order, index) => (
                               <tr key={index}>
                                 <td className="align-middle fs-small py-3 text-capitalize">
                                   {order.title}
@@ -639,7 +659,9 @@ console.log(orders);
                 </tr>
               </thead>
               <tbody>
-                {withdrawalHistory?.data?.coins?.map((order, index) => (
+                {withdrawalHistory?.data?.coins?.length === 0 ? <div>No data avalable!</div>
+                :
+                withdrawalHistory?.data?.coins?.map((order, index) => (
                   <tr key={index}>
                     
                     <td className="text-center align-middle fs-small">
