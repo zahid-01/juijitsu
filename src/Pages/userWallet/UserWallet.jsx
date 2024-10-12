@@ -1,125 +1,3 @@
-// import { useMemo, useState } from "react";
-// import { BASE_URI } from "../../Config/url";
-// import useFetch from "../../hooks/useFetch";
-// import formatDate from "../../utils/formatDate";
-
-// const PurchaseHistory = () => {
-//   const [activeTab, setActiveTab] = useState("courses");
-
-//   const token = localStorage.getItem("token");
-//   const historyUrl = `${BASE_URI}/api/v1/users/orderHistory`;
-
-//   const fetchOptions = {
-//     headers: {
-//       Authorization: "Bearer " + token,
-//     },
-//   };
-
-//   const { data } = useFetch(historyUrl, fetchOptions);
-//   const orders = useMemo(() => data?.data?.orders || [], [data]);
-
-  // const handlePrint = (order) => {
-  //   const printContent = `
-  //     <div>
-  //       <h3>Order Receipt</h3>
-  //       <p><strong>Course Name:</strong> ${order.title}</p>
-  //       <p><strong>Date:</strong> ${formatDate(order.payment_date)}</p>
-  //       <p><strong>Transaction ID:</strong> ${order.transaction_id}</p>
-  //       <p><strong>Price:</strong> ${order.discounted_price}</p>
-  //       <p><strong>Payment Type:</strong> ${order.payment_type}</p>
-  //     </div>
-  //   `;
-  //   const newWindow = window.open("", "_blank", "width=600,height=400");
-  //   newWindow.document.write(printContent);
-  //   newWindow.document.close();
-  //   newWindow.print();
-  // };
-
-//   return (
-//     <div className="w-100">
-//       <header className="bg-gradient-custom-div p-3 pb-0 rounded-bottom-0 custom-box">
-//         <h3 className="pb-5">Purchase History</h3>
-//         <div className="d-flex gap-5 px-4">
-//           <h5
-//             className={`text-white px-3 pb-2 fw-light cursor-pointer ${
-//               activeTab === "courses" ? "border-bottom border-4" : ""
-//             }`}
-//             onClick={() => setActiveTab("courses")}
-//           >
-//             Courses
-//           </h5>
-//         </div>
-//       </header>
-//       <div className="tab-content px-3 py-4 custom-box rounded-top-0" style={{ backgroundColor: "white" }}>
-//         <div className="px-4">
-//           {activeTab === "courses" && (
-//             <div className="tab-pane active" style={{ overflowX: "auto" }}>
-//               <table className="table w-md-reverse-50">
-//                 <thead>
-//                   <tr>
-//                     <th scope="col">Course Name</th>
-//                     <th scope="col" className="text-center ">
-//                       Date
-//                     </th>
-//                     <th scope="col" className="text-center">
-//                       Transaction ID
-//                     </th>
-//                     <th scope="col" className="text-center">
-//                       Price
-//                     </th>
-//                     <th scope="col" className="text-center">
-//                       Payment Type
-//                     </th>
-//                     <th scope="col" className="text-center">
-//                       Receipt
-//                     </th>
-//                   </tr>
-//                 </thead>
-//                 <tbody>
-//                   {orders.map((order, index) => (
-//                     <tr key={index}>
-//                       <td className="align-middle fs-small py-3 text-capitalize">
-//                         {order.title}
-//                       </td>
-//                       <td className="text-center align-middle fs-small">
-//                         {formatDate(order.payment_date)}
-//                       </td>
-//                       <td className="text-center align-middle fs-small">
-//                         {order.transaction_id}
-//                       </td>
-//                       <td className="text-center align-middle fs-small">
-//                         ${order.discounted_price}
-//                       </td>
-//                       <td className="text-center align-middle fs-small text-capitalize">
-//                         {order.payment_type}
-//                       </td>
-//                       <td className="text-center align-middle">
-//                         <div className="d-flex align-items-center justify-content-center">
-//                           <button
-//                             className="signup-now py-1 px-3 fw-lightBold fs-small mb-0 h-auto"
-//                             onClick={() => handlePrint(order)}
-//                           >
-//                             Print
-//                           </button>
-//                         </div>
-//                       </td>
-//                     </tr>
-//                   ))}
-//                 </tbody>
-//               </table>
-//             </div>
-//           )}
-          
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default PurchaseHistory;
-
-
-
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { ShimmerThumbnail } from "react-shimmer-effects";
@@ -420,24 +298,21 @@ const total_points = walletData[0]?.total_points;
 
   const handleWithdraw = async () => {
     try {
-      const response = await axios.post(
-        `${BASE_URI}/api/v1/payment/payoutRequest`,
-        {
-          amount: withdrawalAmount,
+      const stripe = await stripePromise;
+      // Fetch the session from your backend
+      // const session = await axios(`http://localhost:3000/api/v1/payment`);
+      const session = await axios(`${BASE_URI}/api/v1/payment/${id}`, {
+        headers: {
+          Authorization: "Bearer " + token,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      console.log(response?.data);
-      setWithdrawalAmount(null);
-      setWithDrawPopup(false);
-      toast.success("Withdrawal successful");
-    } catch (err) {
-      console.log(err);
-      toast.error(err?.response?.data?.message);
+      });
+      // Redirect to Stripe Checkout
+      await stripe.redirectToCheckout({
+        sessionId: session.data.session.id,
+      });
+    } catch (e) {
+      console.log(e);
+      toast.error("Something went wrong");
     }
   };
 

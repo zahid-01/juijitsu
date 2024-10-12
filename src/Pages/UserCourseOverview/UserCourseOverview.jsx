@@ -21,6 +21,11 @@ import gsap from "gsap";
 import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
 import ReactPlayer from "react-player";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(
+  "pk_test_51PubCwDq08j41MMz9w7CFKlaPOPT4YlfciU9GCgXcxBmve17go3ryZQKVBcQJ3pzW86Z1mDb1bLTnkXFiTZKBu8O00CGdw624j"
+);
 
 const UserCourseOverview = () => {
   const [loadingItems, setLoadingItems] = useState(null);
@@ -33,6 +38,9 @@ const UserCourseOverview = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { contextSafe } = useGSAP();
+
+  
+
 
   const handleLeftToggle = (chapterIndex) => {
     setOpenChapters((prevOpenChapters) => ({
@@ -133,7 +141,7 @@ const UserCourseOverview = () => {
       const stripe = await stripePromise;
       // Fetch the session from your backend
       // const session = await axios(`http://localhost:3000/api/v1/payment`);
-      const session = await axios(`${BASE_URI}/api/v1/payment`, {
+      const session = await axios(`${BASE_URI}/api/v1/payment/${id}`, {
         headers: {
           Authorization: "Bearer " + token,
         },

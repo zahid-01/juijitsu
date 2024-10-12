@@ -27,9 +27,9 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const role = localStorage.getItem("userType");
   const [token, setToken] = useState(localStorage.getItem("token"));
   const userType = localStorage.getItem("userType");
+  const oldUserType = localStorage.getItem("oldUserType");
   const [experts, setExperts] = useState([]);
   const [profileCompletion, setProfileCompletion] = useState(null);
-
   const profileUrl = `${BASE_URI}/api/v1/users/profile`;
 
   const fetchOptions = {
@@ -172,12 +172,15 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
             />
           </div>
           <CiFilter className="primary-color fs-2 ms-3 cursor-pointer" />
-          <button class="learn-more-user" onClick={handleExpertToggle}>
+          {
+            oldUserType === "expert" &&
+            <button class="learn-more-user" onClick={handleExpertToggle}>
   <span class="circle" aria-hidden="true">
   <span class="icon arrow"></span>
   </span>
   <span class="button-text">Toggle As Student</span>
 </button>
+          }
         </div>
       )}
       {/* {userType === "user" && ( */}
