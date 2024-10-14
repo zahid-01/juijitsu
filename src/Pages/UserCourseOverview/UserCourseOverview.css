@@ -13,7 +13,7 @@
 }
 .top-userCourseview {
   width: 100%;
-  height: 25vh;
+  /* height: 25vh; */
   background: linear-gradient(92.01deg, #0c243c 0%, #7e8c9c 100%);
   border-top-right-radius: 1vw;
   border-top-left-radius: 1vw;
@@ -21,10 +21,12 @@
   display: flex;
   
   justify-content: space-between;
-  padding-top: 3vh;
+  /* padding-top: 3vh; */
+  padding-top: 2vw;
   padding-left: 2vw;
   padding-right: 2rem;
   overflow-y: auto;
+  padding-bottom: 8vw;
 }
 .top-userCourseview h3 {
   font-size: 1.7vw;
@@ -241,7 +243,7 @@
   /* margin-left: 3vw; */
   display: flex;
   flex-direction: column;
-  gap: 3vh;
+  gap: 3vw;
   justify-content: center;
   padding: 4vh 1vw;
   /* padding-left: 1.5vw; */
@@ -316,7 +318,8 @@
   display: block;
   border: none;
   width: 15vw;
-  height: 14vh;
+  /* height: 14vh; */
+  height: 10vw;
   /* background-color: yellow; */
 }
 .ratings-right-mid-userCourseview div div div:first-child h5 {
@@ -440,7 +443,8 @@
   display: none; /* Safari and Chrome */
 }
 .card-bottom-userCourseview {
-  height: 50vh;
+  /* height: 50vh; */
+  height: 25vw;
   min-width: 21vw;
   background-color: white;
   border-radius: 0.5vw;
@@ -588,6 +592,12 @@
  
 } */
 
+
+
+
+
+
+
 @media (max-width:1213px){
   .mid-userCourseview {
     display: block !important; 
@@ -597,47 +607,78 @@
   }
 
   .second-leftuserCourse{
-    margin-top: 29vh;
+    margin-top: 27vw;
     display: block !important;
   }
-  .details-right-mid-userCourseview {
-  
-    margin-top: 1.5rem;
+ 
+.details-right-mid-userCourseview {
+  margin-top: 1.5rem;
 }
 .new-left{
   display: none !important;
 }
-/* .bottom-userCourseview{
-  display: none;
-} */
+
 .right-mid-userCourseview {
   width: 100%;
-}}
+}
+.ratings-right-mid-userCourseview div div div:first-child {
+  height: 12vw;
+}
+
+.ratings-right-mid-userCourseview div div div:first-child p {
+  font-size: 1.5vw;
+
+}
+.ratings-right-mid-userCourseview div div div:first-child img {
+  height: 4.5vw;
+  width: 4.5vw;
+
+}
+.ratings-right-mid-userCourseview div div div:first-child h5 {
+  font-size: 1.7vw;
+  font-weight: 400;
+}
+.staricon {
+  font-size: 1.5vw;
+}
+.ratings-right-mid-userCourseview div div div:last-child p {
+  font-size: 1.6vw;
+}
+.left-bottom-mid-userCourseview div details div h6 {
+  font-size: 1.6vw;
+}
+}
 @media (min-width:1401px) and (max-width:1600px){
 
 .card-bottom-userCourseview {
-  height: 55vh;
+  height: 32vw;
 }
 }
-
-
-@media (min-width:1201px) and (max-width:1400px){
-
-.card-bottom-userCourseview {
-  height: 44vh;
-}
-}
-
 @media (min-width:781px) and (max-width:1200px){
-  .top-userCourseview {
-    height: 19vh !important;
-}
 .card-bottom-userCourseview {
-  height: 34vh;
+  height: 34vw;
 }
+.tumbnail-userCourseview {
+  top: -2rem;
 }
 
+}
 
+@media (max-width:1119px){
+  .second-leftuserCourse {
+    margin-top: 31vw;
+  }
+}
+@media (max-width:1037px){
+  .second-leftuserCourse {
+    margin-top: 38vw;
+  }
+}
+@media (max-width:866px){
+  .second-leftuserCourse {
+    margin-top: 42vw;
+  }
+}
 @media (max-width: 780px) {
   .pricing-right-mid-userCourseview{
     flex-direction: row;
@@ -678,31 +719,27 @@
   font-size: 5vw;
 }
 .top-userCourseview {
-    width: 100%;
-    height: 21vh;
+    padding-bottom: 20vw;
 }
-
-.tumbnail-userCourseview {
-    height: 15rem;
+.second-leftuserCourse {
+  margin-top: 37vw;
 }
-
-.second-leftuserCourse{
-  margin-top: 17vh;
- 
+.details-right-mid-userCourseview {
+gap:7vw;
 }
 .details-right-mid-userCourseview span h5 {
   font-size: 1.9vw;
  
-  margin-top: -2vh;
+  /* margin-top: -2vh; */
 }
 .details-right-mid-userCourseview span h6 {
-  font-size: 1.7vw;
+  font-size: 1.9vw;
   font-weight: 400;
-  margin-top: -2vh;
-}
-.details-right-mid-userCourseview span img {
+  /* margin-top: -2vh; */
+
+/* .details-right-mid-userCourseview span img {
    margin-top: -2vh;
-}
+} */
 .ratings-right-mid-userCourseview {
   margin-top: -2.8vh;
  
@@ -715,11 +752,9 @@
   font-weight: 500;
   font-size: 1.8vw;
 }
-
 .card-bottom-userCourseview {
   height: 26vh;
     min-width: 31vw;
-
 }
 .card-bottom-userCourseview h6 {
  font-size: 1.5vw;
@@ -753,12 +788,79 @@
 .bottom-userCourseview h3 {
   font-size: 2.4vw;
 }
+/*  */
+.tumbnail-userCourseview {
+  top: -2rem;
+ 
+}
+.card-bottom-userCourseview {
+  height: 18vh;
+ 
+}
 }
 
 
+}
+@media (max-width: 717px) {
+  .top-userCourseview {
+    flex-direction: column;  
+  }
+  .text-uppercase {
+    margin-bottom: 3vw;
+}
+}
+
+
+@media (max-width:716px){
+  .second-leftuserCourse {
+    margin-top: 41vw;
+}
+}
+@media (max-width: 700px) {
+  .left-bottom-mid-userCourseview div details div h6 {
+      font-size: 2.2vw;
+  }
+}
+@media (max-width: 646px) {
+  .second-leftuserCourse {
+      margin-top: 45vw;
+  }
+}
+@media (max-width: 602px) {
+  .second-leftuserCourse {
+      margin-top: 50vw;
+  }
+}
+@media (max-width: 539px) {
+  .second-leftuserCourse {
+      margin-top: 57vw;
+  }
+}
 @media (max-width:550px){
   .card-bottom-userCourseview {
-    height: 20vh;
+    height: 33vw;
    
+  }
+}
+@media (max-width: 468px) {
+  .second-leftuserCourse {
+      margin-top: 67vw;
+  }
+}
+@media (max-width: 459px) {
+  .left-bottom-mid-userCourseview div details div h6 {
+      font-size: 3vw;
+  }
+
+
+}
+@media (max-width: 458px) {
+  .second-leftuserCourse {
+    margin-top: 18rem;
+}
+}
+@media (max-width:376px){
+  .m-bt{
+    margin-bottom: 5vw;
   }
 }

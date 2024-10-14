@@ -33,8 +33,8 @@
   }
   
   .course-req img {
-    width: 9vw;
-    height: 18vh;
+    width: 7vw;
+    height: 16vh;
     object-fit: cover;
     margin-right: 15px;
     border-radius: 10%;
@@ -68,7 +68,7 @@
   .overview,
   .approve,
   .decline {
-    padding: 8px 12px;
+    padding: 8px 10px;
     border: none;
     border-radius: 5px;
     font-weight: bold;
@@ -124,4 +124,45 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+@media (max-width:778px){
+
+    
+  .overview,
+  .approve,
+  .decline {
+    padding: 2px 4px;
+  }
+  .course-req img {
+    width: 19vw;
+    height: 9vh;
+  }
+
+
+}
+@media (min-width:778px) and (max-width:1200px){
+  .course-req img {
+    width: 9vw;
+    height: 9vh;
+}
+}
+@media (min-width:1201px) and (max-width:1300px){
+  .course-req img {
+    width: 9vw;
+    height: 12vh;
+}
+}
+@media (min-width:1301px) and (max-width:1450px){
+  .course-req img {
+    width: 9vw;
+    height: 9vh;
+}
+}
+
+@media(min-width:1450px){
+  .course-req img {
+   
+    height: 9vh;
+}
 }

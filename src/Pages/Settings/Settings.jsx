@@ -69,6 +69,7 @@ export default function Settings() {
 
   const role = localStorage.getItem("userType");
   const profileUrl = `${BASE_URI}/api/v1/users/profile`;
+  // console.log(profileUrl)
 
   const fetchOptions = {
     headers: {
@@ -378,8 +379,6 @@ export default function Settings() {
     }
   };
 
- 
-
   return (
     <div className="w-100">
       <header
@@ -388,13 +387,12 @@ export default function Settings() {
       >
         <div style={{ width: "37rem" }}>
           <h3 className="pb-5">Settings</h3>
-          <div className="d-flex gap-5 px-3" >
+          <div className="d-flex gap-5 px-3">
             <h5
               className={`text-white px-3 pb-2 fw-light cursor-pointer ${
                 activeTab === "accountSecurity" ? "border-bottom border-4" : ""
-              }` } 
+              }`}
               onClick={() => setActiveTab("accountSecurity")}
-              
             >
               Account Security
             </h5>
@@ -429,8 +427,6 @@ export default function Settings() {
                 >
                   Add categories
                 </h5>
-
-                
               </>
             )}
           </div>
@@ -461,10 +457,24 @@ export default function Settings() {
                       value={email ? email : ""}
                       readOnly
                     />
-                    <div className="input-group-append">
+                    {/* <div className="input-group-append">
                       <span
                         className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer"
                         onClick={() => setIsModalEmailChange(true)}
+                      >
+                        <FaPen />
+                      </span>
+                    </div> */}
+                    <div className="input-group-append">
+                      <span
+                        className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer"
+                        onClick={() => {
+                          if (password === null) {
+                            setIsModalEmailChange(false);
+                          } else {
+                            setIsModalEmailChange(true);
+                          }
+                        }}
                       >
                         <FaPen />
                       </span>
@@ -775,19 +785,7 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  {/* <button
-                    type="submit"
-                    className="signup-now py-2 px-4 fw-lightBold mb-0 h-auto"
-                    onClick={handleUpdateProfilePicture}
-                  >
-                    {isLoading ? (
-                      <PulseLoader size={8} color="white" />
-                    ) : (
-                      "Save"
-                    )}
-                  </button> */}
-
-                  {/* company name */}
+                
 
                   <div className="form-group w-md-50 mb-4">
                     <label
@@ -1168,8 +1166,6 @@ export default function Settings() {
             </div>
           )}
         </div>
-
-        
       </div>
     </div>
   );

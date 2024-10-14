@@ -102,3 +102,34 @@ input[type="password"][autocomplete="current-password"] {
   background-color:white !important;
   color: black !important;
 }
+
+/* responsie of admin add categories  */
+
+@media (max-width:1226px){
+  .category-item {
+ 
+    width: 13vw; 
+}
+}
+@media (max-width:979px){
+  .category-item {
+ 
+    width: 15vw; 
+}
+}
+@media (max-width:564px){
+  .category-item {
+ 
+    width: 20vw; 
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+}
+@media (max-width:376px){
+  .category-item {
+ 
+    width: 25vw; 
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+}

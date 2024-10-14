@@ -11,6 +11,8 @@ import UserCourseOverview from "../Pages/UserCourseOverview/UserCourseOverview";
 
 import UserWallet from "../Pages/userWallet/UserWallet";
 import AdminRoutes from "./AdminRoutes";
+import UserProfile from "../Pages/UserProfile/UserProfile"
+import Support from "../Pages/Support/Support";
 
 const AppRoutes = ({ search }) => {
   const userRole = localStorage.getItem("userType");
@@ -40,11 +42,14 @@ useEffect(() => {
 
       <Route path="/userCourses" element={<UserCourses search={search} />} />
       <Route path="/userWallet" element={<UserWallet/>} />
+      <Route path="/support" element={<Support/>} />
+     
 
       <Route
         path="/userCourses/userCourseView/:id"
         element={<UserCourseOverview />}
       />
+       <Route path="/UserProfile/:id" element={<UserProfile/>}/>
 
       {role === "expert" && (
         <Route path="/*" element={<ExpertRoutes search={search} />} />
