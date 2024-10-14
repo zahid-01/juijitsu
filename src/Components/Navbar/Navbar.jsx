@@ -21,16 +21,15 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const searchInputRef = useRef(null);
   const profileBarRef = useRef(null); // Reference for the profile-bar
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-
   const [user, setUser] = useState(() =>
     JSON.parse(localStorage.getItem("user"))
   );
   const role = localStorage.getItem("userType");
   const [token, setToken] = useState(localStorage.getItem("token"));
   const userType = localStorage.getItem("userType");
+  const oldUserType = localStorage.getItem("oldUserType");
   const [experts, setExperts] = useState([]);
   const [profileCompletion, setProfileCompletion] = useState(null);
-
   const profileUrl = `${BASE_URI}/api/v1/users/profile`;
 
   const fetchOptions = {
@@ -41,12 +40,10 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const notifications = useSelector((state) => state.payouts.notifications);
   useSelector((state) => state.cart);
   // console.log(notifications);
-
   const { data, refetch } = useFetch(profileUrl, fetchOptions);
-
   const { name, profile_picture } = data?.data[0] || [];
-  // console.log(name);
 
+  // console.log(name);
   // useEffect(() => {
   //   const handleStorageChange = () => {
   //     setUser(JSON.parse(localStorage.getItem("user")));
@@ -127,6 +124,26 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
     };
   }, [isProfileOpen]);
 
+  const handleExpertToggle =()=>{
+    const userType = localStorage.getItem("userType");
+    const oldUserType = localStorage.getItem("oldUserType");
+    if(userType === "expert" ){
+      localStorage.setItem("userType", "user");
+      localStorage.setItem("oldUserType", userType);
+      window.location.reload();
+      toast.success("You have been toggled as user");
+    }
+    else if(oldUserType === "expert" && userType === "user"){
+      localStorage.setItem("userType", "expert");
+      localStorage.removeItem("oldUserType");
+      window.location.reload();
+      toast.success(`You are now an expert`);
+    }
+    else{
+      toast.error("You are not eligible for this feature")
+    }
+  }
+
   return (
     <nav
       className={`navbar navbar-expand-lg d-flex align-items-center ps-6 pe-5  ${
@@ -155,6 +172,15 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
             />
           </div>
           <CiFilter className="primary-color fs-2 ms-3 cursor-pointer" />
+          {
+            oldUserType === "expert" &&
+            <button class="learn-more-user" onClick={handleExpertToggle}>
+  <span class="circle" aria-hidden="true">
+  <span class="icon arrow"></span>
+  </span>
+  <span class="button-text">Toggle As Student</span>
+</button>
+          }
         </div>
       )}
       {/* {userType === "user" && ( */}
@@ -179,16 +205,20 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
         </div>
       )}
       {userType === "expert" && (
+       <div className="flex align-items-center justify-content-center">
 
-        <div
-          className="profile-picture-container"
-          style={{
-            objectFit: "cover",
-            height: "3rem",
-            width: "3rem",
-            marginLeft: "20vw",
-          }}
-        ></div>
+<button class="learn-more" onClick={handleExpertToggle}>
+  <span class="circle" aria-hidden="true">
+  <span class="icon arrow"></span>
+  </span>
+  <span class="button-text">Toggle As Student</span>
+</button>
+       
+       
+       
+       </div>
+
+        
       )}
       {token && (
         <div onClick={handleProfileClick} style={{ cursor: "pointer" }}>

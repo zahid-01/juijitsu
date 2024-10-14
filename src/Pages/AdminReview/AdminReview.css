@@ -97,11 +97,20 @@
     border-radius: 8px;
     text-align: center;
     width: 35vw;
-    max-width: 40vw;
-    height: 34%;
-    max-height: 45%;
+    /* max-width: 40vw; */
+    /* height: 34%; */
+    /* max-height: 45%; */
+
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     overflow-y: auto;
+}
+.popup-content-review textarea{
+  border: 1.2px solid rgb(205, 202, 202);
+  width: 100%;
+  margin-top: 1rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  height: 6rem;
 }
 
 .cancel-button-review {

@@ -14,8 +14,10 @@ export default function AdminReview() {
   const [showDeclinePopup, setShowDeclinePopup] = useState(false); // State to manage the decline popup visibility
   const [selectedCourse, setSelectedCourse] = useState(null); // To track the course to be declined
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  const [request_id, setRequest_id] = useState(null);
 
+  const [request_id, setRequest_id] = useState(null)
+ const [review, setReview] = useState("");
+ 
   // Toggle function to expand/collapse courses
   const toggleCourses = () => {
     setIsCoursesVisible((prev) => !prev);
@@ -45,49 +47,54 @@ export default function AdminReview() {
     setSelectedCourse(null); // Clear the selected course
   };
 
-  const token = localStorage.getItem("token");
 
-  const getApproval = async () => {
-    console.log("again");
-    try {
-      const response = await axios({
-        method: "GET",
-        url: `${BASE_URI}/api/v1/admin/approveCourse`,
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      setApprovals(response?.data?.data);
-      console.log(response?.data?.data);
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Failed to fetch courses");
-    }
-  };
+  const token = localStorage.getItem('token');
+const getApproval = async()=>{
+  // console.log("again");
+  try{
+    const response = await axios({
+      method: 'GET',
+      url: `${BASE_URI}/api/v1/admin/approveCourse`,
+      headers: {
+        Authorization: "Bearer " + token,
+      }
+    })
+        setApprovals(response?.data?.data)
+        console.log(response?.data?.data)
+        // console.log(Approvals)
+  }
+  catch(error){
+    console.log(error)
+    // toast.error(error?.response?.data?.message)
+  }
+}
+ useEffect(()=>{
+  getApproval()
+ },[]);
 
-  useEffect(() => {
-    getApproval();
-  }, []);
+ async function aproveRequest(){
+  console.log(selectedCourse,request_id )
+  try{
+    const response = await axios({
+      method: 'PATCH',
+      url: `${BASE_URI}/api/v1/admin/approveCourse/${request_id}`,
+      data:{
+        "status":selectedCourse,
+        "remarks":review
+      },
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    })
+        toast.success(response?.data?.message)
+        setShowDeclinePopup(false);
+        
+ }
+ catch(err){
+  toast.error(err?.response?.data?.message)
+ }
+}
 
-  const aproveRequest = async () => {
-    console.log(selectedCourse, request_id);
-    try {
-      const response = await axios({
-        method: "PATCH",
-        url: `${BASE_URI}/api/v1/admin/approveCourse/${request_id}`,
-        data: {
-          is_approved: selectedCourse,
-        },
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      toast.success(response?.data?.message);
-      setShowDeclinePopup(false);
-      getApproval(); // Refresh course approvals after action
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to update request");
-    }
-  };
 
   return (
     <div className="w-100">
@@ -139,6 +146,7 @@ export default function AdminReview() {
                     <span>{approval?.price}</span>
                   </div>
                   <div className="course-actions">
+
                     <button
                       onClick={() =>
                         navigate(`/courses/courseView/${approval?.course_id}`)
@@ -156,6 +164,7 @@ export default function AdminReview() {
                     <button
                       className="decline"
                       onClick={() => handleDeclineClick(0, approval?.request_id)}
+
                     >
                       Decline
                     </button>
@@ -180,6 +189,7 @@ export default function AdminReview() {
                 className="cancel-button-review"
                 onClick={handleDeclineCancel}
               >
+
                 Cancel
               </button>
               <button

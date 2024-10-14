@@ -9,6 +9,7 @@ import { useState } from "react";
 import Logout from "../Pages/Logout/Logout";
 import Settings from "../Pages/Settings/Settings";
 import NotFound from "../Pages/NotFound/NotFound";
+import Messages from "../Pages/UserModule/Messages/Messages";
 
 const ExpertRoutes = ({ search }) => {
   const [editCourse, setEditCourse] = useState(false);
@@ -38,6 +39,7 @@ const ExpertRoutes = ({ search }) => {
           <AddLesson setEditCourse={setEditCourse} setCourseId={setCourseId} />
         }
       />
+      <Route path="/messages" element={<Messages />} />
       <Route path="/expertWallet" element={<ExpertWallet />} />
       <Route path="/dashboard" element={<ExpertAnalytics />} />
       <Route path="/settings" element={<Settings />} />

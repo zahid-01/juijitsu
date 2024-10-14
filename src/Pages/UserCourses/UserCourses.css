@@ -18,20 +18,7 @@
 .top-userCourses h4 {
   font-weight: 700;
 }
-.top-button {
-  background: linear-gradient(97.89deg, #0c243c 0%, #7e8c9c 95.36%);
-  height: 60%;
-  width: 11%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 0.26rem;
-  color: white;
-  cursor: pointer;
-}
-.top-button h6 {
-  font-weight: 400;
-}
+
 .categories-userCourses {
   height: 7vh;
   width: 100%;

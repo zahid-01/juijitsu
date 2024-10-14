@@ -7,6 +7,9 @@ import useFetch from "../../../hooks/useFetch";
 import { BASE_URI } from "../../../Config/url";
 import axios from "axios";
 import { FaUserCircle } from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { PulseLoader } from "react-spinners";
 
 const initialMessages = [
   {
@@ -78,6 +81,19 @@ const initialMessages = [
     ],
   },
 ];
+const profiles = [
+  { name: "John Doe", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
+ 
+  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
+  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
+  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
+  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
+  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
+  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
+  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
+  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
+  // Add more profiles as needed
+];
 
 const getTimeDifference = (date) => {
   const now = new Date();
@@ -106,7 +122,12 @@ const Messages = () => {
   const [messages, setMessages] = useState(initialMessages);
   const [selectedChat, setSelectedChat] = useState(null);
   const [inputValue, setInputValue] = useState("");
+  const [allExpertsPopUp , setAllExpertsPopUp] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
+  const [allExpertsData, setAllExpertsData] = useState(null);
+  const [allExpertsInput, setAllExpertsInput] = useState("");
+  const [allExpertsLoading, setAllExpertsLoading] = useState(false);
+  const [allExpertsError, setAllExpertsError] = useState("")
   const popupRef = useRef(null);
   const token = localStorage.getItem("token");
   const chatListUrl = `${BASE_URI}/api/v1/chat`;
@@ -121,11 +142,16 @@ const Messages = () => {
   const chatList = useMemo(() => data?.data || [], [data]);
   console.log(chatList);
 
+
+
   const handleOpenChat = (recieverId) => {
+    console.log(recieverId);
     axios
-      .get(`${BASE_URI}/api/v1/chat/chatMessages/${recieverId}`, fetchOptions)
+      .get(`${BASE_URI}/api/v1/chat/chatMessages${recieverId}`, fetchOptions)
       .then((resp) => {
-        console.log(resp.data);
+        console.log(resp?.data);
+      }).catch((err)=>{
+        console.log(err);
       });
   };
 
@@ -158,6 +184,38 @@ const Messages = () => {
     }
   };
 
+  const handleComposeClick = async(click)=>{
+    if(click){
+      setAllExpertsPopUp(true)
+    }
+    
+    setAllExpertsLoading(true)
+    const url = `${BASE_URI}/api/v1/users/otherExperts${allExpertsInput !== "" ? `?search=${allExpertsInput}` : ""}`;
+    console.log(url)
+    await axios({
+      method: 'GET',
+      url:url,
+      headers: {
+        'Authorization': 'Bearer '+ token
+      },
+    }).then((res)=>{
+      
+      console.log(res?.data);
+      setAllExpertsError("")
+      setAllExpertsData(res?.data?.data);
+      setAllExpertsLoading(false)
+    }).catch((err)=>{
+      console.log(err);
+      setAllExpertsError(err?.response?.data?.message)
+      setAllExpertsLoading(false)
+    })
+  }
+
+useEffect(()=>{
+  handleComposeClick()
+},[allExpertsInput])
+  
+
   useEffect(() => {
     if (popupVisible) {
       document.addEventListener("click", handleOutsideClick);
@@ -188,9 +246,56 @@ const Messages = () => {
               <option value="unread">Unread</option>
               <option value="read">Read</option>
             </select>
-            <button className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto w-50">
+     <div  style={{}} className="position-relative w-50">
+       <button onClick={()=>handleComposeClick("click")} className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto w-100">
               Compose
+             
             </button>
+            {
+                allExpertsPopUp
+
+                 && 
+
+                <div style={{bottom:"-550%",color:"black", zIndex:'100', height:"40vh", width:"25vw", boxShadow: "0px 0px 4px 0.2px #00000040"}}  className="position-absolute bg-white  p-3 rounded">
+                <span className="flex justify-content-between pb-1 align-items-center"><p style={{marginLeft:"30%"}}>All Experts</p><FontAwesomeIcon onClick={()=> setAllExpertsPopUp(false)} className="cursor-pointer" icon={faXmark}/></span>
+                <input
+              type="text"
+              id="search"
+              placeholder="Search here..."
+              aria-label="search"
+              className=" form-control border-end-0 px-3 bg-custom-secondary"
+              onChange={(e)=> setAllExpertsInput(e.target.value)}
+            />
+            <div style={{height:"70%", scrollbarWidth:"none", overflowX:"hidden"}} className="flex flex-column position-relative">
+
+  {
+   
+  allExpertsLoading ? 
+  <PulseLoader size={8} style={{top:"40%", left:"45%"}} color="black" className="position-absolute "/>
+  :
+  allExpertsError === "No expert found" ? 
+  <p style={{top:"40%", left:"25%",whiteSpace:"nowrap"}} className="position-absolute ">{allExpertsError}</p>
+  :
+  allExpertsData?.map((profile, index) => (
+    <span key={index} className="d-flex gap-2 align-items-center m-2">
+      <img
+        src={profile.profile_picture}
+        alt={profile.name}
+        className="rounded-circle "
+        width="30"
+        height="30"
+      />
+      <p className="fs-6">{profile.name}</p>
+    </span>
+  ))}
+</div>
+
+              </div>
+              }
+     </div>
+             
+      
+            
           </div>
           <div className=" input-group mb-4">
             <input
@@ -209,11 +314,11 @@ const Messages = () => {
           </div>
 
           <div className="px-1 py-3 chat-list">
-            {chatList.map((message) => (
+            {chatList?.map((message) => (
               <div
-                key={message.id}
+                key={message?.expert_id}
                 className=" d-flex align-items-center gap-5 py-1 border-bottom cursor-pointer"
-                onClick={() => handleOpenChat(message.id)}
+                onClick={() => handleOpenChat(message?.expert_id)}
               >
                 <div>
                   {message.profile_picture ? (

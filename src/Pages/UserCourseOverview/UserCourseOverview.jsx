@@ -5,12 +5,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import {
   faAngleDown,
-  faStar,
   faArrowRight,
   faCoins,
-  faCross,
-  faCut,
-  faXmark,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FaYoutube } from "react-icons/fa";
@@ -26,11 +22,16 @@ import gsap from "gsap";
 import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
 import ReactPlayer from "react-player";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(
+  "pk_test_51PubCwDq08j41MMz9w7CFKlaPOPT4YlfciU9GCgXcxBmve17go3ryZQKVBcQJ3pzW86Z1mDb1bLTnkXFiTZKBu8O00CGdw624j"
+);
 
 const UserCourseOverview = () => {
-  const [isLoding, setIsLoding] = useState(false);
   const [loadingItems, setLoadingItems] = useState(null);
   const [openChapters, setOpenChapters] = useState({ 0: true });
+  const [verificationPopUp, setVerificationPopUp] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState("");
   const [video_url, setVideo_url] = useState("");
   const [video_thumb, setVideo_thumb] = useState("");
@@ -38,6 +39,7 @@ const UserCourseOverview = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { contextSafe } = useGSAP();
+
   const handleLeftToggle = (chapterIndex) => {
     setOpenChapters((prevOpenChapters) => ({
       ...prevOpenChapters,
@@ -87,32 +89,47 @@ const UserCourseOverview = () => {
     () => courseData?.courseChapters?.chapters || [],
     [courseData]
   );
+  const paymentPopUpClick = contextSafe(() => {
+    console.log("popup has been clicked");
+    gsap.to(".paymentPopUp", {
+      scale: 1,
+      duration: 0.3,
+      ease: "back.in",
+    });
+  });
+  const removePayPopUp = contextSafe(() => {
+    console.log("popup has been removed");
+    gsap.to(".paymentPopUp", {
+      scale: 0,
+      duration: 0.4,
+      ease: "back.inOut",
+    });
+  });
 
-  const handleCart = async (course_id, e) => {
-    e.stopPropagation();
-    setLoadingItems(course_id);
-    setIsLoding(true);
-    if (!token) {
-      setIsLoding(false);
-      navigate(`/`);
-      return toast.error(`Error: Please Login First!`);
-    }
+  const handleVideoChange = useCallback(
+    (video_url, video_thumb, lesson_id, noLesson) => {
+      setVideo_url(video_url);
+      setVideo_thumb(video_thumb);
+      setSelectedLesson(lesson_id);
+    },
+    []
+  );
+
+  const handleCoinCheckout = async () => {
     try {
       const response = await axios.post(
-        `${BASE_URI}/api/v1/cart`,
-        { course_id: course_id },
+        `${BASE_URI}/api/v1/payment/${id}`,
+        {},
         {
           headers: {
             Authorization: "Bearer " + token,
           },
         }
       );
-      setIsLoding(false);
-      setLoadingItems((prev) => ({ ...prev, [id]: false }));
+      setVerificationPopUp(false);
       toast.success(`${response?.data?.message}`);
     } catch (err) {
-      setIsLoding(false);
-      setLoadingItems((prev) => ({ ...prev, [id]: false }));
+      setVerificationPopUp(false);
       toast.error(`Error: ${err?.response?.data?.message}`);
     }
   };
@@ -143,6 +160,27 @@ const UserCourseOverview = () => {
     []
   );
 
+  const checkoutHandler = async () => {
+    try {
+      const stripe = await stripePromise;
+      // Fetch the session from your backend
+      // const session = await axios(`http://localhost:3000/api/v1/payment`);
+      const session = await axios(`${BASE_URI}/api/v1/payment/${id}`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      // Redirect to Stripe Checkout
+      await stripe.redirectToCheckout({
+        sessionId: session.data.session.id,
+      });
+    } catch (e) {
+      console.log(e);
+      toast.error("Something went wrong");
+    }
+  };
+
+
   return (
     <>
       {isLoading ? (
@@ -154,6 +192,42 @@ const UserCourseOverview = () => {
         ></l-grid>
       ) : (
         <div className="wrapper-userCourseview position-relative">
+
+          {verificationPopUp && (
+            <div className="popup ">
+              <div className="popup-content-review">
+                <div className="popup-buttons-review">
+                  <h5
+                    style={{
+                      maxHeight: "12rem",
+                      border: "1px solid grey",
+                      padding: "0.5rem",
+                      borderRadius: "0.5rem",
+                      whiteSpace: "normal",
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      overflowY: "auto",
+                      scrollbarWidth: "none",
+                    }}
+                  >
+                    Are You Sure to buy this course!
+                  </h5>
+                  <button
+                    onClick={() => setVerificationPopUp(false)}
+                    className="cancel-button-review"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleCoinCheckout}
+                    className="continue-button-review"
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
           <div
             style={{
               top: 0,
@@ -243,6 +317,7 @@ const UserCourseOverview = () => {
             </h3>
 
             <span className="gap-3 flex align-items-center m-bt">
+
               <div>
                 <span className="d-flex justify-content-between align-items-center p-1">
                   <h5 style={{ fontSize: "1.3rem", fontWeight: "bold" }}>
@@ -251,6 +326,8 @@ const UserCourseOverview = () => {
                   </h5>
                 </span>
                 <div
+
+                  onClick={() => setVerificationPopUp(true)}
                   style={{ width: "max-content" }}
                   className="cursor-pointer rounded bg-white d-flex justify-content-between p-2"
                 >
@@ -275,6 +352,9 @@ const UserCourseOverview = () => {
                   </h5>
                 </span>
                 <div
+
+                  onClick={checkoutHandler}
+
                   style={{ width: "max-content" }}
                   className="cursor-pointer bg-white rounded  d-flex justify-content-between p-2"
                 >
@@ -284,6 +364,7 @@ const UserCourseOverview = () => {
                 </div>
               </div>
             </span>
+
           </div>
           <div className="mid-userCourseview">
             <div className="right-mid-userCourseview p-3">
@@ -383,6 +464,7 @@ const UserCourseOverview = () => {
                     />
                     <h6>{courseData?.course?.name}</h6>
                   </div>
+
                 </span>
 
                 <span>
@@ -464,6 +546,7 @@ const UserCourseOverview = () => {
                                 );
                               }
                             }}
+
                             style={{
                               cursor: "pointer",
                               color:
@@ -497,6 +580,7 @@ const UserCourseOverview = () => {
                   )}
                 </div>
               </div>
+
               <div className="ratings-right-mid-userCourseview">
                 <h5>Reviews & Ratings:</h5>
                 <div className="map-ratings-right-mid-userCourseview">
