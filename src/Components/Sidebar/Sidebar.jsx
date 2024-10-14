@@ -367,6 +367,29 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                 {!collapsed && <span className="text">Review Courses</span>}
               </Link>
             </motion.div>
+            <motion.div variants={sidebarAnimation}>
+              <Link
+                to="/support"
+                className={`menu-item d-flex align-items-center p-3 ${
+                  location.pathname === "/support"
+                    ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
+                    : ""
+                }`}
+              >
+                <motion.div
+                  animate={controls}
+                  variants={linkAnimation}
+                  className={`me-4 ${
+                    location.pathname === "/support"
+                      ? "text-white"
+                      : "primary-color"
+                  }`}
+                >
+                  <RiLifebuoyFill className="fs-5" />
+                </motion.div>
+                {!collapsed && <span className="text">Support</span>}
+              </Link>
+            </motion.div>
            
           </>
         )}

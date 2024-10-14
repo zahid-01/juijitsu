@@ -116,7 +116,7 @@ console.log(courseData);
       Authorization: "Bearer " + token,
     },
   });
-  // console.log(data2)
+  console.log(data2)
 
   const courseData2 = useMemo(() => data2?.data || [], [data2]);
   // console.log(courseData2[0]?.status)
@@ -255,7 +255,11 @@ console.log(courseData);
                   }}
                 ></h6>
               </span>
-              <div className="videoCreator-courseview">
+              <div className="videoCreator-courseview"   onClick={() => {
+
+                      navigate(`/UserProfile/${courseData2[0]?.expert_id}`);
+
+                    }}>
                 <img src={profile_picture || profile} alt="profile" />
                 <h6 className="text-uppercase">{courseData2[0]?.name}</h6>
               </div>

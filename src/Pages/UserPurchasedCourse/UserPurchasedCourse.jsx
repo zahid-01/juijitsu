@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import "./UserPurchasedCourse.css";
 import videoPlayer from "../../assets/videoPlayer.png";
 import profile from "../../assets/profile.png";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
@@ -57,6 +58,7 @@ const UserPurchasedCourse = () => {
   const [review, setReview] = useState("");
   const [selectedRating, setSelectedRating] = useState(0);
   const [certificate, setcertificate] = useState(null);
+  const navigate = useNavigate();
   const [hearted, setHearted] = useState(null);
   const handleMouseEnter = () => {
     setShow(true);
@@ -136,12 +138,11 @@ const UserPurchasedCourse = () => {
   const courseData = useMemo(() => data?.data || [], [data]);
   console.log(courseData);
 
-
-  useEffect(()=>{
-    setIs_rated(courseData?.course?.is_rated)
+  useEffect(() => {
+    setIs_rated(courseData?.course?.is_rated);
     setHearted(courseData?.course?.is_favourite);
-    if(courseData?.course?.is_rated){
-      setSelectedRating(courseData?.course?.rating)
+    if (courseData?.course?.is_rated) {
+      setSelectedRating(courseData?.course?.rating);
 
       setReview(courseData?.course?.comment);
     }
@@ -201,24 +202,24 @@ const UserPurchasedCourse = () => {
     // console.log(checkResponse?.data )
   };
 
-  const handleEditClick = async(e)=>{
+  const handleEditClick = async (e) => {
     e.stopPropagation();
     setOptionsPopUp(false);
     setEditRatingPopUp(true);
-  }
-  const handleAddRatingClick =(e)=>{
+  };
+  const handleAddRatingClick = (e) => {
     e.stopPropagation();
-    setOptionsPopUp(false)
+    setOptionsPopUp(false);
     setAddRatingPopUp(true);
-  }
+  };
   const handleRating = (value) => {
     setSelectedRating(value);
   };
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    
-    console.log(selectedRating, review, id)
+
+    console.log(selectedRating, review, id);
     try {
       const url = `${BASE_URI}/api/v1/reviews`;
       const response = await axios({
@@ -228,27 +229,24 @@ const UserPurchasedCourse = () => {
           Authorization: "Bearer " + token,
         },
         data: {
-          "comment": review,
-          "rating": selectedRating,
-          "courseId": id,
+          comment: review,
+          rating: selectedRating,
+          courseId: id,
         },
       });
-      toast.success("Rating Added successfully")
+      toast.success("Rating Added successfully");
       setReview("");
       setSelectedRating(0);
       setAddRatingPopUp(false);
       setReviewsLoading(false);
       refetch();
     } catch (error) {
-      toast.error(error.response.data.message)
+      toast.error(error.response.data.message);
       console.error(error);
     }
   };
 
-  
-
   const updateRating = async () => {
-
     try {
       const url = `${BASE_URI}/api/v1/reviews/${courseData?.course?.review_id}`;
       const response = await axios({
@@ -270,32 +268,27 @@ const UserPurchasedCourse = () => {
       toast.error(error.response.data.message);
       console.error(error);
     }
-
   };
 
-
-
-
-  const deleteRating = async()=>{
-    try{
+  const deleteRating = async () => {
+    try {
       const response = await axios({
-        method: 'DELETE',
+        method: "DELETE",
         url: `${BASE_URI}/api/v1/reviews/${courseData?.course?.review_id}`,
         headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-      setEditRatingPopUp(false)
-      setIs_rated(false)
-      setReview(null)
-      setSelectedRating(null)
+          Authorization: "Bearer " + token,
+        },
+      });
+      setEditRatingPopUp(false);
+      setIs_rated(false);
+      setReview(null);
+      setSelectedRating(null);
       toast.success("Rating deleted successfully");
-    }
-    catch(error){
+    } catch (error) {
       toast.error(error.response.data.message);
       console.error(error);
     }
-  }
+  };
   const handlePrint = async (id) => {
     try {
       const url = `${BASE_URI}/api/v1/users/certificates/${id}`;
@@ -309,7 +302,7 @@ const UserPurchasedCourse = () => {
       setcertificate(response?.data?.data);
       console.log(response?.data?.data);
     } catch (error) {
-      toast .error(
+      toast.error(
         "Certificate cant be generated as the course is not completed yet!."
       );
       // alert("No certificate found for the provided ID.");
@@ -366,7 +359,6 @@ const UserPurchasedCourse = () => {
     newWindow.print();
   };
 
-
   const handleFavrouite = async (e) => {
     e.stopPropagation();
     if (!token) {
@@ -401,113 +393,136 @@ const UserPurchasedCourse = () => {
         ></l-grid>
       ) : (
         <div className="wrapper-purchasedCourse">
-{
-  optionsPopUp && 
-  <div onClick={() => setOptionsPopUp(false)} className="rating-popup d-flex justify-content-center align-items-center">
-    <div 
-      className="flex-column gap-2 shadow-lg bg-white rounded"
-      onClick={(e) => e.stopPropagation()} // Prevents the outer div from being triggered
-    >
-      <span onClick={() => handleAddToFavClick()} className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom">
-        <FontAwesomeIcon style={{color:"yellow", cursor:"pointer"}} icon={faStar} />
-        <p>Add to favorites</p>
-      </span>
-      {
-        is_rated ? 
-        <span onClick={handleEditClick} className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom">
-          <FontAwesomeIcon icon={faPencil} />
-          <p>Edit Your Rating</p>
-        </span>
-        :
-        <span onClick={handleAddRatingClick} className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom">
-          <FontAwesomeIcon icon={faPencil} />
-          <p>Add Rating</p>
-        </span>
-      }
-      
-      <span className="cursor-pointer d-flex w-100 gap-4 align-items-center p-2">
-        <FontAwesomeIcon icon={faCircleInfo} />
-        <p className="fs-6 fw-2">Not refundable!</p>
-      </span>
-    </div>
-  </div>
-}
+          {optionsPopUp && (
+            <div
+              onClick={() => setOptionsPopUp(false)}
+              className="rating-popup d-flex justify-content-center align-items-center"
+            >
+              <div
+                className="flex-column gap-2 shadow-lg bg-white rounded"
+                onClick={(e) => e.stopPropagation()} // Prevents the outer div from being triggered
+              >
+                <span
+                  onClick={() => handleAddToFavClick()}
+                  className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom"
+                >
+                  <FontAwesomeIcon
+                    style={{ color: "yellow", cursor: "pointer" }}
+                    icon={faStar}
+                  />
+                  <p>Add to favorites</p>
+                </span>
+                {is_rated ? (
+                  <span
+                    onClick={handleEditClick}
+                    className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom"
+                  >
+                    <FontAwesomeIcon icon={faPencil} />
+                    <p>Edit Your Rating</p>
+                  </span>
+                ) : (
+                  <span
+                    onClick={handleAddRatingClick}
+                    className="cursor-pointer d-flex gap-4 align-items-center p-2 border-bottom"
+                  >
+                    <FontAwesomeIcon icon={faPencil} />
+                    <p>Add Rating</p>
+                  </span>
+                )}
 
+                <span className="cursor-pointer d-flex w-100 gap-4 align-items-center p-2">
+                  <FontAwesomeIcon icon={faCircleInfo} />
+                  <p className="fs-6 fw-2">Not refundable!</p>
+                </span>
+              </div>
+            </div>
+          )}
 
-{
-  addRatingPopUp && 
-  <div className="rating-popup d-flex justify-content-center align-items-center">
-      <div className="card p-4 shadow-lg bg-white rounded">
-        <h5>Add Your Rating</h5>
-        <div className="star-rating mb-3">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <FaStar
-              key={star}
-              className={`star ${selectedRating >= star ? "text-warning" : ""}`}
-              onClick={() => handleRating(star)}
-              style={{ cursor: "pointer", fontSize: "2rem" }}
-            />
-          ))}
-        </div>
-        <div className="mb-3">
-          <textarea
-            value={review}
-            onChange={(e)=>setReview(e.target.value)}
-            placeholder="Add Your Review"
-            className="form-control"
-            rows={4}
-          />
-        </div>
-        <div className="d-flex justify-content-between">
-          <button className="btn btn-secondary" onClick={()=>setAddRatingPopUp(false)}>
-            Discard
-          </button>
-          <button className="btn btn-primary" onClick={handleReviewSubmit}>
-            Submit
-          </button>
-        </div>
-      </div>
-    </div>
-}
+          {addRatingPopUp && (
+            <div className="rating-popup d-flex justify-content-center align-items-center">
+              <div className="card p-4 shadow-lg bg-white rounded">
+                <h5>Add Your Rating</h5>
+                <div className="star-rating mb-3">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <FaStar
+                      key={star}
+                      className={`star ${
+                        selectedRating >= star ? "text-warning" : ""
+                      }`}
+                      onClick={() => handleRating(star)}
+                      style={{ cursor: "pointer", fontSize: "2rem" }}
+                    />
+                  ))}
+                </div>
+                <div className="mb-3">
+                  <textarea
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                    placeholder="Add Your Review"
+                    className="form-control"
+                    rows={4}
+                  />
+                </div>
+                <div className="d-flex justify-content-between">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setAddRatingPopUp(false)}
+                  >
+                    Discard
+                  </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleReviewSubmit}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
-{
-  editRatingPopUp &&
-  <div className="rating-popup d-flex justify-content-center align-items-center">
-      <div className="card p-4 shadow-lg bg-white rounded">
-        <h5>Add Your Rating</h5>
-        <div className="star-rating mb-3">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <FaStar
-              key={star}
-              className={`star ${selectedRating >= star ? "text-warning" : ""}`}
-              onClick={() => handleRating(star)}
-              style={{ cursor: "pointer", fontSize: "2rem" }}
-            />
-          ))}
-        </div>
-        <div className="mb-3">
-          <textarea
-            value={review}
-            onChange={(e)=>setReview(e.target.value)}
-            placeholder="Add Your Review"
-            className="form-control"
-            rows={4}
-          />
-        </div>
-        <div className="d-flex justify-content-between">
-        <button className="btn btn-danger" onClick={deleteRating}>
-            Delete
-          </button>
-          <button className="btn btn-secondary" onClick={()=>setEditRatingPopUp(false)}>
-            Discard
-          </button>
-          <button className="btn btn-primary" onClick={updateRating}>
-            Save
-          </button>
-        </div>
-      </div>
-    </div>
-}
+          {editRatingPopUp && (
+            <div className="rating-popup d-flex justify-content-center align-items-center">
+              <div className="card p-4 shadow-lg bg-white rounded">
+                <h5>Add Your Rating</h5>
+                <div className="star-rating mb-3">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <FaStar
+                      key={star}
+                      className={`star ${
+                        selectedRating >= star ? "text-warning" : ""
+                      }`}
+                      onClick={() => handleRating(star)}
+                      style={{ cursor: "pointer", fontSize: "2rem" }}
+                    />
+                  ))}
+                </div>
+                <div className="mb-3">
+                  <textarea
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                    placeholder="Add Your Review"
+                    className="form-control"
+                    rows={4}
+                  />
+                </div>
+                <div className="d-flex justify-content-between">
+                  <button className="btn btn-danger" onClick={deleteRating}>
+                    Delete
+                  </button>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setEditRatingPopUp(false)}
+                  >
+                    Discard
+                  </button>
+                  <button className="btn btn-primary" onClick={updateRating}>
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="top-purchasedCourse">
             <h4>Course Overview</h4>
             <span
@@ -563,16 +578,17 @@ const UserPurchasedCourse = () => {
                     backgroundColor: "transparent",
                   }}
                 >
-
                   <CircularProgressbar
-                  styles={buildStyles({   
-                    textSize: '2rem',
-                    pathTransitionDuration: 0.5,
-                    pathColor: `#00000)`,
-                    textColor: '#fff',
-                    trailColor: '#fff',
-                  })}
-                  value={percentage} text={`${Math.floor(percentage)}%`} />
+                    styles={buildStyles({
+                      textSize: "2rem",
+                      pathTransitionDuration: 0.5,
+                      pathColor: `#00000)`,
+                      textColor: "#fff",
+                      trailColor: "#fff",
+                    })}
+                    value={percentage}
+                    text={`${Math.floor(percentage)}%`}
+                  />
                 </div>
 
                 <h6>Your Progress</h6>
@@ -583,27 +599,32 @@ const UserPurchasedCourse = () => {
                 style={{ height: "100%", width: "2.5%", cursor: "pointer" }}
               /> */}
               {hearted ? (
-          <FontAwesomeIcon
-            onClick={handleFavrouite}
-            id="heart-PurchasedCourses"
-            icon={faHeart}
-            style={{zIndex:"10"}}
-          />
-        ) : (
-          <CiHeart style={{zIndex:"10", color:"black"}} onClick={handleFavrouite} id="unHeart-PurchasedCourses" />
-        )}
-              {
-        is_rated ? 
-       
-          <FontAwesomeIcon className="cursor-pointer" onClick={handleEditClick} icon={faPencil} />
-         
-        
-        :
-       
-          <FontAwesomeIcon className="cursor-pointer"  onClick={handleAddRatingClick} icon={faPlus} />
-        
-        
-      }
+                <FontAwesomeIcon
+                  onClick={handleFavrouite}
+                  id="heart-PurchasedCourses"
+                  icon={faHeart}
+                  style={{ zIndex: "10" }}
+                />
+              ) : (
+                <CiHeart
+                  style={{ zIndex: "10", color: "black" }}
+                  onClick={handleFavrouite}
+                  id="unHeart-PurchasedCourses"
+                />
+              )}
+              {is_rated ? (
+                <FontAwesomeIcon
+                  className="cursor-pointer"
+                  onClick={handleEditClick}
+                  icon={faPencil}
+                />
+              ) : (
+                <FontAwesomeIcon
+                  className="cursor-pointer"
+                  onClick={handleAddRatingClick}
+                  icon={faPlus}
+                />
+              )}
             </span>
           </div>
           <div className="content-container-purchasedCourse">
@@ -651,7 +672,13 @@ const UserPurchasedCourse = () => {
                   }}
                 ></h6>
               </span>
-              <div className="videoCreator-purchasedCourse">
+              <div
+                className="videoCreator-purchasedCourse"
+                
+                onClick={() => {
+                  navigate(`/UserProfile/${courseData?.course?.expert_id}`);
+                }}
+              >
                 <img src={profile} alt="profile" />
                 <h6 className="text-uppercase">{courseData?.course?.name}</h6>
               </div>

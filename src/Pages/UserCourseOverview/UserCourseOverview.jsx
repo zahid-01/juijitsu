@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./UserCourseOverview.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import {
   faAngleDown,
@@ -38,9 +39,6 @@ const UserCourseOverview = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { contextSafe } = useGSAP();
-
-  
-
 
   const handleLeftToggle = (chapterIndex) => {
     setOpenChapters((prevOpenChapters) => ({
@@ -136,6 +134,32 @@ const UserCourseOverview = () => {
     }
   };
 
+  const paymentPopUpClick = contextSafe(() => {
+    console.log("popup has been clicked");
+    gsap.to(".paymentPopUp", {
+      scale: 1,
+      duration: 0.3,
+      ease: "back.in",
+    });
+  });
+  const removePayPopUp = contextSafe(() => {
+    console.log("popup has been removed");
+    gsap.to(".paymentPopUp", {
+      scale: 0,
+      duration: 0.4,
+      ease: "back.inOut",
+    });
+  });
+
+  const handleVideoChange = useCallback(
+    (video_url, video_thumb, lesson_id, noLesson) => {
+      setVideo_url(video_url);
+      setVideo_thumb(video_thumb);
+      setSelectedLesson(lesson_id);
+    },
+    []
+  );
+
   const checkoutHandler = async () => {
     try {
       const stripe = await stripePromise;
@@ -156,6 +180,7 @@ const UserCourseOverview = () => {
     }
   };
 
+
   return (
     <>
       {isLoading ? (
@@ -167,6 +192,7 @@ const UserCourseOverview = () => {
         ></l-grid>
       ) : (
         <div className="wrapper-userCourseview position-relative">
+
           {verificationPopUp && (
             <div className="popup ">
               <div className="popup-content-review">
@@ -290,7 +316,8 @@ const UserCourseOverview = () => {
               {courseData?.course?.title || "No title available"}
             </h3>
 
-            <span className="gap-3 flex align-items-center">
+            <span className="gap-3 flex align-items-center m-bt">
+
               <div>
                 <span className="d-flex justify-content-between align-items-center p-1">
                   <h5 style={{ fontSize: "1.3rem", fontWeight: "bold" }}>
@@ -299,6 +326,7 @@ const UserCourseOverview = () => {
                   </h5>
                 </span>
                 <div
+
                   onClick={() => setVerificationPopUp(true)}
                   style={{ width: "max-content" }}
                   className="cursor-pointer rounded bg-white d-flex justify-content-between p-2"
@@ -324,7 +352,9 @@ const UserCourseOverview = () => {
                   </h5>
                 </span>
                 <div
+
                   onClick={checkoutHandler}
+
                   style={{ width: "max-content" }}
                   className="cursor-pointer bg-white rounded  d-flex justify-content-between p-2"
                 >
@@ -422,12 +452,19 @@ const UserCourseOverview = () => {
 
               <div className="details-right-mid-userCourseview">
                 <span>
-                  <img
-                    src={courseData?.course?.profile_picture}
-                    alt="Profile"
-                    style={{ width: "8%", height: "8%", borderRadius: "50%" }}
-                  />
-                  <h6>{courseData?.course?.name}</h6>
+                  <div
+                    onClick={() => {
+                      navigate(`/UserProfile/${courseData?.course?.expert_id}`);
+                    }}
+                  >
+                    <img
+                      src={courseData?.course?.profile_picture}
+                      alt="Profile"
+                      style={{ width: "8%", height: "8%", borderRadius: "50%" }}
+                    />
+                    <h6>{courseData?.course?.name}</h6>
+                  </div>
+
                 </span>
 
                 <span>
@@ -497,13 +534,19 @@ const UserCourseOverview = () => {
                         {chapter?.lessons.map((lesson, idx) => (
                           <div
                             key={idx}
-                            onClick={() =>
-                              handleVideoChange(
-                                lesson?.video_url,
-                                lesson?.thumbnail,
-                                lesson?.lesson_id
-                              )
-                            }
+                            onClick={() => {
+                              if (chapterIndex >= 1) {
+                                // Assuming 2nd course has index 1
+                                paymentPopUpClick();
+                              } else {
+                                handleVideoChange(
+                                  lesson?.video_url,
+                                  lesson?.thumbnail,
+                                  lesson?.lesson_id
+                                );
+                              }
+                            }}
+
                             style={{
                               cursor: "pointer",
                               color:

@@ -1,3 +1,124 @@
+// import { useMemo, useState } from "react";
+// import { BASE_URI } from "../../Config/url";
+// import useFetch from "../../hooks/useFetch";
+// import formatDate from "../../utils/formatDate";
+
+// const PurchaseHistory = () => {
+//   const [activeTab, setActiveTab] = useState("courses");
+
+//   const token = localStorage.getItem("token");
+//   const historyUrl = `${BASE_URI}/api/v1/users/orderHistory`;
+
+//   const fetchOptions = {
+//     headers: {
+//       Authorization: "Bearer " + token,
+//     },
+//   };
+
+//   const { data } = useFetch(historyUrl, fetchOptions);
+//   const orders = useMemo(() => data?.data?.orders || [], [data]);
+
+// const handlePrint = (order) => {
+//   const printContent = `
+//     <div>
+//       <h3>Order Receipt</h3>
+//       <p><strong>Course Name:</strong> ${order.title}</p>
+//       <p><strong>Date:</strong> ${formatDate(order.payment_date)}</p>
+//       <p><strong>Transaction ID:</strong> ${order.transaction_id}</p>
+//       <p><strong>Price:</strong> ${order.discounted_price}</p>
+//       <p><strong>Payment Type:</strong> ${order.payment_type}</p>
+//     </div>
+//   `;
+//   const newWindow = window.open("", "_blank", "width=600,height=400");
+//   newWindow.document.write(printContent);
+//   newWindow.document.close();
+//   newWindow.print();
+// };
+
+//   return (
+//     <div className="w-100">
+//       <header className="bg-gradient-custom-div p-3 pb-0 rounded-bottom-0 custom-box">
+//         <h3 className="pb-5">Purchase History</h3>
+//         <div className="d-flex gap-5 px-4">
+//           <h5
+//             className={`text-white px-3 pb-2 fw-light cursor-pointer ${
+//               activeTab === "courses" ? "border-bottom border-4" : ""
+//             }`}
+//             onClick={() => setActiveTab("courses")}
+//           >
+//             Courses
+//           </h5>
+//         </div>
+//       </header>
+//       <div className="tab-content px-3 py-4 custom-box rounded-top-0" style={{ backgroundColor: "white" }}>
+//         <div className="px-4">
+//           {activeTab === "courses" && (
+//             <div className="tab-pane active" style={{ overflowX: "auto" }}>
+//               <table className="table w-md-reverse-50">
+//                 <thead>
+//                   <tr>
+//                     <th scope="col">Course Name</th>
+//                     <th scope="col" className="text-center ">
+//                       Date
+//                     </th>
+//                     <th scope="col" className="text-center">
+//                       Transaction ID
+//                     </th>
+//                     <th scope="col" className="text-center">
+//                       Price
+//                     </th>
+//                     <th scope="col" className="text-center">
+//                       Payment Type
+//                     </th>
+//                     <th scope="col" className="text-center">
+//                       Receipt
+//                     </th>
+//                   </tr>
+//                 </thead>
+//                 <tbody>
+//                   {orders.map((order, index) => (
+//                     <tr key={index}>
+//                       <td className="align-middle fs-small py-3 text-capitalize">
+//                         {order.title}
+//                       </td>
+//                       <td className="text-center align-middle fs-small">
+//                         {formatDate(order.payment_date)}
+//                       </td>
+//                       <td className="text-center align-middle fs-small">
+//                         {order.transaction_id}
+//                       </td>
+//                       <td className="text-center align-middle fs-small">
+//                         ${order.discounted_price}
+//                       </td>
+//                       <td className="text-center align-middle fs-small text-capitalize">
+//                         {order.payment_type}
+//                       </td>
+//                       <td className="text-center align-middle">
+//                         <div className="d-flex align-items-center justify-content-center">
+//                           <button
+//                             className="signup-now py-1 px-3 fw-lightBold fs-small mb-0 h-auto"
+//                             onClick={() => handlePrint(order)}
+//                           >
+//                             Print
+//                           </button>
+//                         </div>
+//                       </td>
+//                     </tr>
+//                   ))}
+//                 </tbody>
+//               </table>
+//             </div>
+//           )}
+
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default PurchaseHistory;
+
+
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { ShimmerThumbnail } from "react-shimmer-effects";
@@ -23,10 +144,12 @@ export default function UserWallet() {
   const [withDrawPopup, setWithDrawPopup] = useState(false);
   const [withdrawalAmount, setWithdrawalAmount] = useState(null);
   const [withdrawalHistory, setWithdrawalHistory] = useState(false);
+
   const [coinCost, setCoinCost]=useState(null);
 
   useEffect(() => {
-    async function fetchWalletData() {
+    const fetchWalletData = async () => {
+      
       try {
         const response = await axios.get(
           `${BASE_URI}/api/v1/users/userWallet`,
@@ -36,22 +159,16 @@ export default function UserWallet() {
             },
           }
         );
-console.log(response?.data)
+
         setWalletData(response?.data?.data);
       } catch (error) {
         console.log("Error fetching wallet data:", error);
       } finally {
         setLoading(false);
       }
-    }
-
-
-    
-
-
+    };
     fetchWalletData();
   }, []);
-
 
   const token = localStorage.getItem("token");
   const historyUrl = `${BASE_URI}/api/v1/users/orderHistory`;
@@ -63,14 +180,14 @@ console.log(response?.data)
   };
 
   const { data } = useFetch(historyUrl, fetchOptions);
+  console.log(data);
   const orders = useMemo(() => data?.data?.orders || [], [data]);
-console.log(orders);
+  console.log(orders);
 
   if (loading) {
     return (
       <div className="w-100">
         <header className="py-3">
-         
           <ShimmerThumbnail
             width={150}
             height={20}
@@ -92,19 +209,18 @@ console.log(orders);
               />
               <ShimmerThumbnail width={100} height={20} />
             </div>
-            
-              <ShimmerThumbnail
-                width={200}
-                height={20}
-                style={{ marginBottom: "10px" }}
-              />
-              <ShimmerThumbnail width={150} height={30} />
-              <ShimmerThumbnail
-                width={100}
-                height={30}
-                style={{ marginTop: "10px" }}
-              />
-           
+
+            <ShimmerThumbnail
+              width={200}
+              height={20}
+              style={{ marginBottom: "10px" }}
+            />
+            <ShimmerThumbnail width={150} height={30} />
+            <ShimmerThumbnail
+              width={100}
+              height={30}
+              style={{ marginTop: "10px" }}
+            />
           </div>
           <div className="d-flex gap-5 px-4 border-bottom">
             <ShimmerThumbnail
@@ -155,10 +271,8 @@ console.log(orders);
   }
 
 
+  const { last_purchase, total_points } = walletData[0];
 
-const last_purchase = walletData[0]?.last_purchase; 
-const total_points = walletData[0]?.total_points;
- 
   const recentPayout = last_purchase;
 
   const accountBalance = total_points;
@@ -316,7 +430,7 @@ const total_points = walletData[0]?.total_points;
     }
   };
 
-  const withdrawlHistoryClick = async()=>{
+  const withdrawlHistoryClick = async () => {
     try {
       const response = await axios.get(
         `${BASE_URI}/api/v1/users/purchasePoints`,
@@ -332,7 +446,7 @@ const total_points = walletData[0]?.total_points;
       console.log(err);
       toast.error(err?.response?.data?.message);
     }
-  }
+  };
 
   const handlePrint = (order) => {
     const printContent = `
@@ -397,23 +511,36 @@ const total_points = walletData[0]?.total_points;
         </h3>
       </header>
       <main className="custom-box">
-        <div style={{borderTopRightRadius:"10px", borderTopLeftRadius:"10px"}} className="d-sm-flex justify-content-between px-5 py-5 bg-gradient-custom-div pb-3">
+        <div
+          style={{ borderTopRightRadius: "10px", borderTopLeftRadius: "10px" }}
+          className="d-sm-flex justify-content-between px-5 py-5 bg-gradient-custom-div pb-3"
+        >
           <div>
+            <h5 className="mb-3 fw-normal">Wallet</h5>
+
             <h5 className="mb-3 fw-normal">
+
               Wallet
               
             </h5>
             
             <h5 className="mb-3 fw-normal">
               Recent Purchase: <span className="fw-light"><FontAwesomeIcon icon={faCoins}/> {recentPayout ? recentPayout : 0}</span>
+
             </h5>
           </div>
-          <div style={{boxShadow: "0px 0px 12px 0px #FFFFFF80"}} className="bg-white text-center text-black p-4 w-md-25 rounded position-relative">
+          <div
+            style={{ boxShadow: "0px 0px 12px 0px #FFFFFF80" }}
+            className="bg-white text-center text-black p-4 w-md-25 rounded position-relative"
+          >
             <h5 className="mb-4 fw-light ">Account Balance</h5>
             <div className="mb-4 d-flex align-items-center justify-content-center">
+
+
               <h2 style={{filter: "blur(1px)", transform:"rotate(-30deg)", fontSize:"1.3rem", position:"absolute", bottom:"40%", left:"5%"}}>💰</h2>
               <h5><FontAwesomeIcon icon={faCoins}/> {accountBalance ? accountBalance : 0} </h5>
               <h2  style={{filter: "blur(1px)", transform:"rotate(-30deg)", fontSize:"1.3rem", position:"absolute", bottom:"55%", right:"5%"}}>💰</h2>
+
             </div>
             <div
               onClick={() => setWithDrawPopup(!withDrawPopup)}
@@ -440,8 +567,10 @@ const total_points = walletData[0]?.total_points;
               Purchase History
             </h5>
           </div>
-          <div onClick={withdrawlHistoryClick}
-            className="d-flex gap-5 px-4 border-bottom">
+          <div
+            onClick={withdrawlHistoryClick}
+            className="d-flex gap-5 px-4 border-bottom"
+          >
             <h5
               className={
                 activeTab !== "withdrawl-history"
@@ -457,11 +586,11 @@ const total_points = walletData[0]?.total_points;
               Transaction History
             </h5>
           </div>
-          
-          
         </div>
         {activeTab === "activity" && (
           <div className="tab-pane active" style={{ overflowX: "auto" }}>
+
+
                          <table className="table w-md-reverse-50">
                            <thead>
                              <tr>
@@ -512,9 +641,16 @@ const total_points = walletData[0]?.total_points;
                             ))}
                           </tbody>
                         </table>
+
                       </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
-{activeTab === "withdrawl-history" && (
+        {activeTab === "withdrawl-history" && (
           <div className="tab-pane active" style={{ overflowX: "auto" }}>
             <table className="table w-md-reverse-50">
               <thead>
@@ -526,7 +662,7 @@ const total_points = walletData[0]?.total_points;
                     Amount
                   </th>
                   <th scope="col" className="text-center py-3">
-                  Coins added
+                    Coins added
                   </th>
                   <th scope="col" className="text-center py-3">
                     Status
@@ -538,12 +674,11 @@ const total_points = walletData[0]?.total_points;
                 :
                 withdrawalHistory?.data?.coins?.map((order, index) => (
                   <tr key={index}>
-                    
                     <td className="text-center align-middle fs-small">
                       {formatDate(order?.payment_date)}
                     </td>
                     <td className="text-center align-middle fs-small text-capitalize">
-                    ${order?.amount}
+                      ${order?.amount}
                     </td>
                     <td className="text-center align-middle fs-small text-capitalize">
                       {order?.points}
@@ -551,7 +686,6 @@ const total_points = walletData[0]?.total_points;
                     <td className="text-center align-middle fs-small">
                       {order?.payment_status}
                     </td>
-                    
                   </tr>
                 ))}
               </tbody>
