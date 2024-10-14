@@ -89,31 +89,31 @@ const UserCourseOverview = () => {
     () => courseData?.courseChapters?.chapters || [],
     [courseData]
   );
-  const paymentPopUpClick = contextSafe(() => {
-    console.log("popup has been clicked");
-    gsap.to(".paymentPopUp", {
-      scale: 1,
-      duration: 0.3,
-      ease: "back.in",
-    });
-  });
-  const removePayPopUp = contextSafe(() => {
-    console.log("popup has been removed");
-    gsap.to(".paymentPopUp", {
-      scale: 0,
-      duration: 0.4,
-      ease: "back.inOut",
-    });
-  });
+  // const paymentPopUpClick = contextSafe(() => {
+  //   console.log("popup has been clicked");
+  //   gsap.to(".paymentPopUp", {
+  //     scale: 1,
+  //     duration: 0.3,
+  //     ease: "back.in",
+  //   });
+  // });
+  // const removePayPopUp = contextSafe(() => {
+  //   console.log("popup has been removed");
+  //   gsap.to(".paymentPopUp", {
+  //     scale: 0,
+  //     duration: 0.4,
+  //     ease: "back.inOut",
+  //   });
+  // });
 
-  const handleVideoChange = useCallback(
-    (video_url, video_thumb, lesson_id, noLesson) => {
-      setVideo_url(video_url);
-      setVideo_thumb(video_thumb);
-      setSelectedLesson(lesson_id);
-    },
-    []
-  );
+  // const handleVideoChange = useCallback(
+  //   (video_url, video_thumb, lesson_id, noLesson) => {
+  //     setVideo_url(video_url);
+  //     setVideo_thumb(video_thumb);
+  //     setSelectedLesson(lesson_id);
+  //   },
+  //   []
+  // );
 
   const handleCoinCheckout = async () => {
     try {

@@ -118,7 +118,6 @@
 
 // export default PurchaseHistory;
 
-
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { ShimmerThumbnail } from "react-shimmer-effects";
@@ -145,11 +144,10 @@ export default function UserWallet() {
   const [withdrawalAmount, setWithdrawalAmount] = useState(null);
   const [withdrawalHistory, setWithdrawalHistory] = useState(false);
 
-  const [coinCost, setCoinCost]=useState(null);
+  const [coinCost, setCoinCost] = useState(null);
 
   useEffect(() => {
     const fetchWalletData = async () => {
-      
       try {
         const response = await axios.get(
           `${BASE_URI}/api/v1/users/userWallet`,
@@ -270,7 +268,6 @@ export default function UserWallet() {
     );
   }
 
-
   const { last_purchase, total_points } = walletData[0];
 
   const recentPayout = last_purchase;
@@ -390,7 +387,7 @@ export default function UserWallet() {
     setEditable(!editable);
   };
 
-  const handleCoinCost = async(withdrawAmount) => {
+  const handleCoinCost = async (withdrawAmount) => {
     try {
       const response = await axios.get(
         `${BASE_URI}/api/v1/users/coinCost/${withdrawAmount}`,
@@ -406,9 +403,7 @@ export default function UserWallet() {
       console.log(err);
       // toast.error(err?.response?.data?.message);
     }
-  }
-
-  
+  };
 
   const handleWithdraw = async () => {
     try {
@@ -481,7 +476,9 @@ export default function UserWallet() {
                 onChange={(e) => handleCoinCost(e.target.value)}
               />
             </span>
-            {coinCost && <p className="text-red">{`You will get ${coinCost} coins!`}</p>}
+            {coinCost && (
+              <p className="text-red">{`You will get ${coinCost} coins!`}</p>
+            )}
             <div className=" d-flex justify-content-between">
               <div
                 onClick={() => setWithDrawPopup(false)}
@@ -518,15 +515,14 @@ export default function UserWallet() {
           <div>
             <h5 className="mb-3 fw-normal">Wallet</h5>
 
-            <h5 className="mb-3 fw-normal">
+         
 
-              Wallet
-              
-            </h5>
-            
             <h5 className="mb-3 fw-normal">
-              Recent Purchase: <span className="fw-light"><FontAwesomeIcon icon={faCoins}/> {recentPayout ? recentPayout : 0}</span>
-
+              Recent Purchase:{" "}
+              <span className="fw-light">
+                <FontAwesomeIcon icon={faCoins} />{" "}
+                {recentPayout ? recentPayout : 0}
+              </span>
             </h5>
           </div>
           <div
@@ -535,12 +531,34 @@ export default function UserWallet() {
           >
             <h5 className="mb-4 fw-light ">Account Balance</h5>
             <div className="mb-4 d-flex align-items-center justify-content-center">
-
-
-              <h2 style={{filter: "blur(1px)", transform:"rotate(-30deg)", fontSize:"1.3rem", position:"absolute", bottom:"40%", left:"5%"}}>💰</h2>
-              <h5><FontAwesomeIcon icon={faCoins}/> {accountBalance ? accountBalance : 0} </h5>
-              <h2  style={{filter: "blur(1px)", transform:"rotate(-30deg)", fontSize:"1.3rem", position:"absolute", bottom:"55%", right:"5%"}}>💰</h2>
-
+              <h2
+                style={{
+                  filter: "blur(1px)",
+                  transform: "rotate(-30deg)",
+                  fontSize: "1.3rem",
+                  position: "absolute",
+                  bottom: "40%",
+                  left: "5%",
+                }}
+              >
+                💰
+              </h2>
+              <h5>
+                <FontAwesomeIcon icon={faCoins} />{" "}
+                {accountBalance ? accountBalance : 0}{" "}
+              </h5>
+              <h2
+                style={{
+                  filter: "blur(1px)",
+                  transform: "rotate(-30deg)",
+                  fontSize: "1.3rem",
+                  position: "absolute",
+                  bottom: "55%",
+                  right: "5%",
+                }}
+              >
+                💰
+              </h2>
             </div>
             <div
               onClick={() => setWithDrawPopup(!withDrawPopup)}
@@ -589,66 +607,63 @@ export default function UserWallet() {
         </div>
         {activeTab === "activity" && (
           <div className="tab-pane active" style={{ overflowX: "auto" }}>
+            <table className="table w-md-reverse-50">
+              <thead>
+                <tr>
+                  <th scope="col">Course Name</th>
+                  <th scope="col" className="text-center ">
+                    Date
+                  </th>
 
+                  <th scope="col" className="text-center">
+                    Price
+                  </th>
+                  <th scope="col" className="text-center">
+                    Payment Type
+                  </th>
+                  <th scope="col" className="text-center">
+                    Receipt
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.length === 0 ? (
+                  <div className="w-100 d-flex justify-content-center">
+                    No data avalable!
+                  </div>
+                ) : (
+                  orders.map((order, index) => (
+                    <tr key={index}>
+                      <td className="align-middle fs-small py-3 text-capitalize">
+                        {order.title}
+                      </td>
+                      <td className="text-center align-middle fs-small">
+                        {formatDate(order.payment_date)}
+                      </td>
 
-                         <table className="table w-md-reverse-50">
-                           <thead>
-                             <tr>
-                               <th scope="col">Course Name</th>
-                               <th scope="col" className="text-center ">
-                                 Date
-                               </th>
-                               
-                               <th scope="col" className="text-center">
-                                 Price
-                               </th>
-                               <th scope="col" className="text-center">
-                                 Payment Type
-                               </th>
-                               <th scope="col" className="text-center">
-                                 Receipt
-                               </th>
-                             </tr>
-                           </thead>
-                           <tbody>
-                            
-                             {orders.length === 0 ? <div className="w-100 d-flex justify-content-center">No data avalable!</div > : orders.map((order, index) => (
-                              <tr key={index}>
-                                <td className="align-middle fs-small py-3 text-capitalize">
-                                  {order.title}
-                                </td>
-                                <td className="text-center align-middle fs-small">
-                                  {formatDate(order.payment_date)}
-                                </td>
-                                
-                                <td className="text-center align-middle fs-small">
-                                  ${order.discounted_price}
-                                </td>
-                                <td className="text-center align-middle fs-small text-capitalize">
-                                  {order.payment_type}
-                                </td>
-                                <td className="text-center align-middle">
-                                  <div className="d-flex align-items-center justify-content-center">
-                                    <button
-                                      className="signup-now py-1 px-3 fw-lightBold fs-small mb-0 h-auto"
-                                      onClick={() => handlePrint(order)}
-                                    >
-                                      Print
-                                    </button>
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="text-center align-middle fs-small">
+                        ${order.discounted_price}
+                      </td>
+                      <td className="text-center align-middle fs-small text-capitalize">
+                        {order.payment_type}
+                      </td>
+                      <td className="text-center align-middle">
+                        <div className="d-flex align-items-center justify-content-center">
+                          <button
+                            className="signup-now py-1 px-3 fw-lightBold fs-small mb-0 h-auto"
+                            onClick={() => handlePrint(order)}
+                          >
+                            Print
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
+      
         )}
         {activeTab === "withdrawl-history" && (
           <div className="tab-pane active" style={{ overflowX: "auto" }}>
@@ -670,24 +685,26 @@ export default function UserWallet() {
                 </tr>
               </thead>
               <tbody>
-                {withdrawalHistory?.data?.coins?.length === 0 ? <div>No data avalable!</div>
-                :
-                withdrawalHistory?.data?.coins?.map((order, index) => (
-                  <tr key={index}>
-                    <td className="text-center align-middle fs-small">
-                      {formatDate(order?.payment_date)}
-                    </td>
-                    <td className="text-center align-middle fs-small text-capitalize">
-                      ${order?.amount}
-                    </td>
-                    <td className="text-center align-middle fs-small text-capitalize">
-                      {order?.points}
-                    </td>
-                    <td className="text-center align-middle fs-small">
-                      {order?.payment_status}
-                    </td>
-                  </tr>
-                ))}
+                {withdrawalHistory?.data?.coins?.length === 0 ? (
+                  <div>No data avalable!</div>
+                ) : (
+                  withdrawalHistory?.data?.coins?.map((order, index) => (
+                    <tr key={index}>
+                      <td className="text-center align-middle fs-small">
+                        {formatDate(order?.payment_date)}
+                      </td>
+                      <td className="text-center align-middle fs-small text-capitalize">
+                        ${order?.amount}
+                      </td>
+                      <td className="text-center align-middle fs-small text-capitalize">
+                        {order?.points}
+                      </td>
+                      <td className="text-center align-middle fs-small">
+                        {order?.payment_status}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

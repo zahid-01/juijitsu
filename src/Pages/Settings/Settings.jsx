@@ -69,7 +69,7 @@ export default function Settings() {
 
   const role = localStorage.getItem("userType");
   const profileUrl = `${BASE_URI}/api/v1/users/profile`;
-  // console.log(profileUrl)
+  console.log(profileUrl);
 
   const fetchOptions = {
     headers: {
@@ -89,6 +89,7 @@ export default function Settings() {
     website,
     bio,
   } = data?.data[0] || [];
+  console.log(data?.data[0]);
 
   useEffect(() => {
     if (data) {
@@ -331,9 +332,9 @@ export default function Settings() {
         },
       });
 
-      // console.log("API response data:", response.data.data);
-      setCategories(response.data.data); // Update state with API data (adjust if necessary)
-      // console.log("Updated categories state:", categories);
+      console.log("API response data:", response.data.data);
+      setCategories(response.data.data);
+      console.log("Updated categories state:", categories);
     } catch (err) {
       console.error("Error fetching categories:", err);
       // setError("Failed to load categories"); // Set error state
@@ -446,7 +447,7 @@ export default function Settings() {
                     className="mb-1"
                     style={{ fontSize: "20px" }}
                   >
-                    Email
+                    Emaill
                   </label>
                   <div className="input-group">
                     <input
@@ -784,8 +785,6 @@ export default function Settings() {
                       </div>
                     </div>
                   </div>
-
-                
 
                   <div className="form-group w-md-50 mb-4">
                     <label
@@ -1166,7 +1165,6 @@ export default function Settings() {
             </div>
           )}
         </div>
-
       </div>
     </div>
   );
