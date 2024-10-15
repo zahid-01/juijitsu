@@ -1,21 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CiSearch } from "react-icons/ci";
-import logo from "../../../assets/istockphoto-841971598-1024x1024.jpg";
-import "./Messages.css";
 import { RxDotsVertical } from "react-icons/rx";
-import useFetch from "../../../hooks/useFetch";
-import { BASE_URI } from "../../../Config/url";
-import axios from "axios";
 import { FaUserCircle } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { PulseLoader } from "react-spinners";
+import axios from "axios";
+import useFetch from "../../../hooks/useFetch";
+import { BASE_URI } from "../../../Config/url";
+import "./Messages.css";
 
+// Sample data
 const initialMessages = [
   {
     id: 1,
     profileName: "John Doe",
-    profileImage: logo,
+    profileImage: "https://via.placeholder.com/150",
     lastMessage: "Hey, how are you?",
     lastMessageTime: "2024-07-31T10:30:00",
     isFavorite: true,
@@ -27,81 +27,22 @@ const initialMessages = [
   {
     id: 2,
     profileName: "Jane Smith",
-    profileImage: logo,
+    profileImage: "https://via.placeholder.com/150",
     lastMessage: "See you tomorrow!",
     lastMessageTime: "2024-07-31T09:45:00",
     isFavorite: false,
     messages: [
-      {
-        id: 1,
-        text: "See you tomorrow!",
-        sender: "Jane Smith",
-        time: "09:45 AM",
-      },
+      { id: 1, text: "See you tomorrow!", sender: "Jane Smith", time: "09:45 AM" },
       { id: 2, text: "Sure!", sender: "You", time: "09:46 AM" },
     ],
   },
-  {
-    id: 3,
-    profileName: "Alice Johnson",
-    profileImage: logo,
-    lastMessage: "Can we reschedule our meeting?",
-    lastMessageTime: "2024-07-30T15:20:00",
-    isFavorite: true,
-    messages: [
-      {
-        id: 1,
-        text: "Can we reschedule our meeting?",
-        sender: "Alice Johnson",
-        time: "03:20 PM",
-      },
-      {
-        id: 2,
-        text: "Of course, when are you available?",
-        sender: "You",
-        time: "03:22 PM",
-      },
-    ],
-  },
-  {
-    id: 4,
-    profileName: "Bob Brown",
-    profileImage: logo,
-    lastMessage: "I'll send you the report by EOD.",
-    lastMessageTime: "2024-07-29T11:10:00",
-    isFavorite: false,
-    messages: [
-      {
-        id: 1,
-        text: "I'll send you the report by EOD.",
-        sender: "Bob Brown",
-        time: "11:10 AM",
-      },
-      { id: 2, text: "Great, thanks!", sender: "You", time: "11:12 AM" },
-    ],
-  },
-];
-const profiles = [
-  { name: "John Doe", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
- 
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  // Add more profiles as needed
 ];
 
 const getTimeDifference = (date) => {
   const now = new Date();
   const messageDate = new Date(date);
   const differenceInMilliseconds = now - messageDate;
-  const differenceInMinutes = Math.floor(
-    differenceInMilliseconds / (1000 * 60)
-  );
+  const differenceInMinutes = Math.floor(differenceInMilliseconds / (1000 * 60));
   const differenceInHours = Math.floor(differenceInMinutes / 60);
   const differenceInDays = Math.floor(differenceInHours / 24);
 
@@ -110,9 +51,7 @@ const getTimeDifference = (date) => {
   } else if (differenceInHours > 0) {
     return `${differenceInHours} hour${differenceInHours > 1 ? "s" : ""} ago`;
   } else if (differenceInMinutes > 0) {
-    return `${differenceInMinutes} minute${
-      differenceInMinutes > 1 ? "s" : ""
-    } ago`;
+    return `${differenceInMinutes} minute${differenceInMinutes > 1 ? "s" : ""} ago`;
   } else {
     return `Just now`;
   }
@@ -122,12 +61,12 @@ const Messages = () => {
   const [messages, setMessages] = useState(initialMessages);
   const [selectedChat, setSelectedChat] = useState(null);
   const [inputValue, setInputValue] = useState("");
-  const [allExpertsPopUp , setAllExpertsPopUp] = useState(false);
+  const [allExpertsPopUp, setAllExpertsPopUp] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
   const [allExpertsData, setAllExpertsData] = useState(null);
   const [allExpertsInput, setAllExpertsInput] = useState("");
   const [allExpertsLoading, setAllExpertsLoading] = useState(false);
-  const [allExpertsError, setAllExpertsError] = useState("")
+  const [allExpertsError, setAllExpertsError] = useState("");
   const popupRef = useRef(null);
   const token = localStorage.getItem("token");
   const chatListUrl = `${BASE_URI}/api/v1/chat`;
@@ -140,17 +79,16 @@ const Messages = () => {
 
   const { data } = useFetch(chatListUrl, fetchOptions);
   const chatList = useMemo(() => data?.data || [], [data]);
-  console.log(chatList);
 
-
-
-  const handleOpenChat = (recieverId) => {
-    console.log(recieverId);
+  const handleOpenChat = (receiverId) => {
+    console.log(receiverId);
     axios
-      .get(`${BASE_URI}/api/v1/chat/chatMessages${recieverId}`, fetchOptions)
+      .get(`${BASE_URI}/api/v1/chat/chatMessages${receiverId}`, fetchOptions)
       .then((resp) => {
         console.log(resp?.data);
-      }).catch((err)=>{
+        setSelectedChat(receiverId);
+      })
+      .catch((err) => {
         console.log(err);
       });
   };
@@ -174,59 +112,36 @@ const Messages = () => {
     }
   };
 
-  const handleDotsClick = () => {
-    setPopupVisible(!popupVisible);
-  };
-
-  const handleOutsideClick = (e) => {
-    if (popupRef.current && !popupRef.current.contains(e.target)) {
-      setPopupVisible(false);
+  const handleComposeClick = async (click) => {
+    if (click) {
+      setAllExpertsPopUp(true);
     }
-  };
 
-  const handleComposeClick = async(click)=>{
-    if(click){
-      setAllExpertsPopUp(true)
-    }
-    
-    setAllExpertsLoading(true)
-    const url = `${BASE_URI}/api/v1/users/otherExperts${allExpertsInput !== "" ? `?search=${allExpertsInput}` : ""}`;
-    console.log(url)
+    setAllExpertsLoading(true);
+    const url = `${BASE_URI}/api/v1/users/otherExperts${
+      allExpertsInput !== "" ? `?search=${allExpertsInput}` : ""
+    }`;
     await axios({
-      method: 'GET',
-      url:url,
+      method: "GET",
+      url: url,
       headers: {
-        'Authorization': 'Bearer '+ token
+        Authorization: "Bearer " + token,
       },
-    }).then((res)=>{
-      
-      console.log(res?.data);
-      setAllExpertsError("")
-      setAllExpertsData(res?.data?.data);
-      setAllExpertsLoading(false)
-    }).catch((err)=>{
-      console.log(err);
-      setAllExpertsError(err?.response?.data?.message)
-      setAllExpertsLoading(false)
     })
-  }
-
-useEffect(()=>{
-  handleComposeClick()
-},[allExpertsInput])
-  
+      .then((res) => {
+        setAllExpertsError("");
+        setAllExpertsData(res?.data?.data);
+        setAllExpertsLoading(false);
+      })
+      .catch((err) => {
+        setAllExpertsError(err?.response?.data?.message);
+        setAllExpertsLoading(false);
+      });
+  };
 
   useEffect(() => {
-    if (popupVisible) {
-      document.addEventListener("click", handleOutsideClick);
-    } else {
-      document.removeEventListener("click", handleOutsideClick);
-    }
-
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
-  }, [popupVisible]);
+    handleComposeClick();
+  }, [allExpertsInput]);
 
   return (
     <div className="w-100">
@@ -237,78 +152,76 @@ useEffect(()=>{
       <main className="d-flex" style={{ minHeight: "calc(100vh - 14rem)" }}>
         <section className="px-2 py-2 w-50 border-end pe-4">
           <div className="d-flex align-items-center gap-5 mb-3">
-            <select
-              name=""
-              id=""
-              className="p-2 bg-custom-secondary rounded-2 w-50 border-0"
-            >
+            <select className="p-2 bg-custom-secondary rounded-2 w-50 border-0">
               <option value="allMessages">All Messages</option>
               <option value="unread">Unread</option>
               <option value="read">Read</option>
             </select>
-     <div  style={{}} className="position-relative w-50">
-       <button onClick={()=>handleComposeClick("click")} className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto w-100">
-              Compose
-             
-            </button>
-            {
-                allExpertsPopUp
 
-                 && 
-
-                <div style={{bottom:"-550%",color:"black", zIndex:'100', height:"40vh", width:"25vw", boxShadow: "0px 0px 4px 0.2px #00000040"}}  className="position-absolute bg-white  p-3 rounded">
-                <span className="flex justify-content-between pb-1 align-items-center"><p style={{marginLeft:"30%"}}>All Experts</p><FontAwesomeIcon onClick={()=> setAllExpertsPopUp(false)} className="cursor-pointer" icon={faXmark}/></span>
-                <input
-              type="text"
-              id="search"
-              placeholder="Search here..."
-              aria-label="search"
-              className=" form-control border-end-0 px-3 bg-custom-secondary"
-              onChange={(e)=> setAllExpertsInput(e.target.value)}
-            />
-            <div style={{height:"70%", scrollbarWidth:"none", overflowX:"hidden"}} className="flex flex-column position-relative">
-
-  {
-   
-  allExpertsLoading ? 
-  <PulseLoader size={8} style={{top:"40%", left:"45%"}} color="black" className="position-absolute "/>
-  :
-  allExpertsError === "No expert found" ? 
-  <p style={{top:"40%", left:"25%",whiteSpace:"nowrap"}} className="position-absolute ">{allExpertsError}</p>
-  :
-  allExpertsData?.map((profile, index) => (
-    <span key={index} className="d-flex gap-2 align-items-center m-2">
-      <img
-        src={profile.profile_picture}
-        alt={profile.name}
-        className="rounded-circle "
-        width="30"
-        height="30"
-      />
-      <p className="fs-6">{profile.name}</p>
-    </span>
-  ))}
-</div>
-
-              </div>
-              }
-     </div>
-             
-      
-            
+            <div style={{ position: "relative", width: "50%" }}>
+              <button
+                onClick={() => handleComposeClick("click")}
+                className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto w-100"
+              >
+                Compose
+              </button>
+              {allExpertsPopUp && (
+                <div
+                  className="position-absolute bg-white p-3 rounded"
+                  style={{
+                    bottom: "-550%",
+                    color: "black",
+                    zIndex: "100",
+                    height: "40vh",
+                    width: "25vw",
+                    boxShadow: "0px 0px 4px 0.2px #00000040",
+                  }}
+                >
+                  <span className="flex justify-content-between pb-1 align-items-center">
+                    <p style={{ marginLeft: "30%" }}>All Experts</p>
+                    <FontAwesomeIcon
+                      onClick={() => setAllExpertsPopUp(false)}
+                      className="cursor-pointer"
+                      icon={faXmark}
+                    />
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Search here..."
+                    className="form-control border-end-0 px-3 bg-custom-secondary"
+                    onChange={(e) => setAllExpertsInput(e.target.value)}
+                  />
+                  <div className="flex flex-column position-relative" style={{ height: "70%", overflowX: "hidden" }}>
+                    {allExpertsLoading ? (
+                      <PulseLoader size={8} color="black" />
+                    ) : allExpertsError ? (
+                      <p>{allExpertsError}</p>
+                    ) : (
+                      allExpertsData?.map((profile, index) => (
+                        <span key={index} className="d-flex gap-2 align-items-center m-2">
+                          <img
+                            src={profile.profile_picture}
+                            alt={profile.name}
+                            className="rounded-circle"
+                            width="30"
+                            height="30"
+                          />
+                          <p>{profile.name}</p>
+                        </span>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-          <div className=" input-group mb-4">
+          <div className="input-group mb-4">
             <input
               type="text"
-              id="search"
               placeholder="Search here..."
-              aria-label="search"
-              className=" form-control border-end-0 px-3 bg-custom-secondary"
+              className="form-control border-end-0 px-3 bg-custom-secondary"
             />
-            <label
-              className="input-group-text search-icon border-start-0 bg-custom-secondary"
-              htmlFor="search"
-            >
+            <label className="input-group-text search-icon border-start-0 bg-custom-secondary">
               <CiSearch />
             </label>
           </div>
@@ -317,133 +230,64 @@ useEffect(()=>{
             {chatList?.map((message) => (
               <div
                 key={message?.expert_id}
-                className=" d-flex align-items-center gap-5 py-1 border-bottom cursor-pointer"
-                onClick={() => handleOpenChat(message?.expert_id)}
+                className="d-flex align-items-center gap-4 cursor-pointer mb-3"
+                onClick={() => handleOpenChat(message.expert_id)}
               >
                 <div>
-                  {message.profile_picture ? (
-                    <img
-                      src={message.profile_picture}
-                      alt=""
-                      className="rounded-circle mb-1"
-                      style={{
-                        width: "3rem",
-                        height: "3rem",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : (
-                    <FaUserCircle className="fs-1" />
-                  )}
-
-                  <div className="favorite text-center">
-                    {message.is_favorite === 1 ? "⭐" : "☆"}
-                  </div>
+                  <FaUserCircle size="4em" />
                 </div>
-                <div className="message-info w-100">
-                  <div className="d-flex align-items-center justify-content-between mb-1">
-                    <h5 className="fw-light">{message.name}</h5>
-                    <p className="mb-0 fw-light">
-                      {getTimeDifference(message.updated_at)}
+                <div className="d-flex w-100 justify-content-between align-items-center">
+                  <div>
+                    <p className="fs-5 mb-1 fw-medium">{message.expert_name}</p>
+                    <p className="m-0 fs-6 text-muted fw-lighter">
+                      {message.latestMessage ? message.latestMessage : "Start your conversation"}
                     </p>
                   </div>
-                  <p className="fw-light">{message.message}</p>
+                  <div>
+                    <span>{getTimeDifference(message.updated_at)}</span>
+                  </div>
+                  <div className="flex justify-content-end">
+                    <RxDotsVertical />
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </section>
-        <section className="w-50">
-          {selectedChat !== null ? (
-            <div className="w-100 border rounded-end shadow-sm">
-              <header className="d-flex align-items-center p-3 border-bottom">
-                <div className="d-flex align-items-center gap-4">
-                  <div className="favorite text-center">
-                    {messages[selectedChat].isFavorite ? "⭐" : "☆"}
-                  </div>
-                  <img
-                    src={messages[selectedChat].profileImage}
-                    alt="Profile"
-                    className="rounded-circle me-2 object-fit-cover"
-                    width="40"
-                    height="40"
-                  />
-                  <h5 className="mb-0 fw-light">
-                    {messages[selectedChat].profileName}
-                  </h5>
-                </div>
-                <div className="ms-auto position-relative" ref={popupRef}>
-                  <RxDotsVertical
-                    className="fs-3 cursor-pointer"
-                    onClick={handleDotsClick}
-                  />
-                  {popupVisible && (
-                    <div
-                      className="popup-menu position-absolute bg-white border rounded shadow-sm"
-                      style={{ right: "0%", top: "100%", zIndex: 10 }}
-                    >
-                      <ul
-                        className="list-unstyled m-0  text-center"
-                        style={{ minWidth: "12rem" }}
-                      >
-                        <li className="py-2 px-3 cursor-pointer text-light-custom">
-                          Remove Important
-                        </li>
-                        <li className="py-2 px-3 cursor-pointer border-top border-bottom text-light-custom">
-                          Mark as Read
-                        </li>
-                        <li className="py-2 px-3 cursor-pointer text-light-custom">
-                          Block
-                        </li>
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </header>
 
-              <section
-                className=" p-3 flex-grow-1 overflow-auto h-100"
-                style={{ minHeight: "23rem" }}
-              >
-                {messages[selectedChat].messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`message ${
-                      msg.sender === "You" ? "sent" : "received"
-                    } mb-2`}
-                  >
-                    <div
-                      className="message-content p-2"
-                      // style={{ backgroundColor: "#C9D1D5" }}
-                    >
-                      <p className="text-muted mb-2">{msg.time}</p>
-                      <p className="mb-0 fw-light">{msg.text}</p>
-                    </div>
+        {/* Chat Window */}
+        <section className="w-50 px-2">
+          {selectedChat !== null ? (
+            <div className="d-flex flex-column h-100">
+              <header className="chat-header p-3 bg-light border-bottom">
+                <h5>{messages[selectedChat].profileName}</h5>
+              </header>
+              <div className="chat-body p-3 flex-grow-1 overflow-auto">
+                {messages[selectedChat].messages.map((message) => (
+                  <div key={message.id} className={`message ${message.sender === "You" ? "sent" : "received"}`}>
+                    <p className="mb-1">{message.text}</p>
+                    <small>{message.time}</small>
                   </div>
                 ))}
-              </section>
-
-              <footer className="d-flex align-items-center">
-                <form className="input-group" onSubmit={handleSendMessage}>
+              </div>
+              <footer className="chat-footer p-3 bg-light border-top">
+                <form onSubmit={handleSendMessage} className="d-flex gap-2">
                   <input
                     type="text"
-                    className="form-control py-2 rounded-0"
-                    placeholder="Type a message..."
+                    className="form-control"
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Type a message..."
                   />
-                  <button
-                    className="rounded-0 signup-now py-2 px-4 fw-lightBold h-auto mb-0"
-                    type="submit"
-                  >
+                  <button type="submit" className="btn btn-primary">
                     Send
                   </button>
                 </form>
               </footer>
             </div>
           ) : (
-            <div className="h-100 d-flex align-items-center justify-content-center">
-              <h4 className="fw-light">Select a message to read here!</h4>
+            <div className="d-flex justify-content-center align-items-center h-100">
+              <p>Select a chat to view messages</p>
             </div>
           )}
         </section>
