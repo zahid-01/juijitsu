@@ -236,7 +236,7 @@ useEffect(()=>{
       </header>
       <main className="d-flex" style={{ minHeight: "calc(100vh - 14rem)" }}>
         <section className="px-2 py-2 w-50 border-end pe-4">
-          <div className="d-flex align-items-center gap-5 mb-3">
+          <div className="d-flex align-items-center gap-5 mb-3" style={{overflow:"auto"}}>
             <select
               name=""
               id=""
@@ -247,7 +247,7 @@ useEffect(()=>{
               <option value="read">Read</option>
             </select>
      <div  style={{}} className="position-relative w-50">
-       <button onClick={()=>handleComposeClick("click")} className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto w-100">
+       <button onClick={()=>handleComposeClick("click")} className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto  " >
               Compose
              
             </button>
@@ -317,7 +317,7 @@ useEffect(()=>{
             {chatList?.map((message) => (
               <div
                 key={message?.expert_id}
-                className=" d-flex align-items-center gap-5 py-1 border-bottom cursor-pointer"
+                className=" d-flex align-items-center gap-5 py-1 border-bottom cursor-pointer "
                 onClick={() => handleOpenChat(message?.expert_id)}
               >
                 <div>
@@ -341,13 +341,13 @@ useEffect(()=>{
                   </div>
                 </div>
                 <div className="message-info w-100">
-                  <div className="d-flex align-items-center justify-content-between mb-1">
+                  <div className="d-flex align-items-center justify-content-between mb-1 c-rep">
                     <h5 className="fw-light">{message.name}</h5>
                     <p className="mb-0 fw-light">
                       {getTimeDifference(message.updated_at)}
                     </p>
                   </div>
-                  <p className="fw-light">{message.message}</p>
+                  <p className="fw-light msg-resp">{message.message}</p>
                 </div>
               </div>
             ))}

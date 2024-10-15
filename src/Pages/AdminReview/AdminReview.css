@@ -145,7 +145,7 @@
   }
   .course-req img {
     width: 19vw;
-    height: 9vh;
+    height: 17vw;
   }
 
 
@@ -153,25 +153,25 @@
 @media (min-width:778px) and (max-width:1200px){
   .course-req img {
     width: 9vw;
-    height: 9vh;
+    height: 9vw;
 }
 }
 @media (min-width:1201px) and (max-width:1300px){
   .course-req img {
     width: 9vw;
-    height: 12vh;
+    height: 8vw;
 }
 }
 @media (min-width:1301px) and (max-width:1450px){
   .course-req img {
-    width: 9vw;
-    height: 9vh;
+    width: 5vw;
+    height: 7vw;
 }
 }
 
 @media(min-width:1450px){
   .course-req img {
    
-    height: 9vh;
+    height: 6vw;
 }
 }

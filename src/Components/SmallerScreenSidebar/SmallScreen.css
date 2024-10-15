@@ -1,9 +1,22 @@
 .small-screen{
-   top: 94.7% !important;
+  
+   position: fixed;
+   bottom: 0;
+   width: 100%; 
+   background-color: #f8f8f8; 
+   z-index: 999; 
 
 }
-@media (max-width:376px){
-    .small-screen{
-        top: 93% !important;
+@media (max-width:431px){
+    .small-screen-text {
+        display: none; /* Hides the text */
+      }
+      .u-screen{
+     margin-top: 2vw;
     }
+}
+@media (max-width:335px){
+.p-right{
+    margin-left: 8vw;
+}
 }

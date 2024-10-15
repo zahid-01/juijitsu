@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { RiBookFill, RiHome4Fill, RiMessage2Fill,  RiWallet2Fill,} from "react-icons/ri";
+import { RiBookFill, RiHome4Fill, RiMessage2Fill,  RiWallet2Fill, RiLifebuoyFill} from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
 import { FaFileInvoice, FaUsers, FaUserTie, FaHome,FaBookReader } from "react-icons/fa";
@@ -64,6 +64,9 @@ export default function SmallerScreenSidebar() {
           case "review":
             navigate("/adminReview");
             break;
+            case "support":
+              navigate("/support");
+              break;
         default:
           break;
       }
@@ -88,139 +91,149 @@ export default function SmallerScreenSidebar() {
   };
 
   return (
-    <div className="bg-gradient-custom-div px-1  d-flex align-items-center justify-content-around position-fixed w-100 small-screen">
-      {role === "user" && (
-        <>
-          <div
-            onClick={() => handleTabClick("home")}
-            className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
-              activeTab === "home" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <RiHome4Fill className="fs-5 d-block" />
-            Home
-          </div>
-          <div
-            onClick={() => handleTabClick("myLearning")}
-            className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
-              activeTab === "myLearning" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <RiBookFill className="fs-5 d-block" />
-            Purchased Courses
-          </div>
-          <div
-            onClick={() => handleTabClick("messages")}
-            className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
-              activeTab === "messages" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <RiMessage2Fill className="fs-5 d-block" />
-            Messages
-          </div>
-          <div
-            onClick={() => handleTabClick("userWallet")}
-            className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
-              activeTab === "userWallet" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <RiWallet2Fill className="fs-5 d-block" />
-            Wallet
-          </div>
-        </>
-      )}
+    <div className="bg-gradient-custom-div px-1  d-flex align-items-center justify-content-around w-100 small-screen u-screen">
+    {role === "user" && (
+  <>
+    <div
+      onClick={() => handleTabClick("home")}
+      className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
+        activeTab === "home" && `bg-white text-black rounded-4 u-screen`
+      }`}
+    >
+      <RiHome4Fill className="fs-5 d-block" />
+      <span className="small-screen-text">Home</span>
+    </div>
+    <div
+      onClick={() => handleTabClick("myLearning")}
+      className={`d-flex flex-column align-items-center py-1 px-1 fw-light p-right ${
+        activeTab === "myLearning" && `bg-white text-black rounded-4 u-screen`
+      }`}
+    >
+      <RiBookFill className="fs-5 d-block" />
+      <span className="small-screen-text">Purchased</span>
+    </div>
+    <div
+      onClick={() => handleTabClick("messages")}
+      className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
+        activeTab === "messages" && `bg-white text-black rounded-4 u-screen`
+      }`}
+    >
+      <RiMessage2Fill className="fs-5 d-block" />
+      <span className="small-screen-text">Messages</span>
+    </div>
+    <div
+      onClick={() => handleTabClick("userWallet")}
+      className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
+        activeTab === "userWallet" && `bg-white text-black rounded-4 u-screen`
+      }`}
+    >
+      <RiWallet2Fill className="fs-5 d-block" />
+      <span className="small-screen-text">Wallet</span>
+    </div>
+  </>
+)}
 
-      {role === "admin" && (
-        <>
-          <div
-            onClick={() => handleTabClick("dashboard")}
-            className={`d-flex flex-column align-items-center py-1 px-1 fw-light ${
-              activeTab === "dashboard" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <MdDashboard className="fs-8 d-block" />
-            Dashboard
-          </div>
-          <div
-            onClick={() => handleTabClick("experts")}
-            className={`d-flex flex-column align-items-center py-1 px-1 fw-light ${
-              activeTab === "experts" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <FaUserTie className="fs-7 d-block" />
-            Experts
-          </div>
-          <div
-            onClick={() => handleTabClick("students")}
-            className={`d-flex flex-column align-items-center py-1 px-1 fw-light ${
-              activeTab === "students" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <FaUsers className="fs-7 d-block" />
-            Students
-          </div>
-          <div
-            onClick={() => handleTabClick("transactions")}
-            className={`d-flex flex-column align-items-center py-1 px-1 fw-light ${
-              activeTab === "transactions" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <FaFileInvoice className="fs-7 d-block" />
-            Transactions
-          </div>
-          <div
-            onClick={() => handleTabClick("review")}
-            className={`d-flex flex-column align-items-center py-1 fw-light ${
-              activeTab === "review" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <FaBookReader className=" fs-7" />
-            Review 
-          </div>
-        </>
-      )}
 
-      {role === "expert" && (
-        <>
-          <div
-            onClick={() => handleTabClick("courses")}
-            className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
-              activeTab === "courses" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <FaHome  className="fs-5 d-block" />
-            Courses
-          </div>
-          <div
-            onClick={() => handleTabClick("dashboardd")}
-            className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
-              activeTab === "dashboardd" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <MdDashboard className="fs-5 d-block" />
-            Dashboard
-          </div>
+{role === "admin" && (
+  <>
+    <div
+      onClick={() => handleTabClick("dashboard")}
+      className={`d-flex flex-column align-items-center py-1 px-1 fw-light ${
+        activeTab === "dashboard" && `bg-white text-black rounded-4 u-screen`
+      }`}
+    >
+      <MdDashboard className="fs-8 d-block " />
+      <span className="small-screen-text">Dashboard</span>
+    </div>
+    <div
+      onClick={() => handleTabClick("experts")}
+      className={`d-flex flex-column align-items-center py-1 px-1 fw-light ${
+        activeTab === "experts" && `bg-white text-black rounded-4 u-screen`
+      }`}
+    >
+      <FaUserTie className="fs-7 d-block" />
+      <span className="small-screen-text">Experts</span>
+    </div>
+    <div
+      onClick={() => handleTabClick("students")}
+      className={`d-flex flex-column align-items-center py-1 px-1 fw-light ${
+        activeTab === "students" && `bg-white text-black rounded-4 u-screen`
+      }`}
+    >
+      <FaUsers className="fs-7 d-block" />
+      <span className="small-screen-text">Students</span>
+    </div>
+    <div
+      onClick={() => handleTabClick("transactions")}
+      className={`d-flex flex-column align-items-center py-1 px-1 fw-light ${
+        activeTab === "transactions" && `bg-white text-black rounded-4 u-screen`
+      }`}
+    >
+      <FaFileInvoice className="fs-7 d-block" />
+      <span className="small-screen-text">Transactions</span>
+    </div>
+    <div
+      onClick={() => handleTabClick("review")}
+      className={`d-flex flex-column align-items-center py-1 fw-light ${
+        activeTab === "review" && `bg-white text-black rounded-4 u-screen`
+      }`}
+    >
+      <FaBookReader className="fs-7" />
+      <span className="small-screen-text">Review</span>
+    </div>
+    <div
+      onClick={() => handleTabClick("support")}
+      className={`d-flex flex-column align-items-center py-1 fw-light ${
+        activeTab === "support" && `bg-white text-black rounded-4 u-screen`
+      }`}
+    >
+      <RiLifebuoyFill className="fs-7" />
+      <span className="small-screen-text">Support</span>
+    </div>
+  </>
+)}
 
-          <div
-            onClick={() => handleTabClick("messages")}
-            className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
-              activeTab === "messages" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <MdMessage className="fs-5 d-block" />
-            Messages
-          </div>
-          <div
-            onClick={() => handleTabClick("wallet")}
-            className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
-              activeTab === "wallet" && `bg-white text-black rounded-4`
-            }`}
-          >
-            <FaFileInvoice className="fs-5 d-block" />
-            wallet
-          </div>
-        </>
-      )}
+{role === "expert" && (
+  <>
+    <div
+      onClick={() => handleTabClick("courses")}
+      className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
+        activeTab === "courses" && `bg-white text-black rounded-4`
+      }`}
+    >
+      <FaHome className="fs-5 d-block" />
+      <span className="small-screen-text">Courses</span>
+    </div>
+    <div
+      onClick={() => handleTabClick("dashboardd")}
+      className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
+        activeTab === "dashboardd" && `bg-white text-black rounded-4`
+      }`}
+    >
+      <MdDashboard className="fs-5 d-block" />
+      <span className="small-screen-text">Dashboard</span>
+    </div>
+    <div
+      onClick={() => handleTabClick("messages")}
+      className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
+        activeTab === "messages" && `bg-white text-black rounded-4`
+      }`}
+    >
+      <MdMessage className="fs-5 d-block" />
+      <span className="small-screen-text">Messages</span>
+    </div>
+    <div
+      onClick={() => handleTabClick("wallet")}
+      className={`d-flex flex-column align-items-center py-1 px-2 fw-light ${
+        activeTab === "wallet" && `bg-white text-black rounded-4`
+      }`}
+    >
+      <FaFileInvoice className="fs-5 d-block" />
+      <span className="small-screen-text">Wallet</span>
+    </div>
+  </>
+)}
+
     </div>
   );
 }

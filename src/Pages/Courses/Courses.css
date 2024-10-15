@@ -59,13 +59,14 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 .card-bottom-courses img {
-  height: 20vh;
+  /* height: 20vh; */
+  height: 11vw;
   width: 100%;
   border-radius: 0.5vw;
   object-fit: cover;
 }
 .middle-sec-card-courses {
-  height: 4vh;
+  /* height: 4vh; */
   display: flex;
   justify-content: space-between;
   margin-top: 3%;
@@ -109,12 +110,14 @@
 }
 .card-bottom-courses h5 {
   font-size: 1rem; /* Converted */
-  height: 3.5vh;
+  /* height: 3.5vh; */
+  height: 2vw;
 }
 .card-bottom-courses h4 {
   font-size: 0.9rem; /* Converted */
   font-weight: 400;
-  height: 7vh;
+  /* height: 7vh; */
+  margin-bottom: 2vw;
 }
 .no-courses-courses {
   height: 40vh;
@@ -197,9 +200,40 @@
   width: 100%;
 }
 
+@media (max-width:1200px){
+  .card-bottom-courses img {
+    height: 12vw;
+}
+.middle-sec-card-courses {
+  height: 3vw;
+}
+.card-bottom-courses h5 {
+  height: 3vw;
+}
+/* .card-bottom-courses h4 {
+  height: 5vw;
+} */
+}
 
+@media (max-width:1010px){
+  .bottom-courses {
 
-
+    grid-template-columns: repeat(3, 1fr);
+ 
+}
+.card-bottom-courses img {
+  height: 20vw;
+}
+.middle-sec-card-courses {
+  height: 4vw;
+}
+.card-bottom-courses h5 {
+  height: 3.5vw;
+}
+/* .card-bottom-courses h4 {
+  height: 8vw;
+} */
+}
 
 @media (max-width: 768px) {
   .top-courses {
@@ -214,8 +248,18 @@
  
  
     .card-bottom-courses img {
-        height: 22vh;
+        height: 22vw;
     }
+    .middle-sec-card-courses {
+      height: 5vw;
+    
+  }
+  .card-bottom-courses h5 {
+    height: 5vw;
+}
+/* .card-bottom-courses h4 {
+  height: 9vw;
+} */
 }
 
 @media (max-width: 530px) {
@@ -223,7 +267,8 @@
     grid-template-columns: repeat(1, 1fr);
   }
   .card-bottom-courses{
-    width: 90vw;
+    /* width: 90vw; */
+    width: 80vw;
     gap: 1rem;
   }
   .card-bottom-courses  img{
@@ -245,6 +290,15 @@
     
   }
   .card-bottom-courses img {
-    height: 30vh;
-  }
+    height: 43vw;
+}
+.middle-sec-card-courses {
+  height: 5vw;
+}
+.card-bottom-courses h5 {
+  height: 4vw;
+}
+.card-bottom-courses h4 {
+  height: 12vw;
+}
 }
