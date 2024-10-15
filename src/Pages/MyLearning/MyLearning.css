@@ -18,7 +18,8 @@
   margin-bottom: 4vh;
 }
 .card-bottom-myLearning {
-  height: 50vh;
+  /* height: 50vh; */
+  height:21vw;
   width: 100%;
   background-color: white;
   border-radius: 0.5vw;
@@ -214,7 +215,13 @@
     text-decoration-line: underline;
 }
 
-
+@media (max-width:1200px){
+  .card-bottom-myLearning {
+    /* height: 50vh; */
+    height: 28vw;
+    
+}
+}
 
 @media (max-width: 780px) {
   .bottom-myLearning{
@@ -223,7 +230,7 @@
   
   .middle-sec-card-myLearning div{
     height: max-content;
-    padding: 0.8rem  1.5rem;
+    padding: 1vw 1.5vw;
     border-radius: 0.4rem;
     width: max-content;
   }
@@ -246,6 +253,12 @@
   .bottom-card-usermyLearning span{
     height: 1.1rem;
   }
+  .card-bottom-myLearning {
+    /* height: 50vh; */
+    height: 66vw;
+    
+}
+
 
 
 }
@@ -282,8 +295,9 @@
     justify-content: center;
     align-items: center;
   }
-  /* .shimmer-card-usercourses{
-    padding-left: 2rem;
-    padding-right: 1rem;
-  } */
+  .card-bottom-myLearning {
+    /* height: 50vh; */
+    height: 89vw;
+   
+}
 }

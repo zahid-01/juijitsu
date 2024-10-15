@@ -18,4 +18,29 @@
 .chat-list {
   max-height: 400px;
   overflow-y: auto;
+  
+}
+@media (max-width: 610px) {
+  .c-rep {
+    flex-direction: column; 
+    align-items: flex-start;
+    width: max-content;
+  }
+
+
+  .c-rep p {
+    font-style: italic; 
+  }
+
+  .c-rep p {
+    margin-top: 4px; 
+  }
+ 
+.msg-resp{
+  width:max-content;
+
+}
+}
+@media (max-width:459px){
+  
 }
