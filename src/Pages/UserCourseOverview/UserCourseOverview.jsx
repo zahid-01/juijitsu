@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./UserCourseOverview.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import {
   faAngleDown,
@@ -39,6 +38,9 @@ const UserCourseOverview = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { contextSafe } = useGSAP();
+
+  
+
 
   const handleLeftToggle = (chapterIndex) => {
     setOpenChapters((prevOpenChapters) => ({
@@ -89,51 +91,6 @@ const UserCourseOverview = () => {
     () => courseData?.courseChapters?.chapters || [],
     [courseData]
   );
-  // const paymentPopUpClick = contextSafe(() => {
-  //   console.log("popup has been clicked");
-  //   gsap.to(".paymentPopUp", {
-  //     scale: 1,
-  //     duration: 0.3,
-  //     ease: "back.in",
-  //   });
-  // });
-  // const removePayPopUp = contextSafe(() => {
-  //   console.log("popup has been removed");
-  //   gsap.to(".paymentPopUp", {
-  //     scale: 0,
-  //     duration: 0.4,
-  //     ease: "back.inOut",
-  //   });
-  // });
-
-  // const handleVideoChange = useCallback(
-  //   (video_url, video_thumb, lesson_id, noLesson) => {
-  //     setVideo_url(video_url);
-  //     setVideo_thumb(video_thumb);
-  //     setSelectedLesson(lesson_id);
-  //   },
-  //   []
-  // );
-
-  const handleCoinCheckout = async () => {
-    try {
-      const response = await axios.post(
-        `${BASE_URI}/api/v1/payment/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
-      setVerificationPopUp(false);
-      toast.success(`${response?.data?.message}`);
-    } catch (err) {
-      setVerificationPopUp(false);
-      toast.error(`Error: ${err?.response?.data?.message}`);
-    }
-  };
-
   const paymentPopUpClick = contextSafe(() => {
     console.log("popup has been clicked");
     gsap.to(".paymentPopUp", {
@@ -160,6 +117,25 @@ const UserCourseOverview = () => {
     []
   );
 
+  const handleCoinCheckout = async () => {
+    try {
+      const response = await axios.post(
+        `${BASE_URI}/api/v1/payment/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      setVerificationPopUp(false);
+      toast.success(`${response?.data?.message}`);
+    } catch (err) {
+      setVerificationPopUp(false);
+      toast.error(`Error: ${err?.response?.data?.message}`);
+    }
+  };
+
   const checkoutHandler = async () => {
     try {
       const stripe = await stripePromise;
@@ -180,7 +156,6 @@ const UserCourseOverview = () => {
     }
   };
 
-
   return (
     <>
       {isLoading ? (
@@ -192,7 +167,6 @@ const UserCourseOverview = () => {
         ></l-grid>
       ) : (
         <div className="wrapper-userCourseview position-relative">
-
           {verificationPopUp && (
             <div className="popup ">
               <div className="popup-content-review">
@@ -316,8 +290,7 @@ const UserCourseOverview = () => {
               {courseData?.course?.title || "No title available"}
             </h3>
 
-            <span className="gap-3 flex align-items-center m-bt">
-
+            <span className="gap-3 flex align-items-center">
               <div>
                 <span className="d-flex justify-content-between align-items-center p-1">
                   <h5 style={{ fontSize: "1.3rem", fontWeight: "bold" }}>
@@ -326,7 +299,6 @@ const UserCourseOverview = () => {
                   </h5>
                 </span>
                 <div
-
                   onClick={() => setVerificationPopUp(true)}
                   style={{ width: "max-content" }}
                   className="cursor-pointer rounded bg-white d-flex justify-content-between p-2"
@@ -352,9 +324,7 @@ const UserCourseOverview = () => {
                   </h5>
                 </span>
                 <div
-
                   onClick={checkoutHandler}
-
                   style={{ width: "max-content" }}
                   className="cursor-pointer bg-white rounded  d-flex justify-content-between p-2"
                 >
@@ -379,7 +349,7 @@ const UserCourseOverview = () => {
                 className="tumbnail-userCourseview"
               />
 
-              <div className="left-bottom-mid-userCourseview second-leftuserCourse">
+              {/* <div className="left-bottom-mid-userCourseview second-leftuserCourse">
                 <h4>Course Lessons</h4>
                 <div>
                   {courseData?.courseChapters?.chapters?.length > 0 ? (
@@ -448,23 +418,16 @@ const UserCourseOverview = () => {
                     <div>No chapters found</div>
                   )}
                 </div>
-              </div>
+              </div> */}
 
               <div className="details-right-mid-userCourseview">
                 <span>
-                  <div
-                    onClick={() => {
-                      navigate(`/UserProfile/${courseData?.course?.expert_id}`);
-                    }}
-                  >
-                    <img
-                      src={courseData?.course?.profile_picture}
-                      alt="Profile"
-                      style={{ width: "8%", height: "8%", borderRadius: "50%" }}
-                    />
-                    <h6>{courseData?.course?.name}</h6>
-                  </div>
-
+                  <img
+                    src={courseData?.course?.profile_picture}
+                    alt="Profile"
+                    style={{ width: "8%", height: "8%", borderRadius: "50%" }}
+                  />
+                  <h6>{courseData?.course?.name}</h6>
                 </span>
 
                 <span>
@@ -534,19 +497,13 @@ const UserCourseOverview = () => {
                         {chapter?.lessons.map((lesson, idx) => (
                           <div
                             key={idx}
-                            onClick={() => {
-                              if (chapterIndex >= 1) {
-                                // Assuming 2nd course has index 1
-                                paymentPopUpClick();
-                              } else {
-                                handleVideoChange(
-                                  lesson?.video_url,
-                                  lesson?.thumbnail,
-                                  lesson?.lesson_id
-                                );
-                              }
-                            }}
-
+                            onClick={() =>
+                              handleVideoChange(
+                                lesson?.video_url,
+                                lesson?.thumbnail,
+                                lesson?.lesson_id
+                              )
+                            }
                             style={{
                               cursor: "pointer",
                               color:

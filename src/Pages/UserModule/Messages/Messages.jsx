@@ -106,15 +106,15 @@ const getTimeDifference = (date) => {
   const differenceInDays = Math.floor(differenceInHours / 24);
 
   if (differenceInDays > 0) {
-    return `${differenceInDays} day${differenceInDays > 1 ? "s" : ""} ago`;
+    return ${differenceInDays} day${differenceInDays > 1 ? "s" : ""} ago;
   } else if (differenceInHours > 0) {
-    return `${differenceInHours} hour${differenceInHours > 1 ? "s" : ""} ago`;
+    return ${differenceInHours} hour${differenceInHours > 1 ? "s" : ""} ago;
   } else if (differenceInMinutes > 0) {
-    return `${differenceInMinutes} minute${
+    return ${differenceInMinutes} minute${
       differenceInMinutes > 1 ? "s" : ""
-    } ago`;
+    } ago;
   } else {
-    return `Just now`;
+    return Just now;
   }
 };
 
@@ -130,7 +130,7 @@ const Messages = () => {
   const [allExpertsError, setAllExpertsError] = useState("")
   const popupRef = useRef(null);
   const token = localStorage.getItem("token");
-  const chatListUrl = `${BASE_URI}/api/v1/chat`;
+  const chatListUrl = ${BASE_URI}/api/v1/chat;
 
   const fetchOptions = {
     headers: {
@@ -147,7 +147,7 @@ const Messages = () => {
   const handleOpenChat = (recieverId) => {
     console.log(recieverId);
     axios
-      .get(`${BASE_URI}/api/v1/chat/chatMessages${recieverId}`, fetchOptions)
+      .get(${BASE_URI}/api/v1/chat/chatMessages${recieverId}, fetchOptions)
       .then((resp) => {
         console.log(resp?.data);
       }).catch((err)=>{
@@ -190,7 +190,7 @@ const Messages = () => {
     }
     
     setAllExpertsLoading(true)
-    const url = `${BASE_URI}/api/v1/users/otherExperts${allExpertsInput !== "" ? `?search=${allExpertsInput}` : ""}`;
+    const url = ${BASE_URI}/api/v1/users/otherExperts${allExpertsInput !== "" ? ?search=${allExpertsInput} : ""};
     console.log(url)
     await axios({
       method: 'GET',
@@ -236,7 +236,7 @@ useEffect(()=>{
       </header>
       <main className="d-flex" style={{ minHeight: "calc(100vh - 14rem)" }}>
         <section className="px-2 py-2 w-50 border-end pe-4">
-          <div className="d-flex align-items-center gap-5 mb-3" style={{overflow:"auto"}}>
+          <div className="d-flex align-items-center gap-5 mb-3">
             <select
               name=""
               id=""
@@ -247,7 +247,7 @@ useEffect(()=>{
               <option value="read">Read</option>
             </select>
      <div  style={{}} className="position-relative w-50">
-       <button onClick={()=>handleComposeClick("click")} className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto  " >
+       <button onClick={()=>handleComposeClick("click")} className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto w-100">
               Compose
              
             </button>
@@ -317,7 +317,7 @@ useEffect(()=>{
             {chatList?.map((message) => (
               <div
                 key={message?.expert_id}
-                className=" d-flex align-items-center gap-5 py-1 border-bottom cursor-pointer "
+                className=" d-flex align-items-center gap-5 py-1 border-bottom cursor-pointer"
                 onClick={() => handleOpenChat(message?.expert_id)}
               >
                 <div>
@@ -341,13 +341,13 @@ useEffect(()=>{
                   </div>
                 </div>
                 <div className="message-info w-100">
-                  <div className="d-flex align-items-center justify-content-between mb-1 c-rep">
+                  <div className="d-flex align-items-center justify-content-between mb-1">
                     <h5 className="fw-light">{message.name}</h5>
                     <p className="mb-0 fw-light">
                       {getTimeDifference(message.updated_at)}
                     </p>
                   </div>
-                  <p className="fw-light msg-resp">{message.message}</p>
+                  <p className="fw-light">{message.message}</p>
                 </div>
               </div>
             ))}
@@ -408,9 +408,9 @@ useEffect(()=>{
                 {messages[selectedChat].messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`message ${
+                    className={message ${
                       msg.sender === "You" ? "sent" : "received"
-                    } mb-2`}
+                    } mb-2}
                   >
                     <div
                       className="message-content p-2"
@@ -451,5 +451,3 @@ useEffect(()=>{
     </div>
   );
 };
-
-export default Messages;
