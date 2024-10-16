@@ -11,6 +11,7 @@ import axios from "axios";
 import { userCartActions } from "./Store/cartSlice";
 import { useDispatch } from "react-redux";
 import { payoutActions } from "./Store/payoutSlice";
+import { socketConnect } from "./socket";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const App = () => {
   // });
 
   useEffect(() => {
+    socketConnect(token)
   //   axios({
   //     method: "GET",
   //     url,
