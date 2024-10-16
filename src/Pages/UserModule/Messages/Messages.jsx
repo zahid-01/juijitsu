@@ -8,8 +8,11 @@ import { BASE_URI } from "../../../Config/url";
 import axios from "axios";
 import { FaUserCircle } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faUserCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { PulseLoader } from "react-spinners";
+import { io } from "socket.io-client";
+import { socket } from "../../../socket";
+
 
 const initialMessages = [
   {
@@ -41,58 +44,6 @@ const initialMessages = [
       { id: 2, text: "Sure!", sender: "You", time: "09:46 AM" },
     ],
   },
-  {
-    id: 3,
-    profileName: "Alice Johnson",
-    profileImage: logo,
-    lastMessage: "Can we reschedule our meeting?",
-    lastMessageTime: "2024-07-30T15:20:00",
-    isFavorite: true,
-    messages: [
-      {
-        id: 1,
-        text: "Can we reschedule our meeting?",
-        sender: "Alice Johnson",
-        time: "03:20 PM",
-      },
-      {
-        id: 2,
-        text: "Of course, when are you available?",
-        sender: "You",
-        time: "03:22 PM",
-      },
-    ],
-  },
-  {
-    id: 4,
-    profileName: "Bob Brown",
-    profileImage: logo,
-    lastMessage: "I'll send you the report by EOD.",
-    lastMessageTime: "2024-07-29T11:10:00",
-    isFavorite: false,
-    messages: [
-      {
-        id: 1,
-        text: "I'll send you the report by EOD.",
-        sender: "Bob Brown",
-        time: "11:10 AM",
-      },
-      { id: 2, text: "Great, thanks!", sender: "You", time: "11:12 AM" },
-    ],
-  },
-];
-const profiles = [
-  { name: "John Doe", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
- 
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  { name: "Jane Smith", image: "https://rb-screenshots-actwin.s3.ap-south-1.amazonaws.com/images/image-1726565906370.png" },
-  // Add more profiles as needed
 ];
 
 const getTimeDifference = (date) => {
@@ -106,15 +57,15 @@ const getTimeDifference = (date) => {
   const differenceInDays = Math.floor(differenceInHours / 24);
 
   if (differenceInDays > 0) {
-    return ${differenceInDays} day${differenceInDays > 1 ? "s" : ""} ago;
+    return `${differenceInDays} day${differenceInDays > 1 ? "s" : ""} ago`;
   } else if (differenceInHours > 0) {
-    return ${differenceInHours} hour${differenceInHours > 1 ? "s" : ""} ago;
+    return `${differenceInHours} hour${differenceInHours > 1 ? "s" : ""} ago`;
   } else if (differenceInMinutes > 0) {
-    return ${differenceInMinutes} minute${
+    return `${differenceInMinutes} minute${
       differenceInMinutes > 1 ? "s" : ""
-    } ago;
+    } ago`;
   } else {
-    return Just now;
+    return `Just now`;
   }
 };
 
@@ -122,15 +73,16 @@ const Messages = () => {
   const [messages, setMessages] = useState(initialMessages);
   const [selectedChat, setSelectedChat] = useState(null);
   const [inputValue, setInputValue] = useState("");
-  const [allExpertsPopUp , setAllExpertsPopUp] = useState(false);
+  const [allExpertsPopUp, setAllExpertsPopUp] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
   const [allExpertsData, setAllExpertsData] = useState(null);
   const [allExpertsInput, setAllExpertsInput] = useState("");
+  const [selectedEmail, setSelecetedEmail] = useState(null);
   const [allExpertsLoading, setAllExpertsLoading] = useState(false);
-  const [allExpertsError, setAllExpertsError] = useState("")
+  const [allExpertsError, setAllExpertsError] = useState("");
   const popupRef = useRef(null);
   const token = localStorage.getItem("token");
-  const chatListUrl = ${BASE_URI}/api/v1/chat;
+  const chatListUrl = `${BASE_URI}/api/v1/chat`;
 
   const fetchOptions = {
     headers: {
@@ -144,34 +96,80 @@ const Messages = () => {
 
 
 
-  const handleOpenChat = (recieverId) => {
-    console.log(recieverId);
+  // Initialize socket connection
+  // useEffect(() => {
+    // Listen for incoming messages
+    // socket.current.on("message", (message) => {
+    //   const newMessage = {
+    //     id: message.id,
+    //     text: message.message,
+    //     sender: message.sender_id === selectedChat ? "Receiver" : "You",
+    //     time: new Date(message.created_at).toLocaleTimeString([], {
+    //       hour: "2-digit",
+    //       minute: "2-digit",
+    //     }),
+    //   };
+
+    //   setMessages((prevMessages) => {
+    //     const updatedMessages = [...prevMessages];
+    //     const chatIndex = updatedMessages.findIndex(msg => msg.id === message.sender_id);
+    //     if (chatIndex !== -1) {
+    //       updatedMessages[chatIndex].messages.push(newMessage);
+    //     }
+    //     return updatedMessages;
+    //   });
+    // });
+
+  //   return () => {
+  //     socket.current.disconnect(); // Disconnect socket on component unmount
+  //   };
+  // }, [selectedChat, token]);
+
+
+  const handleOpenChat = (receiverId,receiverEmail) => {
+    setSelecetedEmail(receiverEmail);
+    setSelectedChat(receiverId);
+    console.log(receiverEmail)
     axios
-      .get(${BASE_URI}/api/v1/chat/chatMessages${recieverId}, fetchOptions)
+      .get(`${BASE_URI}/api/v1/chat/chatMessages/${receiverId}`, fetchOptions)
       .then((resp) => {
-        console.log(resp?.data);
-      }).catch((err)=>{
+        const chatMessages = resp?.data?.data?.map((msg) => ({
+          id: msg.id,
+          text: msg.message,
+          sender: msg.sender_id === receiverId ? "Receiver" : "You",
+          time: new Date(msg.created_at).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        }));
+        setMessages((prevMessages) => ({
+          ...prevMessages,
+          [receiverId]: chatMessages, // Save the messages for the selected chat
+        }));
+      })
+      .catch((err) => {
         console.log(err);
       });
   };
+  
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    if (inputValue.trim() !== "" && selectedChat !== null) {
-      const newMessage = {
-        id: messages[selectedChat].messages.length + 1,
-        text: inputValue,
-        sender: "You",
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      };
-      const updatedMessages = [...messages];
-      updatedMessages[selectedChat].messages.push(newMessage);
-      setMessages(updatedMessages);
-      setInputValue("");
-    }
+    
+  
+      // Emit the message via socket
+      socket.emit("private_message", {
+        msg: inputValue,
+        friend: selectedEmail,
+      });
+      setInputValue(null)
+
+      
+    //   const updatedMessages = [...messages];
+    //   updatedMessages[selectedChat].messages.push(newMessage);
+    //   setMessages(updatedMessages);
+    //   setInputValue("");
+    // }
   };
 
   const handleDotsClick = () => {
@@ -184,36 +182,45 @@ const Messages = () => {
     }
   };
 
-  const handleComposeClick = async(click)=>{
-    if(click){
-      setAllExpertsPopUp(true)
+  const handleComposeClick = async (click) => {
+    if (click) {
+      setAllExpertsPopUp(true);
     }
-    
-    setAllExpertsLoading(true)
-    const url = ${BASE_URI}/api/v1/users/otherExperts${allExpertsInput !== "" ? ?search=${allExpertsInput} : ""};
-    console.log(url)
-    await axios({
-      method: 'GET',
-      url:url,
-      headers: {
-        'Authorization': 'Bearer '+ token
-      },
-    }).then((res)=>{
-      
-      console.log(res?.data);
-      setAllExpertsError("")
-      setAllExpertsData(res?.data?.data);
-      setAllExpertsLoading(false)
-    }).catch((err)=>{
-      console.log(err);
-      setAllExpertsError(err?.response?.data?.message)
-      setAllExpertsLoading(false)
-    })
-  }
 
-useEffect(()=>{
-  handleComposeClick()
-},[allExpertsInput])
+    setAllExpertsLoading(true);
+    const url = `${BASE_URI}/api/v1/users/otherExperts${
+      allExpertsInput !== "" ? `?search=${allExpertsInput}` : ""
+    }`;
+    console.log(url);
+    await axios({
+      method: "GET",
+      url: url,
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((res) => {
+        console.log(res?.data);
+        setAllExpertsError("");
+        setAllExpertsData(res?.data?.data);
+        setAllExpertsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setAllExpertsError(err?.response?.data?.message);
+        setAllExpertsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    handleComposeClick();
+  }, [allExpertsInput]);
+
+  useEffect(()=>{
+    socket.on("privateMessage",(message)=>{
+      console.log(message)
+    })
+  })
   
 
   useEffect(() => {
@@ -246,204 +253,163 @@ useEffect(()=>{
               <option value="unread">Unread</option>
               <option value="read">Read</option>
             </select>
-     <div  style={{}} className="position-relative w-50">
-       <button onClick={()=>handleComposeClick("click")} className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto w-100">
-              Compose
-             
-            </button>
-            {
-                allExpertsPopUp
-
-                 && 
-
-                <div style={{bottom:"-550%",color:"black", zIndex:'100', height:"40vh", width:"25vw", boxShadow: "0px 0px 4px 0.2px #00000040"}}  className="position-absolute bg-white  p-3 rounded">
-                <span className="flex justify-content-between pb-1 align-items-center"><p style={{marginLeft:"30%"}}>All Experts</p><FontAwesomeIcon onClick={()=> setAllExpertsPopUp(false)} className="cursor-pointer" icon={faXmark}/></span>
-                <input
-              type="text"
-              id="search"
-              placeholder="Search here..."
-              aria-label="search"
-              className=" form-control border-end-0 px-3 bg-custom-secondary"
-              onChange={(e)=> setAllExpertsInput(e.target.value)}
-            />
-            <div style={{height:"70%", scrollbarWidth:"none", overflowX:"hidden"}} className="flex flex-column position-relative">
-
-  {
-   
-  allExpertsLoading ? 
-  <PulseLoader size={8} style={{top:"40%", left:"45%"}} color="black" className="position-absolute "/>
-  :
-  allExpertsError === "No expert found" ? 
-  <p style={{top:"40%", left:"25%",whiteSpace:"nowrap"}} className="position-absolute ">{allExpertsError}</p>
-  :
-  allExpertsData?.map((profile, index) => (
-    <span key={index} className="d-flex gap-2 align-items-center m-2">
-      <img
-        src={profile.profile_picture}
-        alt={profile.name}
-        className="rounded-circle "
-        width="30"
-        height="30"
-      />
-      <p className="fs-6">{profile.name}</p>
-    </span>
-  ))}
-</div>
-
-              </div>
-              }
-     </div>
-             
-      
-            
-          </div>
-          <div className=" input-group mb-4">
-            <input
-              type="text"
-              id="search"
-              placeholder="Search here..."
-              aria-label="search"
-              className=" form-control border-end-0 px-3 bg-custom-secondary"
-            />
-            <label
-              className="input-group-text search-icon border-start-0 bg-custom-secondary"
-              htmlFor="search"
-            >
-              <CiSearch />
-            </label>
-          </div>
-
-          <div className="px-1 py-3 chat-list">
-            {chatList?.map((message) => (
-              <div
-                key={message?.expert_id}
-                className=" d-flex align-items-center gap-5 py-1 border-bottom cursor-pointer"
-                onClick={() => handleOpenChat(message?.expert_id)}
+            <div className="position-relative w-50">
+              <button
+                onClick={() => handleComposeClick("click")}
+                className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto w-100"
               >
-                <div>
-                  {message.profile_picture ? (
-                    <img
-                      src={message.profile_picture}
-                      alt=""
-                      className="rounded-circle mb-1"
-                      style={{
-                        width: "3rem",
-                        height: "3rem",
-                        objectFit: "cover",
-                      }}
+                Compose
+              </button>
+              {allExpertsPopUp && (
+                <div
+                  style={{
+                    bottom: "-550%",
+                    color: "black",
+                    zIndex: "100",
+                    height: "40vh",
+                    width: "25vw",
+                    boxShadow: "0px 0px 4px 0.2px #00000040",
+                  }}
+                  className="position-absolute bg-white p-3 rounded"
+                >
+                  <span className="flex justify-content-between pb-1 align-items-center">
+                    <p style={{ marginLeft: "30%" }}>All Experts</p>
+                    <FontAwesomeIcon
+                      onClick={() => setAllExpertsPopUp(false)}
+                      className="cursor-pointer"
+                      icon={faXmark}
                     />
-                  ) : (
-                    <FaUserCircle className="fs-1" />
-                  )}
-
-                  <div className="favorite text-center">
-                    {message.is_favorite === 1 ? "⭐" : "☆"}
+                  </span>
+                  <input
+                    type="text"
+                    id="search"
+                    placeholder="Search here..."
+                    aria-label="search"
+                    className="form-control border-end-0 px-3 bg-custom-secondary"
+                    onChange={(e) => setAllExpertsInput(e.target.value)}
+                  />
+                  <div
+                    style={{
+                      height: "70%",
+                      scrollbarWidth: "none",
+                      overflowX: "hidden",
+                    }}
+                    className="flex flex-column position-relative"
+                  >
+                    {allExpertsLoading ? (
+                      <PulseLoader
+                        size={8}
+                        style={{ top: "40%", left: "45%" }}
+                        color="black"
+                        className="position-absolute"
+                      />
+                    ) : allExpertsError ? (
+                      <p className="text-center text-danger pt-2">
+                        {allExpertsError}
+                      </p>
+                    ) : (
+                      allExpertsData?.map((profile, index) => {
+                        return (
+                          <span
+                            key={index}
+                            className="d-flex gap-2 align-items-center m-2"
+                          >
+                            {profile.profile_picture ? (
+                              <img
+                                src={profile.profile_picture}
+                                alt={profile.name}
+                                className="rounded-circle "
+                                width="30"
+                                height="30"
+                              />
+                            ) : (
+                              <faUserCircle />
+                            )}
+                            <p className="fs-6">{profile.name}</p>
+                          </span>
+                        );
+                      })
+                    )}
                   </div>
                 </div>
-                <div className="message-info w-100">
-                  <div className="d-flex align-items-center justify-content-between mb-1">
-                    <h5 className="fw-light">{message.name}</h5>
-                    <p className="mb-0 fw-light">
-                      {getTimeDifference(message.updated_at)}
-                    </p>
+              )}
+            </div>
+          </div>
+          <div className="position-relative w-100">
+            <CiSearch
+              size="1.3rem"
+              className="position-absolute search-icon text-black-50 ms-2"
+            />
+            <input
+              type="text"
+              placeholder="Search Messages"
+              className="form-control bg-custom-secondary border-end-0 px-5 py-2 rounded-2 w-100"
+            />
+          </div>
+          <div className="mt-3 pe-1 w-100" style={{ height: "450px" }}>
+            {chatList.map((chat) => (
+              <div
+                key={chat.chat_id}
+                className={`cursor-pointer bg-white d-flex justify-content-between p-3 mb-3 border rounded-3 ${
+                  selectedChat === chat.chat_id && "selected"
+                }`}
+                onClick={() => handleOpenChat(chat?.expert_id, chat?.email)}
+              >
+                <div className="d-flex gap-2 align-items-center">
+                  <img
+                    src={chat.profile_picture || logo}
+                    alt={chat.name}
+                    className="rounded-circle"
+                    style={{ width: "50px", height: "50px" }}
+                  />
+                  <div>
+                    <h6 className="mb-0">{chat.name}</h6>
+                    <p className="text-muted mb-0">{chat.message}</p>
                   </div>
-                  <p className="fw-light">{message.message}</p>
+                </div>
+                <div className="d-flex flex-column justify-content-between">
+                  <small>{getTimeDifference(chat.updated_at)}</small>{" "}
+                  {/* Use the time difference here */}
                 </div>
               </div>
             ))}
           </div>
         </section>
-        <section className="w-50">
-          {selectedChat !== null ? (
-            <div className="w-100 border rounded-end shadow-sm">
-              <header className="d-flex align-items-center p-3 border-bottom">
-                <div className="d-flex align-items-center gap-4">
-                  <div className="favorite text-center">
-                    {messages[selectedChat].isFavorite ? "⭐" : "☆"}
-                  </div>
-                  <img
-                    src={messages[selectedChat].profileImage}
-                    alt="Profile"
-                    className="rounded-circle me-2 object-fit-cover"
-                    width="40"
-                    height="40"
-                  />
-                  <h5 className="mb-0 fw-light">
-                    {messages[selectedChat].profileName}
-                  </h5>
-                </div>
-                <div className="ms-auto position-relative" ref={popupRef}>
-                  <RxDotsVertical
-                    className="fs-3 cursor-pointer"
-                    onClick={handleDotsClick}
-                  />
-                  {popupVisible && (
-                    <div
-                      className="popup-menu position-absolute bg-white border rounded shadow-sm"
-                      style={{ right: "0%", top: "100%", zIndex: 10 }}
-                    >
-                      <ul
-                        className="list-unstyled m-0  text-center"
-                        style={{ minWidth: "12rem" }}
-                      >
-                        <li className="py-2 px-3 cursor-pointer text-light-custom">
-                          Remove Important
-                        </li>
-                        <li className="py-2 px-3 cursor-pointer border-top border-bottom text-light-custom">
-                          Mark as Read
-                        </li>
-                        <li className="py-2 px-3 cursor-pointer text-light-custom">
-                          Block
-                        </li>
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </header>
-
-              <section
-                className=" p-3 flex-grow-1 overflow-auto h-100"
-                style={{ minHeight: "23rem" }}
-              >
-                {messages[selectedChat].messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={message ${
-                      msg.sender === "You" ? "sent" : "received"
-                    } mb-2}
-                  >
-                    <div
-                      className="message-content p-2"
-                      // style={{ backgroundColor: "#C9D1D5" }}
-                    >
-                      <p className="text-muted mb-2">{msg.time}</p>
-                      <p className="mb-0 fw-light">{msg.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </section>
-
-              <footer className="d-flex align-items-center">
-                <form className="input-group" onSubmit={handleSendMessage}>
-                  <input
-                    type="text"
-                    className="form-control py-2 rounded-0"
-                    placeholder="Type a message..."
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                  />
-                  <button
-                    className="rounded-0 signup-now py-2 px-4 fw-lightBold h-auto mb-0"
-                    type="submit"
-                  >
-                    Send
-                  </button>
-                </form>
-              </footer>
+        <section className="px-4 py-2 flex-grow-1">
+          {selectedChat === null ? (
+            <div className="d-flex justify-content-center align-items-center h-100">
+              <p>Select a conversation to start messaging</p>
             </div>
           ) : (
-            <div className="h-100 d-flex align-items-center justify-content-center">
-              <h4 className="fw-light">Select a message to read here!</h4>
+            <div className="d-flex flex-column justify-content-between h-100">
+              <div className="d-flex flex-column">
+  {messages[selectedChat]?.map((msg, index) => (
+    <div
+      key={index}
+      className={`d-flex ${
+        msg.sender === "You" ? "justify-content-end" : "justify-content-start"
+      }`}
+    >
+      <div style={{background: "white"}} className="d-flex flex-column p-3 rounded-3 m-2">
+        <p className="mb-0">{msg.text}</p>
+        <small className="text-muted">{msg.time}</small>
+      </div>
+    </div>
+  ))}
+</div>
+
+              <form onSubmit={handleSendMessage} className="d-flex">
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  className="form-control me-2"
+                  placeholder="Type your message"
+                />
+                <button type="submit" className="btn btn-primary">
+                  Send
+                </button>
+              </form>
             </div>
           )}
         </section>
@@ -451,3 +417,5 @@ useEffect(()=>{
     </div>
   );
 };
+
+export default Messages;

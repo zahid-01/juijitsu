@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { userCartActions } from "../../Store/cartSlice";
 import { useDispatch } from "react-redux";
 import "./Login.css";
+import { socketConnect } from "../../socket";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -44,6 +45,8 @@ export default function Login() {
           localStorage.setItem("token", parsedResponse.token);
           localStorage.setItem("userType", parsedResponse.user.user_type);
           localStorage.setItem("user", JSON.stringify(parsedResponse.user));
+
+         
 
           toast.success("Logged In Successfully!");
           console.log(parsedResponse.user);
@@ -143,7 +146,8 @@ export default function Login() {
         localStorage.setItem("user", JSON.stringify(resp.data.Data));
         localStorage.setItem("userType", resp.data.Data.user_type);
         localStorage.setItem("token", resp.data.token);
-
+        console.log(resp?.data?.token)
+        socketConnect(resp?.data?.token)
         setData({
           email: "",
           password: "",
