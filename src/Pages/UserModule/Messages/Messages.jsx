@@ -44,6 +44,8 @@ const initialMessages = [
       { id: 2, text: "Sure!", sender: "You", time: "09:46 AM" },
     ],
   },
+
+  // Add more profiles as needed
 ];
 
 const getTimeDifference = (date) => {
@@ -96,6 +98,7 @@ const Messages = () => {
   const chatList = useMemo(() => data?.data || [], [data]);
   console.log(chatList);
 
+
   const handleOpenChat = (receiverId,receiverEmail) => {
     setSelecetedEmail(receiverEmail);
     setSelectedChat(receiverId);
@@ -103,6 +106,7 @@ const Messages = () => {
     axios
       .get(`${BASE_URI}/api/v1/chat/chatMessages/${receiverId}`, fetchOptions)
       .then((resp) => {
+
         const chatMessages = resp?.data?.data?.map((msg) => ({
           id: msg.id,
           text: msg.message,
@@ -116,6 +120,7 @@ const Messages = () => {
           ...prevMessages,
           [receiverId]: chatMessages, // Save the messages for the selected chat
         }));
+
       })
       .catch((err) => {
         console.log(err);
@@ -203,6 +208,7 @@ const scrollToBottom = () => {
       });
   };
 
+
   useEffect(() => {
     handleComposeClick();
   }, [allExpertsInput]);
@@ -251,6 +257,7 @@ const scrollToBottom = () => {
   
   
 
+
   useEffect(() => {
     if (popupVisible) {
       document.addEventListener("click", handleOutsideClick);
@@ -263,6 +270,33 @@ const scrollToBottom = () => {
     };
   }, [popupVisible]);
 
+  const getRandomColor = () => {
+    const colors = [
+      "#2C3E50", // Dark Blue-Gray
+      "#8E44AD", // Deep Purple
+      "#2980B9", // Soft Blue
+      "#16A085", // Teal
+      "#27AE60", // Green
+      "#F39C12", // Muted Orange
+      "#D35400", // Burnt Orange
+      "#C0392B", // Deep Red
+      "#BDC3C7", // Light Gray
+      "#7F8C8D", // Slate Gray
+      "#34495E", // Steel Blue
+      "#E67E22", // Warm Orange
+      "#9B59B6", // Purple
+      "#1ABC9C", // Aquamarine
+      "#3498DB", // Light Blue
+      "#95A5A6", // Cool Gray
+      "#E74C3C", // Muted Red
+      "#F1C40F", // Soft Yellow
+      "#AAB7B8", // Soft Silver
+      "#5D6D7E", // Dark Slate Blue
+    ];
+
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
   return (
     <div className="w-100">
       <header className="bg-gradient-custom-div p-3 rounded-3">
@@ -270,8 +304,16 @@ const scrollToBottom = () => {
         <p className="mb-3 fs-4 fw-light">You have 0 unread messages</p>
       </header>
       <main className="d-flex" style={{ minHeight: "calc(100vh - 14rem)" }}>
+
         <section className="px-2 py-2 w-40 border-end pe-4">
-          <div className="d-flex align-items-center gap-5 mb-3">
+         
+
+          <div
+            className="d-flex align-items-center gap-5 mb-3"
+            style={{ overflow: "auto" }}
+          >
+
+
             <select
               name=""
               id=""
@@ -281,10 +323,13 @@ const scrollToBottom = () => {
               <option value="unread">Unread</option>
               <option value="read">Read</option>
             </select>
+
             <div className="position-relative w-50">
               {userType === "user" && <button
+
                 onClick={() => handleComposeClick("click")}
-                className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto w-100"
+                className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto  "
+
               >
                 Compose
               </button>}
@@ -298,7 +343,9 @@ const scrollToBottom = () => {
                     width: "25vw",
                     boxShadow: "0px 0px 4px 0.2px #00000040",
                   }}
-                  className="position-absolute bg-white p-3 rounded"
+
+                  className="position-absolute bg-white  p-3 rounded"
+
                 >
                   <span className="flex justify-content-between pb-1 align-items-center">
                     <p style={{ marginLeft: "30%" }}>All Experts</p>
@@ -313,7 +360,9 @@ const scrollToBottom = () => {
                     id="search"
                     placeholder="Search here..."
                     aria-label="search"
-                    className="form-control border-end-0 px-3 bg-custom-secondary"
+
+                    className=" form-control border-end-0 px-3 bg-custom-secondary"
+
                     onChange={(e) => setAllExpertsInput(e.target.value)}
                   />
                   <div
@@ -329,34 +378,58 @@ const scrollToBottom = () => {
                         size={8}
                         style={{ top: "40%", left: "45%" }}
                         color="black"
-                        className="position-absolute"
+
+                        className="position-absolute "
                       />
-                    ) : allExpertsError ? (
-                      <p className="text-center text-danger pt-2">
+                    ) : allExpertsError === "No expert found" ? (
+                      <p
+                        style={{
+                          top: "40%",
+                          left: "25%",
+                          whiteSpace: "nowrap",
+                        }}
+                        className="position-absolute "
+                      >
                         {allExpertsError}
                       </p>
                     ) : (
-                      allExpertsData?.map((profile, index) => {
-                        return (
-                          <span
-                            key={index}
-                            className="d-flex gap-2 align-items-center m-2"
-                          >
-                            {profile.profile_picture ? (
-                              <img
-                                src={profile.profile_picture}
-                                alt={profile.name}
-                                className="rounded-circle "
-                                width="30"
-                                height="30"
-                              />
-                            ) : (
-                              <faUserCircle />
-                            )}
-                            <p className="fs-6">{profile.name}</p>
-                          </span>
-                        );
-                      })
+                      allExpertsData?.map((profile, index) => (
+                        <span
+                          key={index}
+                          className="d-flex gap-2 align-items-center m-2"
+                        >
+                          {profile.profile_picture ? (
+                            <img
+                              src={profile.profile_picture}
+                              alt={profile.name}
+                              className="rounded-circle"
+                              width="30"
+                              height="30"
+                            />
+                          ) : (
+                            <div
+                              style={{
+                                width: "30px",
+                                height: "30px",
+                                borderRadius: "50%",
+                                backgroundColor: getRandomColor(), // Function to get a random color
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <span
+                                style={{ color: "#fff", fontWeight: "bold" }}
+                              >
+                                {profile.name.charAt(0).toUpperCase()}{" "}
+                                {/* Display first letter */}
+                              </span>
+                            </div>
+                          )}
+                          <p className="fs-6">{profile.name}</p>
+                        </span>
+                      ))
+
                     )}
                   </div>
                 </div>

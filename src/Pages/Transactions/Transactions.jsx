@@ -37,10 +37,10 @@ const UserManagement = () => {
   const [error, setError] = useState(null);
   const [payoutSuccess, setPayoutSuccess] = useState(false);
 
-  const [pageNumber, setPageNumber] = useState(1);
-  const [totalPages, setTotalPages] = useState(2);
-  console.log("totalPages:", totalPages);
-  const [limit, setLimit] = useState(7);
+  // const [pageNumber, setPageNumber] = useState(1);
+  // const [totalPages, setTotalPages] = useState(2);
+  // console.log("totalPages:", totalPages);
+  // const [limit, setLimit] = useState(7);
 
   const fetchPayoutRequests = async () => {
     // New function to fetch payout requests
@@ -49,14 +49,9 @@ const UserManagement = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-
-        params: {
-          page: pageNumber,
-          limit: limit,
-        },
       });
-      setPayoutRequests(response?.data?.data || []);
-      setTotalPages(Math.ceil(response?.data?.total / limit));
+      // setPayoutRequests(response?.data?.data || []);
+      // setTotalPages(Math.ceil(response?.data?.total / limit));
     } catch (err) {
       setError(err?.response?.data?.message);
     } finally {
@@ -128,7 +123,7 @@ const UserManagement = () => {
     } else if (activeTab === "editCommission") {
       fetchEditCommission();
     }
-  }, [activeTab, pageNumber]);
+  }, [activeTab]);
 
   const handleAction = async (request) => {
     console.log(` expert:`, request, token);
@@ -195,9 +190,36 @@ const UserManagement = () => {
     }, 0);
   };
 
-  const handlePageClick = (pageNumber) => {
-    setPageNumber(pageNumber);
-    fetchTransactions(pageNumber);
+  // const handlePageClick = (pageNumber) => {
+  //   setPageNumber(pageNumber);
+  //   fetchTransactions(pageNumber);
+  // };
+
+  const getRandomColor = () => {
+    const colors = [
+      "#2C3E50", // Dark Blue-Gray
+      "#8E44AD", // Deep Purple
+      "#2980B9", // Soft Blue
+      "#16A085", // Teal
+      "#27AE60", // Green
+      "#F39C12", // Muted Orange
+      "#D35400", // Burnt Orange
+      "#C0392B", // Deep Red
+      "#BDC3C7", // Light Gray
+      "#7F8C8D", // Slate Gray
+      "#34495E", // Steel Blue
+      "#E67E22", // Warm Orange
+      "#9B59B6", // Purple
+      "#1ABC9C", // Aquamarine
+      "#3498DB", // Light Blue
+      "#95A5A6", // Cool Gray
+      "#E74C3C", // Muted Red
+      "#F1C40F", // Soft Yellow
+      "#AAB7B8", // Soft Silver
+      "#5D6D7E", // Dark Slate Blue
+    ];
+
+    return colors[Math.floor(Math.random() * colors.length)];
   };
   return (
     <div className="w-100">
@@ -298,17 +320,38 @@ const UserManagement = () => {
                             <div
                               style={{ display: "flex", alignItems: "center" }}
                             >
-                              <img
-                                src={request.profile_picture}
-                                alt={request.name}
-                                style={{
-                                  width: "33px",
-                                  height: "33px",
-                                  borderRadius: "50%",
-                                  objectFit: "cover",
-                                  marginRight: "10px",
-                                }}
-                              />
+                              {request.profile_picture ? (
+                                <img
+                                  src={request.profile_picture}
+                                  alt={request.name}
+                                  style={{
+                                    width: "33px",
+                                    height: "33px",
+                                    borderRadius: "50%",
+                                    objectFit: "cover",
+                                    marginRight: "10px",
+                                  }}
+                                />
+                              ) : (
+                                <div
+                                  style={{
+                                    width: "33px",
+                                    height: "33px",
+                                    borderRadius: "50%",
+                                    backgroundColor: getRandomColor(), // Random background color
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    marginRight: "10px",
+                                    fontSize: "16px",
+                                    fontWeight: "bold",
+                                    color: "#fff",
+                                  }}
+                                >
+                                  {request.name.charAt(0).toUpperCase()}{" "}
+                                  {/* Display the first initial */}
+                                </div>
+                              )}
                               {request.name}
                             </div>
                           </td>
@@ -352,81 +395,105 @@ const UserManagement = () => {
                   </div>
                 </>
               ) : (
-                <div className="tab-pane active" >
-                 <div style={{ overflowX: "auto" }}> 
-                 <table className="table w-md-reverse-50">
-                    <thead>
-                      <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col" className="text-center">
-                          Price
-                        </th>
-                        <th scope="col" className="text-center">
-                          Transaction Id
-                        </th>
-                        <th scope="col" className="text-center">
-                          Transaction Date
-                        </th>
-                        <th scope="col" className="text-center">
-                          Status
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {transactions.map((user, index) => (
-                        <tr key={index}>
-                          <td className="align-middle fs-small py-2 text-capitalize">
-                            <div
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
-                              <img
-                                src={user.profile_picture}
-                                alt={user.name}
-                                style={{
-                                  width: "33px",
-                                  height: "33px",
-                                  borderRadius: "50%",
-                                  objectFit: "cover",
-                                  marginRight: "10px",
-                                }}
-                              />
-                              {user.name}
-                            </div>
-                          </td>
-                          <td className="text-center align-middle fs-small">
-                            {user.withdrawal_amount}
-                          </td>
-                          <td className="text-center align-middle fs-small">
-                            {user.transaction_id}
-                          </td>
-                          <td className="text-center align-middle fs-small">
-                            {new Date(
-                              user.withdrawal_date
-                            ).toLocaleDateString()}
-                          </td>
-                          <td className="text-center align-middle fs-small">
-                            <span
-                              style={{
-                                color:
-                                  user.withdrawal_status.toLowerCase() ===
-                                  "success"
-                                    ? "green"
-                                    : user.withdrawal_status.toLowerCase() ===
-                                      "failed"
-                                    ? "red"
-                                    : "black",
-                              }}
-                            >
-                              {user.withdrawal_status}
-                            </span>
-                          </td>
+                <div className="tab-pane active">
+                  <div style={{ overflowX: "auto" }}>
+                    <table className="table w-md-reverse-50">
+                      <thead>
+                        <tr>
+                          <th scope="col">Name</th>
+                          <th scope="col" className="text-center">
+                            Price
+                          </th>
+                          <th scope="col" className="text-center">
+                            Transaction Id
+                          </th>
+                          <th scope="col" className="text-center">
+                            Transaction Date
+                          </th>
+                          <th scope="col" className="text-center">
+                            Status
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                 </div>
+                      </thead>
+                      <tbody>
+                        {transactions.map((user, index) => (
+                          <tr key={index}>
+                            <td className="align-middle fs-small py-2 text-capitalize">
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                {user.profile_picture ? (
+                                  <img
+                                    src={user.profile_picture}
+                                    alt={user.name}
+                                    style={{
+                                      width: "33px",
+                                      height: "33px",
+                                      borderRadius: "50%",
+                                      objectFit: "cover",
+                                      marginRight: "10px",
+                                    }}
+                                  />
+                                ) : (
+                                  <div
+                                    style={{
+                                      width: "33px",
+                                      height: "33px",
+                                      borderRadius: "50%",
+                                      backgroundColor: getRandomColor(), // Random background color
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      marginRight: "10px",
+                                      fontSize: "16px",
+                                      fontWeight: "bold",
+                                      color: "#fff",
+                                    }}
+                                  >
+                                    {user.name.charAt(0).toUpperCase()}{" "}
+                                    {/* Display the first initial */}
+                                  </div>
+                                )}
+                                {user.name}
+                              </div>
+                            </td>
+                            <td className="text-center align-middle fs-small">
+                              {user.withdrawal_amount}
+                            </td>
+                            <td className="text-center align-middle fs-small">
+                              {user.transaction_id}
+                            </td>
+                            <td className="text-center align-middle fs-small">
+                              {new Date(
+                                user.withdrawal_date
+                              ).toLocaleDateString()}
+                            </td>
+                            <td className="text-center align-middle fs-small">
+                              <span
+                                style={{
+                                  color:
+                                    user.withdrawal_status.toLowerCase() ===
+                                    "success"
+                                      ? "green"
+                                      : user.withdrawal_status.toLowerCase() ===
+                                        "failed"
+                                      ? "red"
+                                      : "black",
+                                }}
+                              >
+                                {user.withdrawal_status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
 
-                  <div className="pagination">
+                  {/* <div className="pagination">
                     {loading ? (
                       <div>Loading...</div>
                     ) : (
@@ -443,7 +510,7 @@ const UserManagement = () => {
                         </button>
                       ))
                     )}
-                  </div>
+                  </div> */}
                 </div>
               ))}
           </div>
