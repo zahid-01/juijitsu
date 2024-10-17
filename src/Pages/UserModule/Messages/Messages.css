@@ -20,6 +20,16 @@
   overflow-y: auto;
   
 }
+.message-container {
+  background: white; /* Background color */
+  border-radius: 10px; /* Rounded corners */
+  padding: 10px; /* Padding inside the message */
+  margin: 5px; /* Margin around the message */
+  max-width: 70%; /* Limit the width of the message */
+  word-wrap: break-word; /* Break long words */
+  overflow-wrap: break-word; /* Fallback for older browsers */
+}
+
 @media (max-width: 610px) {
   .c-rep {
     flex-direction: column; 

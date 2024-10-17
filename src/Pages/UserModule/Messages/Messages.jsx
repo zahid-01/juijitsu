@@ -72,7 +72,7 @@ const getTimeDifference = (date) => {
 };
 
 const Messages = () => {
-  const [messages, setMessages] = useState(initialMessages);
+  const [messages, setMessages] = useState({});
   const [selectedChat, setSelectedChat] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [allExpertsPopUp, setAllExpertsPopUp] = useState(false);
@@ -83,8 +83,10 @@ const Messages = () => {
   const [allExpertsLoading, setAllExpertsLoading] = useState(false);
   const [allExpertsError, setAllExpertsError] = useState("");
   const popupRef = useRef(null);
+  const userType = localStorage.getItem("userType");
   const token = localStorage.getItem("token");
   const chatListUrl = `${BASE_URI}/api/v1/chat`;
+  const chatBottomRef = useRef(null);
 
   const fetchOptions = {
     headers: {
@@ -95,41 +97,6 @@ const Messages = () => {
   const { data } = useFetch(chatListUrl, fetchOptions);
   const chatList = useMemo(() => data?.data || [], [data]);
   console.log(chatList);
-
-
-  const handleOpenChat = (recieverId) => {
-    console.log(recieverId);
-
-
-
-  // Initialize socket connection
-  // useEffect(() => {
-    // Listen for incoming messages
-    // socket.current.on("message", (message) => {
-    //   const newMessage = {
-    //     id: message.id,
-    //     text: message.message,
-    //     sender: message.sender_id === selectedChat ? "Receiver" : "You",
-    //     time: new Date(message.created_at).toLocaleTimeString([], {
-    //       hour: "2-digit",
-    //       minute: "2-digit",
-    //     }),
-    //   };
-
-    //   setMessages((prevMessages) => {
-    //     const updatedMessages = [...prevMessages];
-    //     const chatIndex = updatedMessages.findIndex(msg => msg.id === message.sender_id);
-    //     if (chatIndex !== -1) {
-    //       updatedMessages[chatIndex].messages.push(newMessage);
-    //     }
-    //     return updatedMessages;
-    //   });
-    // });
-
-  //   return () => {
-  //     socket.current.disconnect(); // Disconnect socket on component unmount
-  //   };
-  // }, [selectedChat, token]);
 
 
   const handleOpenChat = (receiverId,receiverEmail) => {
@@ -163,21 +130,42 @@ const Messages = () => {
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    
-  
-      // Emit the message via socket
-      socket.emit("private_message", {
-        msg: inputValue,
-        friend: selectedEmail,
-      });
-      setInputValue(null)
+    if (!selectedChat) return;
+  // Create a new message object
+  const newMessage = {
+    id: Date.now(), // Unique ID for the message
+    text: inputValue,
+    sender: "You",
+    time: new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  };
 
-      
-    //   const updatedMessages = [...messages];
-    //   updatedMessages[selectedChat].messages.push(newMessage);
-    //   setMessages(updatedMessages);
-    //   setInputValue("");
-    // }
+  // Update the messages state without fetching data
+  setMessages((prevMessages) => ({
+    ...prevMessages,
+    [selectedChat]: [...(prevMessages[selectedChat] || []), newMessage],
+  }));
+
+  setInputValue("");
+
+  // Scroll to the bottom of the chat
+  // chatBottomRef?.current?.scrollIntoView({ behavior: "smooth" });
+  // Emit the message via socket
+  socket.emit("private_message", {
+    msg: inputValue,
+    friend: selectedEmail,
+  });
+};
+
+useEffect(() => {
+  // Scroll to the bottom of the chat after messages update
+  chatBottomRef?.current?.scrollIntoView({ behavior: "smooth" });
+}, [messages]);
+
+const scrollToBottom = () => {
+  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleDotsClick = () => {
@@ -225,11 +213,48 @@ const Messages = () => {
     handleComposeClick();
   }, [allExpertsInput]);
 
-  useEffect(()=>{
+  // socket.on("privateMessage",(message)=>{
+  //   console.log(message)
+  // })
+
+  useEffect(() => {
+    // Listen for incoming private messages from the socket
     socket.on("privateMessage",(message)=>{
-      console.log(message)
+      console.log("messagein useEffect: " + message)
     })
-  })
+    //   // Update the messages state with the new message
+    //   setMessages((prevMessages) => {
+    //     const updatedMessages = { ...prevMessages };
+        
+    //     // Check if the message belongs to the currently selected chat
+    //     if (!updatedMessages[newMessage.chatId]) {
+    //       updatedMessages[newMessage.chatId] = []; // Initialize if no messages exist for this chat
+    //     }
+  
+    //     // Add the new message to the chat's message list
+    //     updatedMessages[newMessage.chatId].push({
+    //       id: newMessage.id,
+    //       text: newMessage.text,
+    //       sender: newMessage.sender === selectedEmail ? "Receiver" : "You",
+    //       time: new Date().toLocaleTimeString([], {
+    //         hour: "2-digit",
+    //         minute: "2-digit",
+    //       }),
+    //     });
+  
+    //     return updatedMessages;
+    //   });
+  
+    //   // Scroll to the bottom to show the new message
+    //   chatBottomRef?.current?.scrollIntoView({ behavior: "smooth" });
+    // });
+  
+    // // Cleanup socket listener when the component unmounts
+    // return () => {
+    //   socket.off("privateMessage");
+   
+  }); // Ensure it runs when the selected chat or email changes
+  
   
 
 
@@ -279,7 +304,9 @@ const Messages = () => {
         <p className="mb-3 fs-4 fw-light">You have 0 unread messages</p>
       </header>
       <main className="d-flex" style={{ minHeight: "calc(100vh - 14rem)" }}>
-        <section className="px-2 py-2 w-50 border-end pe-4">
+
+        <section className="px-2 py-2 w-40 border-end pe-4">
+         
 
           <div
             className="d-flex align-items-center gap-5 mb-3"
@@ -297,14 +324,15 @@ const Messages = () => {
               <option value="read">Read</option>
             </select>
 
-            <div style={{}} className="position-relative w-50">
-              <button
+            <div className="position-relative w-50">
+              {userType === "user" && <button
+
                 onClick={() => handleComposeClick("click")}
                 className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto  "
 
               >
                 Compose
-              </button>
+              </button>}
               {allExpertsPopUp && (
                 <div
                   style={{
@@ -419,7 +447,7 @@ const Messages = () => {
               className="form-control bg-custom-secondary border-end-0 px-5 py-2 rounded-2 w-100"
             />
           </div>
-          <div className="mt-3 pe-1 w-100" style={{ height: "450px" }}>
+          <div className="mt-3 pe-1 w-100" style={{marginBottom:"10%", height: "80%", overflowY:"auto" }}>
             {chatList.map((chat) => (
               <div
                 key={chat.chat_id}
@@ -448,30 +476,31 @@ const Messages = () => {
             ))}
           </div>
         </section>
-        <section className="px-4 py-2 flex-grow-1">
+        <section className="px-4 py-2 w-60 flex-grow-1" style={{height:"80%"}}>
           {selectedChat === null ? (
             <div className="d-flex justify-content-center align-items-center h-100">
               <p>Select a conversation to start messaging</p>
             </div>
           ) : (
-            <div className="d-flex flex-column justify-content-between h-100">
+            <div className="d-flex flex-column justify-content-between" style={{height:"55vh", overflowY:"auto"}}>
               <div className="d-flex flex-column">
   {messages[selectedChat]?.map((msg, index) => (
     <div
-      key={index}
-      className={`d-flex ${
-        msg.sender === "You" ? "justify-content-end" : "justify-content-start"
-      }`}
-    >
-      <div style={{background: "white"}} className="d-flex flex-column p-3 rounded-3 m-2">
-        <p className="mb-0">{msg.text}</p>
-        <small className="text-muted">{msg.time}</small>
-      </div>
+    key={index}
+    className={`d-flex ${
+      msg?.sender === "You" ? "justify-content-end" : "justify-content-start"
+    }`}
+  >
+    <div className="message-container">
+      <p className="mb-0">{msg.text}</p>
+      <small className="text-muted">{msg.time}</small>
     </div>
+  </div>
+  
   ))}
 </div>
-
-              <form onSubmit={handleSendMessage} className="d-flex">
+<div ref={chatBottomRef}/>
+              <form onSubmit={handleSendMessage} style={{bottom:"1%", right:"10%"}} className="d-flex position-fixed">
                 <input
                   type="text"
                   value={inputValue}
@@ -483,6 +512,8 @@ const Messages = () => {
                   Send
                 </button>
               </form>
+              
+            
             </div>
           )}
         </section>

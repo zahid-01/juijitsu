@@ -1,123 +1,3 @@
-// import { useMemo, useState } from "react";
-// import { BASE_URI } from "../../Config/url";
-// import useFetch from "../../hooks/useFetch";
-// import formatDate from "../../utils/formatDate";
-
-// const PurchaseHistory = () => {
-//   const [activeTab, setActiveTab] = useState("courses");
-
-//   const token = localStorage.getItem("token");
-//   const historyUrl = `${BASE_URI}/api/v1/users/orderHistory`;
-
-//   const fetchOptions = {
-//     headers: {
-//       Authorization: "Bearer " + token,
-//     },
-//   };
-
-//   const { data } = useFetch(historyUrl, fetchOptions);
-//   const orders = useMemo(() => data?.data?.orders || [], [data]);
-
-// const handlePrint = (order) => {
-//   const printContent = `
-//     <div>
-//       <h3>Order Receipt</h3>
-//       <p><strong>Course Name:</strong> ${order.title}</p>
-//       <p><strong>Date:</strong> ${formatDate(order.payment_date)}</p>
-//       <p><strong>Transaction ID:</strong> ${order.transaction_id}</p>
-//       <p><strong>Price:</strong> ${order.discounted_price}</p>
-//       <p><strong>Payment Type:</strong> ${order.payment_type}</p>
-//     </div>
-//   `;
-//   const newWindow = window.open("", "_blank", "width=600,height=400");
-//   newWindow.document.write(printContent);
-//   newWindow.document.close();
-//   newWindow.print();
-// };
-
-//   return (
-//     <div className="w-100">
-//       <header className="bg-gradient-custom-div p-3 pb-0 rounded-bottom-0 custom-box">
-//         <h3 className="pb-5">Purchase History</h3>
-//         <div className="d-flex gap-5 px-4">
-//           <h5
-//             className={`text-white px-3 pb-2 fw-light cursor-pointer ${
-//               activeTab === "courses" ? "border-bottom border-4" : ""
-//             }`}
-//             onClick={() => setActiveTab("courses")}
-//           >
-//             Courses
-//           </h5>
-//         </div>
-//       </header>
-//       <div className="tab-content px-3 py-4 custom-box rounded-top-0" style={{ backgroundColor: "white" }}>
-//         <div className="px-4">
-//           {activeTab === "courses" && (
-//             <div className="tab-pane active" style={{ overflowX: "auto" }}>
-//               <table className="table w-md-reverse-50">
-//                 <thead>
-//                   <tr>
-//                     <th scope="col">Course Name</th>
-//                     <th scope="col" className="text-center ">
-//                       Date
-//                     </th>
-//                     <th scope="col" className="text-center">
-//                       Transaction ID
-//                     </th>
-//                     <th scope="col" className="text-center">
-//                       Price
-//                     </th>
-//                     <th scope="col" className="text-center">
-//                       Payment Type
-//                     </th>
-//                     <th scope="col" className="text-center">
-//                       Receipt
-//                     </th>
-//                   </tr>
-//                 </thead>
-//                 <tbody>
-//                   {orders.map((order, index) => (
-//                     <tr key={index}>
-//                       <td className="align-middle fs-small py-3 text-capitalize">
-//                         {order.title}
-//                       </td>
-//                       <td className="text-center align-middle fs-small">
-//                         {formatDate(order.payment_date)}
-//                       </td>
-//                       <td className="text-center align-middle fs-small">
-//                         {order.transaction_id}
-//                       </td>
-//                       <td className="text-center align-middle fs-small">
-//                         ${order.discounted_price}
-//                       </td>
-//                       <td className="text-center align-middle fs-small text-capitalize">
-//                         {order.payment_type}
-//                       </td>
-//                       <td className="text-center align-middle">
-//                         <div className="d-flex align-items-center justify-content-center">
-//                           <button
-//                             className="signup-now py-1 px-3 fw-lightBold fs-small mb-0 h-auto"
-//                             onClick={() => handlePrint(order)}
-//                           >
-//                             Print
-//                           </button>
-//                         </div>
-//                       </td>
-//                     </tr>
-//                   ))}
-//                 </tbody>
-//               </table>
-//             </div>
-//           )}
-
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default PurchaseHistory;
-
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { ShimmerThumbnail } from "react-shimmer-effects";
@@ -127,6 +7,13 @@ import toast from "react-hot-toast";
 import useFetch from "../../hooks/useFetch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCoins } from "@fortawesome/free-solid-svg-icons";
+import { loadStripe } from "@stripe/stripe-js";
+
+
+
+const stripePromise = loadStripe(
+  "pk_test_51PubCwDq08j41MMz9w7CFKlaPOPT4YlfciU9GCgXcxBmve17go3ryZQKVBcQJ3pzW86Z1mDb1bLTnkXFiTZKBu8O00CGdw624j"
+);
 
 export default function UserWallet() {
   const [activeTab, setActiveTab] = useState("activity");
@@ -276,7 +163,6 @@ export default function UserWallet() {
 
   const handleClear = () => {
     console.log("Clearing fields");
-
     setCountry("");
     setRouting("");
     setAccountNumber("");
@@ -388,6 +274,7 @@ export default function UserWallet() {
   };
 
   const handleCoinCost = async (withdrawAmount) => {
+    setWithdrawalAmount(withdrawAmount)
     try {
       const response = await axios.get(
         `${BASE_URI}/api/v1/users/coinCost/${withdrawAmount}`,
@@ -406,11 +293,14 @@ export default function UserWallet() {
   };
 
   const handleWithdraw = async () => {
+    console.log(withdrawalAmount);
     try {
       const stripe = await stripePromise;
       // Fetch the session from your backend
       // const session = await axios(`http://localhost:3000/api/v1/payment`);
-      const session = await axios(`${BASE_URI}/api/v1/payment/${id}`, {
+      const session = await axios.post(`${BASE_URI}/api/v1/users/purchasePoints`, 
+        {points: withdrawalAmount},
+        {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -421,7 +311,7 @@ export default function UserWallet() {
       });
     } catch (e) {
       console.log(e);
-      toast.error("Something went wrong");
+      toast.error(e?.response?.data?.message);
     }
   };
 
@@ -468,16 +358,16 @@ export default function UserWallet() {
           <div className=" flex-column gap-2 card p-4 shadow-lg bg-white rounded">
             <h5 className="text-center">Add Coins</h5>
             <span>
-              <h6>Enter Amount</h6>
+              <h6>Enter Coins</h6>
               <input
                 type="text"
-                placeholder="Enter Amount"
+                placeholder="Enter Coins"
                 value={withdrawalAmount}
                 onChange={(e) => handleCoinCost(e.target.value)}
               />
             </span>
             {coinCost && (
-              <p className="text-red">{`You will get ${coinCost} coins!`}</p>
+              <p className="text-red">{`You will get $${coinCost} Amount for these coins!`}</p>
             )}
             <div className=" d-flex justify-content-between">
               <div
@@ -496,7 +386,7 @@ export default function UserWallet() {
                 }}
                 className="h-100 p-2 rounded d-flex justify-content-center text-white cursor-pointer"
               >
-                <p>Send Request</p>
+                <p>Checkout</p>
               </div>
             </div>
           </div>
