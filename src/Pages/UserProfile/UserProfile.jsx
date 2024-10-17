@@ -46,6 +46,32 @@ export default function UserProfile() {
 
     fetchProfile();
   }, [expertId]);
+  const getRandomColor = () => {
+    const colors = [
+      "#2C3E50", // Dark Blue-Gray
+      "#8E44AD", // Deep Purple
+      "#2980B9", // Soft Blue
+      "#16A085", // Teal
+      "#27AE60", // Green
+      "#F39C12", // Muted Orange
+      "#D35400", // Burnt Orange
+      "#C0392B", // Deep Red
+      "#BDC3C7", // Light Gray
+      "#7F8C8D", // Slate Gray
+      "#34495E", // Steel Blue
+      "#E67E22", // Warm Orange
+      "#9B59B6", // Purple
+      "#1ABC9C", // Aquamarine
+      "#3498DB", // Light Blue
+      "#95A5A6", // Cool Gray
+      "#E74C3C", // Muted Red
+      "#F1C40F", // Soft Yellow
+      "#AAB7B8", // Soft Silver
+      "#5D6D7E", // Dark Slate Blue
+    ];
+
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
 
   return (
     <div
@@ -55,13 +81,34 @@ export default function UserProfile() {
       <div className="px-4">
         <div className="container c-profile">
           <div className="profile-container">
-            <div className="profile-image">
-              <img
-                alt="Profile picture of a person smiling"
-                src={profile?.profile_picture}
-              />
-              <h6 className="expert-name">Juijitsu Expert</h6>
-            </div>
+          <div className="profile-image">
+  {profile?.profile_picture ? (
+    <img
+      alt="Profile picture of a person smiling"
+      src={profile.profile_picture}
+      className="rounded-circle" // Optional: To keep a circular style if needed
+    />
+  ) : (
+    <div
+      style={{
+        width: "50px",  // Adjust size based on your layout
+        height: "50px",
+        borderRadius: "50%",
+        backgroundColor: getRandomColor(), // Function to get a random color
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <span style={{ color: "#fff", fontWeight: "bold", fontSize: "24px" }}>
+        {profile && profile.name ? profile.name.charAt(0).toUpperCase() : '?'} 
+        {/* Display first letter or '?' if name is not available */}
+      </span>
+    </div>
+  )}
+  <h6 className="expert-name">Juijitsu Expert</h6>
+</div>
+
 
             <div className="profile-info">
               <div className="profile-one" style={{ display: "flex" }}>

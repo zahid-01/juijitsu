@@ -30,6 +30,7 @@ const stripePromise = loadStripe(
 const UserCourseOverview = () => {
   const [loadingItems, setLoadingItems] = useState(null);
   const [openChapters, setOpenChapters] = useState({ 0: true });
+  const [responsiveOpenChapters, setResponsiveOpenChapters] = useState({ 0: true });
   const [verificationPopUp, setVerificationPopUp] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState("");
   const [video_url, setVideo_url] = useState("");
@@ -44,6 +45,13 @@ const UserCourseOverview = () => {
 
   const handleLeftToggle = (chapterIndex) => {
     setOpenChapters((prevOpenChapters) => ({
+      ...prevOpenChapters,
+      [chapterIndex]: !prevOpenChapters[chapterIndex],
+    }));
+  };
+
+  const handleResponsiveLeftToggle = (chapterIndex) => {
+    setResponsiveOpenChapters((prevOpenChapters) => ({
       ...prevOpenChapters,
       [chapterIndex]: !prevOpenChapters[chapterIndex],
     }));
@@ -154,6 +162,33 @@ const UserCourseOverview = () => {
       console.log(e);
       toast.error("Something went wrong");
     }
+  };
+
+  const getRandomColor = () => {
+    const colors = [
+      "#2C3E50", // Dark Blue-Gray
+      "#8E44AD", // Deep Purple
+      "#2980B9", // Soft Blue
+      "#16A085", // Teal
+      "#27AE60", // Green
+      "#F39C12", // Muted Orange
+      "#D35400", // Burnt Orange
+      "#C0392B", // Deep Red
+      "#BDC3C7", // Light Gray
+      "#7F8C8D", // Slate Gray
+      "#34495E", // Steel Blue
+      "#E67E22", // Warm Orange
+      "#9B59B6", // Purple
+      "#1ABC9C", // Aquamarine
+      "#3498DB", // Light Blue
+      "#95A5A6", // Cool Gray
+      "#E74C3C", // Muted Red
+      "#F1C40F", // Soft Yellow
+      "#AAB7B8", // Soft Silver
+      "#5D6D7E", // Dark Slate Blue
+    ];
+
+    return colors[Math.floor(Math.random() * colors.length)];
   };
 
   return (
@@ -360,7 +395,7 @@ const UserCourseOverview = () => {
                           (chapterIndex === 0 && true) ||
                           openChapters[chapterIndex]
                         }
-                        onToggle={() => handleLeftToggle(chapterIndex)}
+                        onToggle={() => handleResponsiveLeftToggle(chapterIndex)}
                       >
                         <summary>
                           <FontAwesomeIcon
@@ -379,13 +414,19 @@ const UserCourseOverview = () => {
                         {chapter?.lessons.map((lesson, idx) => (
                           <div
                             key={idx}
-                            onClick={() =>
-                              handleVideoChange(
-                                lesson?.video_url,
-                                lesson?.thumbnail,
-                                lesson?.lesson_id
-                              )
-                            }
+                            onClick={() => {
+                              if (chapterIndex >= 1) {
+                                // Assuming 2nd course has index 1
+                                paymentPopUpClick();
+                              } else {
+                                handleVideoChange(
+                                  lesson?.video_url,
+                                  lesson?.thumbnail,
+                                  lesson?.lesson_id
+                                );
+                              }
+                            }}
+
                             style={{
                               cursor: "pointer",
                               color:
@@ -422,12 +463,21 @@ const UserCourseOverview = () => {
 
               <div className="details-right-mid-userCourseview">
                 <span>
-                  <img
-                    src={courseData?.course?.profile_picture}
-                    alt="Profile"
-                    style={{ width: "8%", height: "8%", borderRadius: "50%" }}
-                  />
-                  <h6>{courseData?.course?.name}</h6>
+
+                  <div  className="overView-profile"
+                    onClick={() => {
+                      navigate(`/UserProfile/${courseData?.course?.expert_id}`);
+                    }}
+                  >
+                    <img
+                      src={courseData?.course?.profile_picture}
+                      alt="Profile"
+                      style={{ width: "8%", height: "8%", borderRadius: "50%" }}
+                    />
+                    <h6>{courseData?.course?.name}</h6>
+                  </div>
+
+
                 </span>
 
                 <span>
@@ -459,7 +509,7 @@ const UserCourseOverview = () => {
                       "No description available",
                   }}
                 ></div>
-                <h4 className="cursor-pointer hover-underline">
+                <h4 className="cursor-pointer hover-underline overview-description">
                   Watch 3 Free Lessons to get insights of what to Learn{" "}
                   <FontAwesomeIcon icon={faArrowRight} />
                 </h4>

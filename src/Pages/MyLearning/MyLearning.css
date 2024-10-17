@@ -221,8 +221,15 @@
     height: 28vw;
     
 }
+.shimmer-learning{
+  height: 25rem !important;
 }
-
+}
+@media(min-width:781px) and (max-width:1150px){
+  .shimmer-learning{
+    height: 4rem !important;
+  }
+}
 @media (max-width: 780px) {
   .bottom-myLearning{
     grid-template-columns: repeat(2, 1fr);
@@ -258,9 +265,17 @@
     height: 66vw;
     
 }
+.shimmer-learning{
+  height: 30rem !important;
+}
 
 
-
+}
+@media (max-width:700px){
+  .shimmer-learning{
+    height: 25rem !important;
+  
+  }
 }
 @media (max-width: 530px) {
   .bottom-myLearning {
@@ -300,4 +315,10 @@
     height: 89vw;
    
 }
+}
+@media (max-width:461px){
+  .shimmer-learning{
+    height: 25rem !important;
+  
+  }
 }

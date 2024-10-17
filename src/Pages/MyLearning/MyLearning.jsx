@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 
 
 const ShimmerCard = () => (
-  <div className="card-bottom-userCourses shimmer-card-usercourses">
+  <div className="card-bottom-userCourses shimmer-card-usercourses shimmer-learning">
     <div className="shimmer-content-usercourses short"></div>
     <div className="shimmer-content-usercourses long"></div>
     <div className="shimmer-content-usercourses medium"></div>
