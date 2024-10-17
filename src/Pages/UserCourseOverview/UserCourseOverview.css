@@ -304,8 +304,10 @@
   border-bottom: 1px solid #7e8c9c;
   padding-left: 1vw;
   height: 47%;
+
   margin-top: 1vh;
   /* width: max-content; */
+
 }
 .ratings-right-mid-userCourseview h5:first-child {
   margin-left: 0;
