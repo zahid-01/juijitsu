@@ -243,7 +243,7 @@
   /* margin-left: 3vw; */
   display: flex;
   flex-direction: column;
-  gap: 3vw;
+  gap: 2vw;
   justify-content: center;
   padding: 4vh 1vw;
   /* padding-left: 1.5vw; */
@@ -305,6 +305,7 @@
   padding-left: 1vw;
   height: 47%;
   margin-top: 1vh;
+  /* width: max-content; */
 }
 .ratings-right-mid-userCourseview h5:first-child {
   margin-left: 0;
@@ -319,7 +320,7 @@
   border: none;
   width: 15vw;
   /* height: 14vh; */
-  height: 10vw;
+  height: 8vw;
   /* background-color: yellow; */
 }
 .ratings-right-mid-userCourseview div div div:first-child h5 {
@@ -591,8 +592,13 @@
   
  
 } */
-
-
+.overView-profile{
+  display:flex;
+}
+.overView-profile h6{
+  margin-top: 0.8vw;
+  margin-left: 1vw;
+}
 
 
 
@@ -654,6 +660,11 @@
   height: 32vw;
 }
 }
+@media (max-width:1200px){
+  .details-right-mid-userCourseview span h6 {
+    font-size: 1.5vw;
+}
+}
 @media (min-width:781px) and (max-width:1200px){
 .card-bottom-userCourseview {
   height: 34vw;
@@ -663,11 +674,18 @@
 }
 
 }
-
 @media (max-width:1119px){
   .second-leftuserCourse {
     margin-top: 31vw;
   }
+}
+@media (max-width:1084px){
+  .left-top-mid-userCourseview ul li {
+    font-size: 1.5vw;
+}
+.left-top-mid-userCourseview h4 {
+  font-size: 1.5vw;
+}
 }
 @media (max-width:1037px){
   .second-leftuserCourse {
@@ -679,6 +697,8 @@
     margin-top: 42vw;
   }
 }
+
+
 @media (max-width: 780px) {
   .pricing-right-mid-userCourseview{
     flex-direction: row;
@@ -722,24 +742,22 @@
     padding-bottom: 20vw;
 }
 .second-leftuserCourse {
-  margin-top: 37vw;
+  margin-top: 44vw;
 }
 .details-right-mid-userCourseview {
-gap:7vw;
+gap:4vw;
 }
 .details-right-mid-userCourseview span h5 {
   font-size: 1.9vw;
  
-  /* margin-top: -2vh; */
+
 }
 .details-right-mid-userCourseview span h6 {
   font-size: 1.9vw;
-  font-weight: 400;
-  /* margin-top: -2vh; */
+  font-weight: 400;}
 
-/* .details-right-mid-userCourseview span img {
-   margin-top: -2vh;
-} */
+
+
 .ratings-right-mid-userCourseview {
   margin-top: -2.8vh;
  
@@ -797,9 +815,18 @@ gap:7vw;
   height: 18vh;
  
 }
+.left-top-mid-userCourseview h3 {
+  font-size: 2.3vw;
+}
 }
 
-
+@media (max-width: 721px) {
+  .left-top-mid-userCourseview ul li {
+      font-size: 1.8vw;
+  }
+  .left-top-mid-userCourseview h4 {
+    font-size: 1.7vw;
+}
 }
 @media (max-width: 717px) {
   .top-userCourseview {
@@ -810,57 +837,196 @@ gap:7vw;
 }
 }
 
-
 @media (max-width:716px){
   .second-leftuserCourse {
-    margin-top: 41vw;
+    margin-top: 49vw;
 }
 }
 @media (max-width: 700px) {
   .left-bottom-mid-userCourseview div details div h6 {
       font-size: 2.2vw;
   }
+  .ratings-right-mid-userCourseview div div div:first-child h5 {
+    font-size: 1.9vw;
+  
+}
+.ratings-right-mid-userCourseview div div div:last-child p {
+  font-size: 1.7vw;
+}
+.ratings-right-mid-userCourseview div div {
+
+  width: max-content;
+}
 }
 @media (max-width: 646px) {
   .second-leftuserCourse {
-      margin-top: 45vw;
-  }
+    margin-top: 53vw;
+}
+  .details-right-mid-userCourseview {
+    padding: 2vh 1vw;
+
+}
 }
 @media (max-width: 602px) {
   .second-leftuserCourse {
-      margin-top: 50vw;
+    margin-top: 58vw;
+}
+  .left-top-mid-userCourseview ul li {
+    font-size: 2vw;
+}
+.left-top-mid-userCourseview h4 {
+  font-size: 2vw;
+}
+}
+@media (max-width: 570px) {
+  .details-right-mid-userCourseview span h5 {
+      font-size: 2.5vw;
+      
   }
+  .details-right-mid-userCourseview span h6 {
+    font-size: 2.3vw;
+
+}
+.ratings-right-mid-userCourseview div div div:first-child p {
+  font-size: 1.7vw;
+}
+}
+@media (max-width:541px){
+
+.left-top-mid-userCourseview ul li {
+  font-size: 2.6vw;
+}
+.left-top-mid-userCourseview h4 {
+  font-size: 2.3vw;
+}
 }
 @media (max-width: 539px) {
   .second-leftuserCourse {
-      margin-top: 57vw;
-  }
+    margin-top: 69vw;
+}
 }
 @media (max-width:550px){
   .card-bottom-userCourseview {
     height: 33vw;
    
   }
+  .description-data p {
+    font-size: 2.7vw;
+}
+.left-top-mid-userCourseview h3 {
+  font-size: 2.9vw;
+}
+}
+@media (max-width:510px){
+  .ratings-right-mid-userCourseview div div div:last-child p {
+    font-size: 2vw;
+}
+.ratings-right-mid-userCourseview div div div:first-child h5 {
+  font-size: 2.2vw;
+}
+.ratings-right-mid-userCourseview div div div:first-child p {
+  font-size: 2.2vw;
+}
+}
+@media (max-width: 473px) {
+  .details-right-mid-userCourseview span h6 {
+      font-size: 2.5vw;
+  }
+  .details-right-mid-userCourseview span h5 {
+    font-size: 2.8vw;
+}
+.description-data p {
+  font-size: 2.5vw;
+}
+.ratings-right-mid-userCourseview div div div:last-child p {
+  font-size: 2.2vw;
+}
+.staricon {
+  font-size: 1.8vw;
+}
+.ratings-right-mid-userCourseview div div div:first-child h5 {
+  font-size: 2.4vw;
+}
+.ratings-right-mid-userCourseview div div div:first-child p {
+  font-size: 2vw;
+}
+.ratings-right-mid-userCourseview div div div:first-child img {
+  height: 5vw;
+  width: 5vw;
+}
 }
 @media (max-width: 468px) {
   .second-leftuserCourse {
-      margin-top: 67vw;
-  }
+    margin-top: 74vw;
+}
 }
 @media (max-width: 459px) {
   .left-bottom-mid-userCourseview div details div h6 {
       font-size: 3vw;
   }
-
+  .ratings-right-mid-userCourseview div div div:first-child {
+    height: 15vw;
+  }
 
 }
 @media (max-width: 458px) {
   .second-leftuserCourse {
-    margin-top: 18rem;
+    margin-top: 21rem;
+}
+
+}
+@media (max-width:433px){
+  .description-data p {
+    font-size: 3.5vw;
+  }
+  .left-top-mid-userCourseview h3 {
+    font-size: 4vw;
+}
+}
+@media (max-width:394px){
+  .ratings-right-mid-userCourseview div div div:first-child p {
+    font-size: 2.5vw;
+}
+.ratings-right-mid-userCourseview div div div:first-child h5 {
+  font-size: 2.6vw;
+}
+.ratings-right-mid-userCourseview div div div:last-child p {
+  font-size: 2.8vw;
+  
+}
+.ratings-right-mid-userCourseview div div div:first-child {
+
+  width: 18vw;
+ 
+
 }
 }
 @media (max-width:376px){
   .m-bt{
     margin-bottom: 5vw;
   }
+
+.left-bottom-mid-userCourseview div details summary h6 {
+  font-size: 3.6vw;
+}
+}
+@media (max-width:351px){
+  .m-bt{
+    display: block !important;
+  }
+}
+@media (max-width:300px){
+ 
+  .description-data p {
+    font-size: 4vw;
+}
+.left-top-mid-userCourseview ul li {
+  font-size: 3vw;
+}
+.left-top-mid-userCourseview h4 {
+  font-size: 3vw;
+}
+.left-bottom-mid-userCourseview div details div h6 {
+  font-size: 3.5vw;
+}
 }

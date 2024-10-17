@@ -9,7 +9,7 @@ import { BASE_URI } from "../../Config/url";
 import { SyncLoader } from "react-spinners";
 
 const ShimmerCard = () => (
-  <div className="card-bottom-courses shimmer-card-courses">
+  <div className="card-bottom-courses shimmer-card-courses shimmer-card-usercourses shimmer-learning">
     <div className="shimmer-content-courses short"></div>
     {/* <div className="shimmer-content-courses long"></div> */}
 

@@ -11,6 +11,7 @@ import UserWallet from "../Pages/userWallet/UserWallet";
 import AdminRoutes from "./AdminRoutes";
 import UserProfile from "../Pages/UserProfile/UserProfile"
 import Support from "../Pages/Support/Support";
+import AddExpert from "../Pages/AddExpert/AddExpert";
 
 const AppRoutes = ({ search }) => {
   const userRole = localStorage.getItem("userType");
@@ -42,7 +43,7 @@ useEffect(() => {
 
       <Route path="/support" element={<Support/>} />
      
-
+      <Route path="/AddExperts" element={<AddExpert />} />
       <Route
         path="/userCourses/userCourseView/:id"
         element={<UserCourseOverview />}

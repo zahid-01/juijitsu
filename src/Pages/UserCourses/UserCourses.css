@@ -292,18 +292,17 @@
   margin-bottom: 10px;
   border-radius: 4px;
 }
+ .shimmer-content.short-usercourses {
+  width: 30%;
+} 
 
-.shimmer-content.short-usercourses {
-  width: 40%;
-}
-
-.shimmer-content-usercourses.medium {
+ .shimmer-content-usercourses.medium {
   width: 80%;
 }
 
 .shimmer-content-usercourses.long {
   width: 100%;
-}
+} 
 
 .no-courses-userCourses {
   height: 40vh;
@@ -336,9 +335,25 @@
 }
 .no-courses-userCourses div h1 {
   font-weight: 400;
-  font-size: 2rem;
+  /* font-size: 2rem; */
+  font-size: 1.6rem;
   width: 130%;
   text-align: center;
+}
+.card-bottom-userCourses span {
+  z-index: 99;
+}
+@media (min-width:1400px){
+  .shimmer-card-usercourses{
+    height:25vw;
+   }
+}
+@media (min-width:1200px){
+.shimmer-card-usercourses{
+ height:24vw;
+}
+
+
 }
 @media (max-width:1200px){
   .bottom-userCourses {
@@ -373,7 +388,8 @@
     width: 100vw;
     display: flex;
     justify-content: center;
-    padding-right: 1.5rem;
+    /* padding-right: 1.5rem; */
+    padding-right: 10.5rem;
   }
   .no-courses-userCourses div{
     width: 90%;
@@ -399,6 +415,7 @@
  
   height: 3.5vw;
 }
+
 }
 @media (max-width:947px){
 
