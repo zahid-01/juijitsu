@@ -10,7 +10,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { PulseLoader } from "react-spinners";
-import  {socket}  from "../../../socket";
+import { socket } from "../../../socket";
 
 
 
@@ -100,8 +100,10 @@ const Messages = () => {
 
   const { data,refetch } = useFetch(chatListUrl, fetchOptions);
   const chatList = useMemo(() => data?.data || [], [data]);
-
-
+  // console.log(chatList);
+useEffect(()=>{
+  refetch
+},[searchChat])
 
   const handleOpenChat = (receiverId,receiverEmail,image,name) => {
     setselectedImage(image)
@@ -135,9 +137,6 @@ const Messages = () => {
   };
   
 
-
-
-
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!selectedChat) return;
@@ -158,19 +157,23 @@ const Messages = () => {
     [selectedChat]: [...(prevMessages[selectedChat] || []), newMessage],
   }));
 
- 
-
-  console.log("Sending message:", inputValue);
-  console.log("sending messaage to :",selectedEmail)
-  
-socket?.emit("private_message", {
-  msg: inputValue,
-  friend: selectedEmail,
- })
   setInputValue("");
-  //, (response) => {
-//   console.log('Server acknowledgment received:', response);
-// });
+
+  // Scroll to the bottom of the chat
+  // chatBottomRef?.current?.scrollIntoView({ behavior: "smooth" });
+  // Emit the message via socket
+  // socket.emit("private_message", {
+  //   msg: inputValue,
+  //   friend: selectedEmail,
+  // });
+  socket.emit("private_message", {
+    msg: inputValue,
+    friend: selectedEmail,
+  }, (response) => {
+    // This callback will be called when the server sends an acknowledgment
+    console.log('Server acknowledgment received:', response);
+  });
+  
 };
 
 useEffect(() => {
@@ -178,8 +181,13 @@ useEffect(() => {
   chatBottomRef?.current?.scrollIntoView({ behavior: "smooth" });
 }, [messages]);
 
+const scrollToBottom = () => {
+  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-  
+  const handleDotsClick = () => {
+    setPopupVisible(!popupVisible);
+  };
 
   const handleOutsideClick = (e) => {
     if (popupRef.current && !popupRef.current.contains(e.target)) {
@@ -196,7 +204,6 @@ useEffect(() => {
     const url = `${BASE_URI}/api/v1/users/otherExperts${
       allExpertsInput !== "" ? `?search=${allExpertsInput}` : ""
     }`;
-    console.log(url);
     await axios({
       method: "GET",
       url: url,
@@ -223,13 +230,24 @@ useEffect(() => {
     handleComposeClick();
   }, [allExpertsInput]);
 
-
-    socket?.on("privateMessage", (message) => {
-      console.log("received", message);
-    });
+  socket?.on("privateMessage",(message)=>{
+    console.log("receiverd",message);
+    // const newMessage = {
+    //   id: Date.now(), // Unique ID for the message
+    //   text: message,
+    //   sender: "Reciver",
+    //   time: new Date().toLocaleTimeString([], {
+    //     hour: "2-digit",
+    //     minute: "2-digit",
+    //   }),
+    // };
   
-    
- 
+    // Update the messages state without fetching data
+    // setMessages((prevMessages) => ({
+    //   ...prevMessages, newMessage
+    //   // [selectedChat]: [...(prevMessages[selectedChat] || []), newMessage],
+    // }));
+  });
 
   
   

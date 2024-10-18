@@ -20,6 +20,7 @@ const App = () => {
 
   // const url = `${BASE_URI}/api/v1/cart`;
   const token = localStorage.getItem("token");
+  const userType = localStorage.getItem("userType")
   // const { data } = useFetch(url, {
   //   headers: {
   //     Authorization: "Bearer " + token,
@@ -42,20 +43,22 @@ const App = () => {
   //     () => {}
   //   );
 
+   if(userType === "admin"){
     axios
-      .get(`${BASE_URI}/api/v1/admin/payoutRequest`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        dispatch(payoutActions.setNotifications(res?.data?.data.length));
-      });
+    .get(`${BASE_URI}/api/v1/admin/payoutRequest`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => {
+      dispatch(payoutActions.setNotifications(res?.data?.data.length));
+    });
 
+   }
     // if (data) {
     //   setCartItemNumber(data?.cart?.length);
     // }
-  }, []);
+  }, [token,userType]);
 
   return (
     <BrowserRouter>
