@@ -13,7 +13,6 @@ import { PulseLoader } from "react-spinners";
 import { io } from "socket.io-client";
 import { socket } from "../../../socket";
 
-
 const initialMessages = [
   {
     id: 1,
@@ -96,50 +95,45 @@ const Messages = () => {
   const chatList = useMemo(() => data?.data || [], [data]);
   console.log(chatList);
 
-
-  const handleOpenChat = (recieverId) => {
-    console.log(recieverId);
-
-
+  // const handleOpenChat = (recieverId) => {
+  //   console.log(recieverId);
 
   // Initialize socket connection
   // useEffect(() => {
-    // Listen for incoming messages
-    // socket.current.on("message", (message) => {
-    //   const newMessage = {
-    //     id: message.id,
-    //     text: message.message,
-    //     sender: message.sender_id === selectedChat ? "Receiver" : "You",
-    //     time: new Date(message.created_at).toLocaleTimeString([], {
-    //       hour: "2-digit",
-    //       minute: "2-digit",
-    //     }),
-    //   };
+  // Listen for incoming messages
+  // socket.current.on("message", (message) => {
+  //   const newMessage = {
+  //     id: message.id,
+  //     text: message.message,
+  //     sender: message.sender_id === selectedChat ? "Receiver" : "You",
+  //     time: new Date(message.created_at).toLocaleTimeString([], {
+  //       hour: "2-digit",
+  //       minute: "2-digit",
+  //     }),
+  //   };
 
-    //   setMessages((prevMessages) => {
-    //     const updatedMessages = [...prevMessages];
-    //     const chatIndex = updatedMessages.findIndex(msg => msg.id === message.sender_id);
-    //     if (chatIndex !== -1) {
-    //       updatedMessages[chatIndex].messages.push(newMessage);
-    //     }
-    //     return updatedMessages;
-    //   });
-    // });
+  //   setMessages((prevMessages) => {
+  //     const updatedMessages = [...prevMessages];
+  //     const chatIndex = updatedMessages.findIndex(msg => msg.id === message.sender_id);
+  //     if (chatIndex !== -1) {
+  //       updatedMessages[chatIndex].messages.push(newMessage);
+  //     }
+  //     return updatedMessages;
+  //   });
+  // });
 
   //   return () => {
   //     socket.current.disconnect(); // Disconnect socket on component unmount
   //   };
   // }, [selectedChat, token]);
 
-
-  const handleOpenChat = (receiverId,receiverEmail) => {
+  const handleOpenChat = (receiverId, receiverEmail) => {
     setSelecetedEmail(receiverEmail);
     setSelectedChat(receiverId);
-    console.log(receiverEmail)
+    console.log(receiverEmail);
     axios
       .get(`${BASE_URI}/api/v1/chat/chatMessages/${receiverId}`, fetchOptions)
       .then((resp) => {
-
         const chatMessages = resp?.data?.data?.map((msg) => ({
           id: msg.id,
           text: msg.message,
@@ -153,26 +147,22 @@ const Messages = () => {
           ...prevMessages,
           [receiverId]: chatMessages, // Save the messages for the selected chat
         }));
-
       })
       .catch((err) => {
         console.log(err);
       });
   };
-  
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    
-  
-      // Emit the message via socket
-      socket.emit("private_message", {
-        msg: inputValue,
-        friend: selectedEmail,
-      });
-      setInputValue(null)
 
-      
+    // Emit the message via socket
+    socket.emit("private_message", {
+      msg: inputValue,
+      friend: selectedEmail,
+    });
+    setInputValue(null);
+
     //   const updatedMessages = [...messages];
     //   updatedMessages[selectedChat].messages.push(newMessage);
     //   setMessages(updatedMessages);
@@ -220,18 +210,15 @@ const Messages = () => {
       });
   };
 
-
   useEffect(() => {
     handleComposeClick();
   }, [allExpertsInput]);
 
-  useEffect(()=>{
-    socket.on("privateMessage",(message)=>{
-      console.log(message)
-    })
-  })
-  
-
+  useEffect(() => {
+    socket.on("privateMessage", (message) => {
+      console.log(message);
+    });
+  });
 
   useEffect(() => {
     if (popupVisible) {
@@ -280,13 +267,10 @@ const Messages = () => {
       </header>
       <main className="d-flex" style={{ minHeight: "calc(100vh - 14rem)" }}>
         <section className="px-2 py-2 w-50 border-end pe-4">
-
           <div
             className="d-flex align-items-center gap-5 mb-3"
             style={{ overflow: "auto" }}
           >
-
-
             <select
               name=""
               id=""
@@ -301,7 +285,6 @@ const Messages = () => {
               <button
                 onClick={() => handleComposeClick("click")}
                 className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto  "
-
               >
                 Compose
               </button>
@@ -315,9 +298,7 @@ const Messages = () => {
                     width: "25vw",
                     boxShadow: "0px 0px 4px 0.2px #00000040",
                   }}
-
                   className="position-absolute bg-white  p-3 rounded"
-
                 >
                   <span className="flex justify-content-between pb-1 align-items-center">
                     <p style={{ marginLeft: "30%" }}>All Experts</p>
@@ -332,9 +313,7 @@ const Messages = () => {
                     id="search"
                     placeholder="Search here..."
                     aria-label="search"
-
                     className=" form-control border-end-0 px-3 bg-custom-secondary"
-
                     onChange={(e) => setAllExpertsInput(e.target.value)}
                   />
                   <div
@@ -350,7 +329,6 @@ const Messages = () => {
                         size={8}
                         style={{ top: "40%", left: "45%" }}
                         color="black"
-
                         className="position-absolute "
                       />
                     ) : allExpertsError === "No expert found" ? (
@@ -401,7 +379,6 @@ const Messages = () => {
                           <p className="fs-6">{profile.name}</p>
                         </span>
                       ))
-
                     )}
                   </div>
                 </div>
@@ -423,24 +400,24 @@ const Messages = () => {
             {chatList.map((chat) => (
               <div
                 key={chat.chat_id}
-                className={`cursor-pointer bg-white d-flex justify-content-between p-3 mb-3 border rounded-3 ${
+                className={`cursor-pointer bg-white d-flex justify-content-between p-3 mb-3 border rounded-3 no-flex ${
                   selectedChat === chat.chat_id && "selected"
                 }`}
                 onClick={() => handleOpenChat(chat?.expert_id, chat?.email)}
               >
-                <div className="d-flex gap-2 align-items-center">
+                <div className="d-flex gap-2 align-items-center no-flex">
                   <img
                     src={chat.profile_picture || logo}
                     alt={chat.name}
                     className="rounded-circle"
                     style={{ width: "50px", height: "50px" }}
                   />
-                  <div>
+                  <div className=" ">
                     <h6 className="mb-0">{chat.name}</h6>
                     <p className="text-muted mb-0">{chat.message}</p>
                   </div>
                 </div>
-                <div className="d-flex flex-column justify-content-between">
+                <div className="d-flex  justify-content-between c-rep no-flex">
                   <small>{getTimeDifference(chat.updated_at)}</small>{" "}
                   {/* Use the time difference here */}
                 </div>
@@ -456,20 +433,25 @@ const Messages = () => {
           ) : (
             <div className="d-flex flex-column justify-content-between h-100">
               <div className="d-flex flex-column">
-  {messages[selectedChat]?.map((msg, index) => (
-    <div
-      key={index}
-      className={`d-flex ${
-        msg.sender === "You" ? "justify-content-end" : "justify-content-start"
-      }`}
-    >
-      <div style={{background: "white"}} className="d-flex flex-column p-3 rounded-3 m-2">
-        <p className="mb-0">{msg.text}</p>
-        <small className="text-muted">{msg.time}</small>
-      </div>
-    </div>
-  ))}
-</div>
+                {messages[selectedChat]?.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`d-flex ${
+                      msg.sender === "You"
+                        ? "justify-content-end"
+                        : "justify-content-start"
+                    }`}
+                  >
+                    <div
+                      style={{ background: "white" }}
+                      className="d-flex flex-column p-3 rounded-3 m-2"
+                    >
+                      <p className="mb-0">{msg.text}</p>
+                      <small className="text-muted">{msg.time}</small>
+                    </div>
+                  </div>
+                ))}
+              </div>
 
               <form onSubmit={handleSendMessage} className="d-flex">
                 <input

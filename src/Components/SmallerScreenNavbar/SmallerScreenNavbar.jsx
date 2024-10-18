@@ -1,4 +1,4 @@
-import { BsFillCartFill } from "react-icons/bs";
+// import { BsFillCartFill } from "react-icons/bs";
 import { CiFilter, CiSearch } from "react-icons/ci";
 
 export default function SmallerScreenNavbar() {
@@ -8,7 +8,7 @@ export default function SmallerScreenNavbar() {
       <div className="d-flex align-items-center gap-3">
         <CiSearch className="primary-color fs-3  cursor-pointer" />
         <CiFilter className="primary-color fs-3  cursor-pointer" />
-        <BsFillCartFill className="primary-color fs-3  cursor-pointer" />
+        {/* <BsFillCartFill className="primary-color fs-3  cursor-pointer" /> */}
       </div>
     </div>
   );

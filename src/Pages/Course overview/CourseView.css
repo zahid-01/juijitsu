@@ -494,6 +494,17 @@
   overflow: hidden;
   border-radius: 0.5rem;
 }
+.second-leftuserCourse{
+  display: none;
+}
+@media (max-width:1213px){
+ 
+
+  .second-leftuserCourse{
+    margin-top: 27vw;
+    display: block !important;
+  }
+}
 
 @media (max-width: 768px) {
   .top-courseview{

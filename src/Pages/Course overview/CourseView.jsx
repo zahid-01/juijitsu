@@ -35,6 +35,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
   const [video_url, setVideo_url] = useState("");
   const [video_thumb, setVideo_thumb] = useState("");
   const [viseo_type, setVideo_type] = useState("");
+  const [responsiveOpenChapters, setResponsiveOpenChapters] = useState({ 0: true });
   const { id } = useParams();
   const navigate = useNavigate();
   const { contextSafe } = useGSAP();
@@ -127,6 +128,13 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
       ease: "back.inOut",
     });
   });
+
+  const handleResponsiveLeftToggle = (chapterIndex) => {
+    setResponsiveOpenChapters((prevOpenChapters) => ({
+      ...prevOpenChapters,
+      [chapterIndex]: !prevOpenChapters[chapterIndex],
+    }));
+  };
 
   const handleVideoChange = useCallback(
     (video_url, video_thumb, lesson_id, noLesson) => {
@@ -399,6 +407,79 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                 className="tumbnail-userCourseview"
               />
 
+              {/* second */}
+              <div className="left-bottom-mid-userCourseview  second-leftuserCourse">
+                <h4>Course Lessons</h4>
+                <div>
+                  {Chapters?.length > 0 ? (
+                    Chapters?.map((chapter, chapterIndex) => (
+                      <details
+                        key={chapter?.chapter_id}
+                        open={
+                          (chapterIndex === 0 && true) ||
+                          openChapters[chapterIndex]
+                        }
+                        onToggle={() => handleLeftToggle(chapterIndex)}
+                      >
+                        <summary>
+                          <FontAwesomeIcon
+                            icon={faAngleDown}
+                            className={
+                              openChapters[chapterIndex]
+                                ? "up-icon"
+                                : "down-icon"
+                            }
+                          />
+                          <h6>
+                            {chapter.chapter_no || "No chapter number"}.{" "}
+                            {chapter.chapterTitle || "No chapter title"}
+                          </h6>
+                        </summary>
+                        {chapter?.lessons.map((lesson, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() =>
+                              handleVideoChange(
+                                lesson?.video_url,
+                                lesson?.thumbnail,
+                                lesson?.lesson_id
+                              )
+                            }
+                            style={{
+                              cursor: "pointer",
+                              color:
+                                selectedLesson === lesson?.lesson_id && "red",
+                            }}
+                          >
+                            <h6>
+                              <FaYoutube
+                                color="black"
+                                style={{
+                                  cursor: "pointer",
+                                  color:
+                                    selectedLesson === lesson?.lesson_id &&
+                                    "red",
+                                  transition: "all ease-in-out 0.5s",
+                                }}
+                              />
+                              Lesson {idx + 1}:{" "}
+                              {lesson?.lessonTitle || "No lesson title"}
+                            </h6>
+                            <h6>
+                              {formatTime(lesson?.duration) ||
+                                "No duration available"}
+                            </h6>
+                          </div>
+                        ))}
+                      </details>
+                    ))
+                  ) : (
+                    <div>No chapters found</div>
+                  )}
+                </div>
+              </div>
+              
+
               <div className="details-right-mid-userCourseview">
                 <span>
                   <img
@@ -406,7 +487,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                     alt="Profile"
                     style={{ width: "8%", height: "8%", borderRadius: "50%" }}
                   />
-                  <h6>{courseData[0]?.name}</h6> profile pic is missing
+                  <h6>{courseData[0]?.name}</h6>
                 </span>
 
                 <span>
@@ -450,7 +531,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                           (chapterIndex === 0 && true) ||
                           openChapters[chapterIndex]
                         }
-                        onToggle={() => handleLeftToggle(chapterIndex)}
+                        onToggle={() => handleResponsiveLeftToggle(chapterIndex)}
                       >
                         <summary>
                           <FontAwesomeIcon

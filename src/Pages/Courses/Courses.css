@@ -235,6 +235,12 @@
 } */
 }
 
+@media (max-width:840px){
+  .shimmer-card-usercourses.shimmer-learning{
+    height:2rem;
+    width:100%
+  }
+}
 @media (max-width: 768px) {
   .top-courses {
     display: none;
