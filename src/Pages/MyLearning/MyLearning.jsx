@@ -103,7 +103,7 @@ const Card = ({
               }}
               onClick={handleAddToCart}
             >
-              {iscarted ? <h6>In Cart!</h6> : <h6>Add to Cart</h6>}
+              {ispurchased ? <h6>Purchased</h6> : <h6>Go to course</h6>}
             </div>
           </div>
         )}

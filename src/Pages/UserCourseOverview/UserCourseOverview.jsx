@@ -6,6 +6,7 @@ import {
   faAngleDown,
   faArrowRight,
   faCoins,
+  faHeart,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FaYoutube } from "react-icons/fa";
@@ -22,6 +23,7 @@ import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
 import ReactPlayer from "react-player";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { loadStripe } from "@stripe/stripe-js";
+import { CiHeart } from "react-icons/ci";
 
 const stripePromise = loadStripe(
   "pk_test_51PubCwDq08j41MMz9w7CFKlaPOPT4YlfciU9GCgXcxBmve17go3ryZQKVBcQJ3pzW86Z1mDb1bLTnkXFiTZKBu8O00CGdw624j"
@@ -36,6 +38,7 @@ const UserCourseOverview = () => {
   const [video_url, setVideo_url] = useState("");
   const [video_thumb, setVideo_thumb] = useState("");
   const [viseo_type, setVideo_type] = useState("");
+  const [hearted , setHearted] = useState(null)
   const { id } = useParams();
   const navigate = useNavigate();
   const { contextSafe } = useGSAP();
@@ -93,6 +96,7 @@ const UserCourseOverview = () => {
     setSelectedLesson(
       courseData?.courseChapters?.chapters[0]?.lessons[0]?.lesson_id
     );
+    setHearted(courseData?.course?.is_favourite)
   }, [courseData]);
 
   const chapters = useMemo(
@@ -104,15 +108,15 @@ const UserCourseOverview = () => {
     gsap.to(".paymentPopUp", {
       scale: 1,
       duration: 0.3,
-      ease: "back.in",
+      // ease: "back.in",
     });
   });
   const removePayPopUp = contextSafe(() => {
     console.log("popup has been removed");
     gsap.to(".paymentPopUp", {
       scale: 0,
-      duration: 0.4,
-      ease: "back.inOut",
+      duration: 0.2,
+      // ease: "back.inOut",
     });
   });
 
@@ -128,7 +132,7 @@ const UserCourseOverview = () => {
   const handleCoinCheckout = async () => {
     try {
       const response = await axios.post(
-        `${BASE_URI}/api/v1/payment/${id}`,
+        `${BASE_URI}/api/v1/payment/purchase/${id}`,
         {},
         {
           headers: {
@@ -137,19 +141,24 @@ const UserCourseOverview = () => {
         }
       );
       setVerificationPopUp(false);
+      removePayPopUp()
       toast.success(`${response?.data?.message}`);
+      navigate(`/userPurchasedCourses/${id}`)
     } catch (err) {
       setVerificationPopUp(false);
+      removePayPopUp()
       toast.error(`Error: ${err?.response?.data?.message}`);
     }
   };
 
   const checkoutHandler = async () => {
+    console.log(id)
     try {
+
       const stripe = await stripePromise;
       // Fetch the session from your backend
       // const session = await axios(`http://localhost:3000/api/v1/payment`);
-      const session = await axios(`${BASE_URI}/api/v1/payment/${id}`, {
+      const session = await axios(`${BASE_URI}/api/v1/payment/purchase/${id}`, {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -190,6 +199,31 @@ const UserCourseOverview = () => {
 
     return colors[Math.floor(Math.random() * colors.length)];
   };
+
+  const handlePopUpcoinPurchase = ()=>{
+    removePayPopUp()
+    setVerificationPopUp(true)
+  };
+
+  const handleFavrouite = async (e) => {
+        e.stopPropagation();
+        if (!token) {
+          navigate("/");
+        }
+        try {
+          setHearted(!hearted);
+          await axios({
+            method: "post",
+            url: `${BASE_URI}/api/v1/courses/favouriteCourse/${id}`,
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          });
+        } catch (err) {
+          console.log(err);
+          toast.error("Failed to add to favorites");
+        }
+      };
 
   return (
     <>
@@ -273,7 +307,7 @@ const UserCourseOverview = () => {
                   icon={faXmarkCircle}
                 />
               </div>
-              <div
+              <div 
                 style={{ height: "87%" }}
                 className="rounded border flex justify-content-evenly align-items-center"
               >
@@ -286,7 +320,7 @@ const UserCourseOverview = () => {
                       <FontAwesomeIcon icon={faCoins} />{" "}
                       {courseData?.course?.coins}
                     </h2>
-                    <div className="rounded bg-white text-black p-2 flex justify-content-center cursor-pointer">
+                    <div onClick={handlePopUpcoinPurchase} className="rounded bg-white text-black p-2 flex justify-content-center cursor-pointer">
                       <p>Buy</p>
                     </div>
                   </div>
@@ -296,7 +330,7 @@ const UserCourseOverview = () => {
                   <h6>UnLock by payment</h6>
                   <div className="flex flex-column gap-2">
                     <h2>${courseData?.course?.price}</h2>
-                    <div className="rounded bg-white text-black p-2 flex justify-content-center cursor-pointer">
+                    <div onClick={checkoutHandler} className="rounded bg-white text-black p-2 flex justify-content-center cursor-pointer">
                       <p>Checkout</p>
                     </div>
                   </div>
@@ -340,7 +374,7 @@ const UserCourseOverview = () => {
                 >
                   <p className="text-black">
                     Checkout <FontAwesomeIcon icon={faCoins} />{" "}
-                    {courseData?.course?.discounted_price}
+                    {courseData?.course?.coins}
                   </p>
                 </div>
               </div>
@@ -368,6 +402,8 @@ const UserCourseOverview = () => {
                   </p>
                 </div>
               </div>
+
+              
             </span>
 
           </div>
@@ -384,8 +420,25 @@ const UserCourseOverview = () => {
                 className="tumbnail-userCourseview"
               />
 
-              {/* <div className="left-bottom-mid-userCourseview second-leftuserCourse">
-                <h4>Course Lessons</h4>
+              <div className="left-bottom-mid-userCourseview second-leftuserCourse">
+                <span style={{display:"flex", justifyContent:"space-between", width:"100%"}}>
+ <h4>Course Lessons</h4> 
+ {hearted ? (
+                <FontAwesomeIcon
+                  onClick={handleFavrouite}
+                  id="heart-PurchasedCourses"
+                  icon={faHeart}
+                  style={{ zIndex: "10" }}
+                />
+              ) : (
+                <CiHeart
+                  style={{ zIndex: "10", color: "black" }}
+                  onClick={handleFavrouite}
+                  id="unHeart-PurchasedCourses"
+                />
+              )}
+                </span>
+               
                 <div>
                   {courseData?.courseChapters?.chapters?.length > 0 ? (
                     chapters.map((chapter, chapterIndex) => (
@@ -459,7 +512,7 @@ const UserCourseOverview = () => {
                     <div>No chapters found</div>
                   )}
                 </div>
-              </div> */}
+              </div>
 
               <div className="details-right-mid-userCourseview">
                 <span>
@@ -518,7 +571,23 @@ const UserCourseOverview = () => {
 
             <div className="left-mid-userCourseview">
               <div className="left-bottom-mid-userCourseview new-left">
-                <h4>Course Lessons</h4>
+              <span style={{display:"flex", justifyContent:"space-between", width:"90%"}}>
+ <h4>Course Lessons</h4> 
+ {hearted ? (
+                <FontAwesomeIcon
+                  onClick={handleFavrouite}
+                  id="heart-PurchasedCourses"
+                  icon={faHeart}
+                  style={{ zIndex: "10" }}
+                />
+              ) : (
+                <CiHeart
+                  style={{ zIndex: "10", color: "black" }}
+                  onClick={handleFavrouite}
+                  id="unHeart-PurchasedCourses"
+                />
+              )}
+                </span>
                 <div>
                   {courseData?.courseChapters?.chapters?.length > 0 ? (
                     chapters.map((chapter, chapterIndex) => (
@@ -547,13 +616,19 @@ const UserCourseOverview = () => {
                         {chapter?.lessons.map((lesson, idx) => (
                           <div
                             key={idx}
-                            onClick={() =>
-                              handleVideoChange(
-                                lesson?.video_url,
-                                lesson?.thumbnail,
-                                lesson?.lesson_id
-                              )
-                            }
+                            onClick={() => {
+                              if (chapterIndex >= 1) {
+                                // Assuming 2nd course has index 1
+                                paymentPopUpClick();
+                              } else {
+                                handleVideoChange(
+                                  lesson?.video_url,
+                                  lesson?.thumbnail,
+                                  lesson?.lesson_id
+                                );
+                              }
+                            }}
+
                             style={{
                               cursor: "pointer",
                               color:

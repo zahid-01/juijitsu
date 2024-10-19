@@ -264,10 +264,7 @@ export default function Login() {
               <FcGoogle className="googleIcon" />
               Sign In with Google
             </button>
-            <button type="button" className="bttns">
-              <FaApple className="appleIcon" />
-              Sign In with Apple
-            </button>
+            
           </div>
           <div className="d-flex align-items-center py-4">
             <p
