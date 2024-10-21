@@ -39,7 +39,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
   const navigate = useNavigate();
   const { contextSafe } = useGSAP();
   const token = localStorage.getItem("token");
-
+const userType = localStorage.getItem("userType");
   const handleLeftToggle = (chapterIndex) => {
     setOpenChapters((prevOpenChapters) => ({
       ...prevOpenChapters,
@@ -359,11 +359,14 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                 
               </div>
             </span>
-            {courseData[0]?.status === "approved" ? (
+            {
+            
+            courseData[0]?.status === "approved" ? (
                   <div onClick={handleEditCourse} style={{background:"white", borderRadius:"0.4rem", display:"flex", justifyContent:"center", alignItems:"center", padding:"0 1rem" , cursor:"pointer"}}>
                     <h6 style={{ color:"black"}}>Edit Course</h6>
                   </div>
                 ) : (
+                  userType !== "admin" &&
                   <span
                     style={{
                       display: "flex",
