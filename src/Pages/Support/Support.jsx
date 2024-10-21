@@ -798,40 +798,44 @@ console.log(chatList.length);
 // )
 // console.log(time)
 
-  const handleOpenChat = (receiverId,receiverEmail,image,name) => {
-    setselectedImage(image)
-    setSelectedName(name)
-    setAllExpertsPopUp(false)
-    setSelecetedEmail(receiverEmail);
-    setSelectedChat(receiverId);
-    console.log(receiverId,receiverEmail,image,name)
-    axios
-      .get(`${BASE_URI}/api/v1/chat/supportChat/${receiverId}`, fetchOptions)
-      .then((resp) => {
-// console.log(resp?.data?.data)
-        const chatMessages = resp?.data?.data?.map((msg) => ({
-          id: msg.id,
-          text: msg.message,
-          sender: msg.sender_id === receiverId ? "Receiver" : "You",
-          time: new Date(msg.created_at).toLocaleTimeString("en-US", {
-            timeZone:"asia/kolkata",
-            hour: "2-digit",
-            minute: "2-digit",
-          }
-      
-        )
-         
-        }));
-        setMessages((prevMessages) => ({
-          ...prevMessages,
-          [receiverId]: chatMessages, // Save the messages for the selected chat
-        }));
+const handleOpenChat = (receiverId, receiverEmail, image, name) => {
+  setselectedImage(image);
+  setSelectedName(name);
+  setAllExpertsPopUp(false);
+  setSelecetedEmail(receiverEmail);
+  setSelectedChat(receiverId);
+  
+  console.log(receiverId, receiverEmail, image, name);
+  
+  axios
+    .get(`${BASE_URI}/api/v1/chat/supportChat/${receiverId}`, fetchOptions)
+    .then((resp) => {
+      // Map the response data to the desired format
+      const chatMessages = resp?.data?.data?.map((msg) => ({
+        id: msg.id,
+        text: msg.message,
+        sender: msg.sender_id === receiverId ? "Receiver" : "You",
+        time: new Date(msg.created_at).toLocaleTimeString("en-US", {
+          timeZone: "Asia/kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        timestamp: new Date(msg.created_at).getTime(), // Add a timestamp for sorting
+      }));
 
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+      // Sort messages based on the timestamp
+      const sortedMessages = chatMessages.sort((a, b) => a.timestamp - b.timestamp);
+
+      // Update the messages state with sorted messages
+      setMessages((prevMessages) => ({
+        ...prevMessages,
+        [receiverId]: sortedMessages, // Save the sorted messages for the selected chat
+      }));
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
   
 
 
@@ -1237,14 +1241,14 @@ useEffect(() => {
                 }`}
 
 
-                onClick={() => userType !== "admin" ? handleOpenChat(chat?.user_id, chat?.email, logo, "Support"): handleOpenChat(chat?.user_id,chat?.email, chat?.profile_picture, chat?.name)}
+                onClick={() => userType !== "admin" ? userType === "expert" ? handleOpenChat(chat?.user_id, chat?.email, logo, "Support") : handleOpenChat(chat?.user_id, chat?.email, logo, "Support") :  handleOpenChat(chat?.user_id,chat?.email, chat?.profile_picture, chat?.name)}
               >
                 <div className="d-flex gap-2 align-items-center">
                   <img
                     src={chat.profile_picture || logo}
                     alt={chat.name}
                     className="rounded-circle"
-                    style={{ width: "50px", height: "50px" }}
+                    style={{ width: "50px", height: "50px" , objectFit:"cover"}}
                   />
                   <div>
                     <h6 className="mb-0">{userType !== "admin" ? "Support": chat.name}</h6>

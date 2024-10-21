@@ -119,40 +119,43 @@ const Messages = () => {
 // )
 // console.log(time)
 
-  const handleOpenChat = (receiverId,receiverEmail,image,name) => {
-    setselectedImage(image)
-    setSelectedName(name)
-    setAllExpertsPopUp(false)
-    setSelecetedEmail(receiverEmail);
-    setSelectedChat(receiverId);
-    console.log(receiverEmail)
-    axios
-      .get(`${BASE_URI}/api/v1/chat/chatMessages/${receiverId}`, fetchOptions)
-      .then((resp) => {
-// console.log(resp?.data?.data)
-        const chatMessages = resp?.data?.data?.map((msg) => ({
-          id: msg.id,
-          text: msg.message,
-          sender: msg.sender_id === receiverId ? "Receiver" : "You",
-          time: new Date(msg.created_at).toLocaleTimeString("en-US", {
-            timeZone:"asia/kolkata",
-            hour: "2-digit",
-            minute: "2-digit",
-          }
-      
-        )
-         
-        }));
-        setMessages((prevMessages) => ({
-          ...prevMessages,
-          [receiverId]: chatMessages, // Save the messages for the selected chat
-        }));
+const handleOpenChat = (receiverId, receiverEmail, image, name) => {
+  setselectedImage(image);
+  setSelectedName(name);
+  setAllExpertsPopUp(false);
+  setSelecetedEmail(receiverEmail);
+  setSelectedChat(receiverId);
+  
+  console.log(receiverEmail);
+  axios
+    .get(`${BASE_URI}/api/v1/chat/chatMessages/${receiverId}`, fetchOptions)
+    .then((resp) => {
+      // Map the response data to the desired format
+      const chatMessages = resp?.data?.data?.map((msg) => ({
+        id: msg.id,
+        text: msg.message,
+        sender: msg.sender_id === receiverId ? "Receiver" : "You",
+        time: new Date(msg.created_at).toLocaleTimeString("en-US", {
+          timeZone: "Asia/kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        timestamp: new Date(msg.created_at).getTime(), // Add a timestamp for sorting
+      }));
 
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+      // Sort messages based on the timestamp
+      const sortedMessages = chatMessages.sort((a, b) => a.timestamp - b.timestamp);
+
+      // Update the messages state with sorted messages
+      setMessages((prevMessages) => ({
+        ...prevMessages,
+        [receiverId]: sortedMessages, // Save the sorted messages for the selected chat
+      }));
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
   
 
 
@@ -406,15 +409,14 @@ useEffect(() => {
           >
 
 
-            <select
+            <div
               name=""
               id=""
               className="p-2 bg-custom-secondary rounded-2 w-50 border-0"
             >
-              <option value="allMessages">All Messages</option>
-              <option value="unread">Unread</option>
-              <option value="read">Read</option>
-            </select>
+              <p>All Messages</p>
+             
+            </div>
 
             <div className="position-relative w-50">
               {userType === "user" && <button
