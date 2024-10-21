@@ -40,6 +40,7 @@ const UserPurchasedCourse = () => {
   const [video_thumb, setVideo_thumb] = useState("");
   const [viseo_type, setVideo_type] = useState("");
   const [is_rated, setIs_rated] = useState(false);
+  const [responsiveOpenChapters, setResponsiveOpenChapters] = useState({ 0: true });
   const [editRatingPopUp, setEditRatingPopUp] = useState(false);
   const [addRatingPopUp, setAddRatingPopUp] = useState(false);
   const [review, setReview] = useState("");
@@ -139,6 +140,13 @@ const UserPurchasedCourse = () => {
     []
   );
 
+
+  const handleResponsiveLeftToggle = (chapterIndex) => {
+    setResponsiveOpenChapters((prevOpenChapters) => ({
+      ...prevOpenChapters,
+      [chapterIndex]: !prevOpenChapters[chapterIndex],
+    }));
+  };
   const handleCoinCheckout = async () => {
     try {
       const response = await axios.post(
@@ -609,6 +617,79 @@ const UserPurchasedCourse = () => {
                 videoType={viseo_type}
                 className="tumbnail-userCourseview"
               />
+
+
+              {/* second  */}
+              <div className="left-bottom-mid-userCourseview second-leftuserCourse">
+                <h4>Course Lessons</h4>
+                <div>
+                  {courseData?.courseChapters?.chapters?.length > 0 ? (
+                    chapters.map((chapter, chapterIndex) => (
+                      <details
+                        key={chapter?.chapter_id}
+                        open={
+                          (chapterIndex === 0 && true) ||
+                          openChapters[chapterIndex]
+                        }
+                        onToggle={() =>  handleResponsiveLeftToggle(chapterIndex)}
+                      >
+                        <summary>
+                          <FontAwesomeIcon
+                            icon={faAngleDown}
+                            className={
+                              openChapters[chapterIndex]
+                                ? "up-icon"
+                                : "down-icon"
+                            }
+                          />
+                          <h6>
+                            {chapter.chapter_no || "No chapter number"}.{" "}
+                            {chapter.chapterTitle || "No chapter title"}
+                          </h6>
+                        </summary>
+                        {chapter?.lessons.map((lesson, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() =>
+                              handleVideoChange(
+                                lesson?.video_url,
+                                lesson?.thumbnail,
+                                lesson?.lesson_id
+                              )
+                            }
+                            style={{
+                              cursor: "pointer",
+                              color:
+                                selectedLesson === lesson?.lesson_id && "red",
+                            }}
+                          >
+                            <h6>
+                              <FaYoutube
+                                color="black"
+                                style={{
+                                  cursor: "pointer",
+                                  color:
+                                    selectedLesson === lesson?.lesson_id &&
+                                    "red",
+                                  transition: "all ease-in-out 0.5s",
+                                }}
+                              />
+                              Lesson {idx + 1}:{" "}
+                              {lesson?.lessonTitle || "No lesson title"}
+                            </h6>
+                            <h6>
+                              {formatTime(lesson?.duration) ||
+                                "No duration available"}
+                            </h6>
+                          </div>
+                        ))}
+                      </details>
+                    ))
+                  ) : (
+                    <div>No chapters found</div>
+                  )}
+                </div>
+              </div>
 
               <div className="details-right-mid-userCourseview">
                 <span>
