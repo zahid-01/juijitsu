@@ -81,6 +81,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
 
   useEffect(() => {
     if (token) {
+      // console.log(profileCompletion)
       axios
         .get(`${BASE_URI}/api/v1/users/profileCompletion`, {
           headers: {
@@ -88,7 +89,8 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           },
         })
         .then((resp) => {
-          console.log(resp.data.data.profileCompletion);
+          console.log(parseInt(resp.data.data.profileCompletion, 10));
+          
           setProfileCompletion(parseInt(resp.data.data.profileCompletion, 10));
         });
     }
@@ -238,7 +240,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
                     textColor: '#fff',
                     trailColor: '#fff',
                   })}
-                  value={profileCompletion} text={`${profileCompletion}`} />
+                  value={100} text={`${profileCompletion}`} />
 
               </div>
              
@@ -265,7 +267,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
                     textColor: '#fff',
                     trailColor: '#fff',
                   })}
-                  value={profileCompletion} text={`${profileCompletion}`} />
+                  value={100} text={`${profileCompletion}`} />
 
               </div>
               <FaUserCircle
@@ -307,7 +309,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
                     textColor: '#fff',
                     trailColor: '#fff',
                   })}
-                  value={profileCompletion} text={`${profileCompletion}`} />
+                  value={100} text={`${profileCompletion}`} />
 
               </div>
              
@@ -334,7 +336,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
                     textColor: '#fff',
                     trailColor: '#fff',
                   })}
-                  value={profileCompletion} text={`${profileCompletion}`} />
+                  value={100} text={`${profileCompletion}`} />
 
               </div>
               <FaUserCircle

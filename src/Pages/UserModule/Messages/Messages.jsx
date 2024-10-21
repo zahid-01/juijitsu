@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CiSearch } from "react-icons/ci";
+import { CiHeart, CiSearch } from "react-icons/ci";
 import logo from "../../../assets/istockphoto-841971598-1024x1024.jpg";
 import "./Messages.css";
 import { RxDotsVertical } from "react-icons/rx";
@@ -8,9 +8,10 @@ import { BASE_URI } from "../../../Config/url";
 import axios from "axios";
 import { FaUserCircle } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faUserCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { PulseLoader } from "react-spinners";
 import  {socket}  from "../../../socket";
+import toast from "react-hot-toast";
 
 
 
@@ -86,6 +87,8 @@ const Messages = () => {
   const [selectedImage, setselectedImage] = useState("")
   const [selectedName, setSelectedName] = useState("")
   const [searchChat, setSearchChat] = useState("");
+  const [hearted , setHearted] = useState({})
+
   const popupRef = useRef(null);
   const userType = localStorage.getItem("userType");
   const token = localStorage.getItem("token");
@@ -101,7 +104,20 @@ const Messages = () => {
   const { data,refetch } = useFetch(chatListUrl, fetchOptions);
   const chatList = useMemo(() => data?.data || [], [data]);
 
+  console.log(chatList)
+  useEffect(() => {
+    if (chatList.length > 0) {
+      const initialHearted = {};
+      chatList.forEach(chat => {
+        initialHearted[chat?.expert_id] = chat?.is_favorite || false; // Set default to false if undefined
+      });
+      setHearted(initialHearted);
+    }
+  }, [chatList]);
 
+// const time = new Date(Date.now()).toLocaleTimeString(
+// )
+// console.log(time)
 
   const handleOpenChat = (receiverId,receiverEmail,image,name) => {
     setselectedImage(image)
@@ -113,15 +129,19 @@ const Messages = () => {
     axios
       .get(`${BASE_URI}/api/v1/chat/chatMessages/${receiverId}`, fetchOptions)
       .then((resp) => {
-
+// console.log(resp?.data?.data)
         const chatMessages = resp?.data?.data?.map((msg) => ({
           id: msg.id,
           text: msg.message,
           sender: msg.sender_id === receiverId ? "Receiver" : "You",
-          time: new Date(msg.created_at).toLocaleTimeString([], {
+          time: new Date(msg.created_at).toLocaleTimeString("en-US", {
+            timeZone:"asia/kolkata",
             hour: "2-digit",
             minute: "2-digit",
-          }),
+          }
+      
+        )
+         
         }));
         setMessages((prevMessages) => ({
           ...prevMessages,
@@ -140,7 +160,7 @@ const Messages = () => {
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    if (!selectedChat) return;
+    if (!selectedChat || selectedChat === "") return;
   // Create a new message object
   const newMessage = {
     id: Date.now(), // Unique ID for the message
@@ -166,17 +186,18 @@ const Messages = () => {
 socket?.emit("private_message", {
   msg: inputValue,
   friend: selectedEmail,
- })
+})
+, (response) => {
+  console.log('Server acknowledgment received:', response);
+};
   setInputValue("");
-  //, (response) => {
-//   console.log('Server acknowledgment received:', response);
-// });
 };
 
 useEffect(() => {
   // Scroll to the bottom of the chat after messages update
   chatBottomRef?.current?.scrollIntoView({ behavior: "smooth" });
 }, [messages]);
+
 
 
   
@@ -223,17 +244,110 @@ useEffect(() => {
     handleComposeClick();
   }, [allExpertsInput]);
 
+  
 
-    socket?.on("privateMessage", (message) => {
+  useEffect(() => {
+    if (!socket || !selectedChat) return;
+  
+    // Listen to socket event
+    const messageListener = (message) => {
       console.log("received", message);
-    });
+  
+      const newMessage = {
+        id: Date.now(), // Unique ID for the message
+        text: message.message,
+        sender: "Receiver",
+        time: new Date(message.date).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      };
+  
+      // Update the messages state without fetching data
+      setMessages((prevMessages) => ({
+        ...prevMessages,
+        [selectedChat]: [...(prevMessages[selectedChat] || []), newMessage],
+      }));
+    };
+  
+    socket.on("privateMessage", messageListener);
+  
+    // Cleanup function to remove the listener
+    return () => {
+      socket.off("privateMessage", messageListener);
+    };
+  }, [socket, selectedChat]); // Add selectedChat as a dependency
+  
+  
   
     
  
 
   
-  
+    
+  const addToFavorites = async (e, receiverId) => {
+    e.stopPropagation();
+    if (!token) {
+      navigate("/");
+    }
+    setHearted((prev) => ({
+      ...prev,
+      [receiverId]: true, // Set to true as it's now a favorite
+    }));
+    try {
+      await axios({
+        method: "post",
+        url: `${BASE_URI}/api/v1/chat`,
+        data: { receiver: receiverId },
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      // Update the hearted state
+      
+      toast.success("Added to favorites");
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to add to favorites");
+    }
+  };
 
+    const removeFromFavorites = async (e, receiverId) => {
+      e.stopPropagation();
+      if (!token) {
+        navigate("/");
+      }
+      // Update the hearted state
+      setHearted((prev) => ({
+        ...prev,
+        [receiverId]: false, // Set to false as it's no longer a favorite
+      }));
+      try {
+        await axios({
+          method: "delete",
+          url: `${BASE_URI}/api/v1/chat`,
+          data: { receiver: receiverId },
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
+        
+        toast.success("Removed from favorites");
+      } catch (err) {
+        console.log(err);
+        toast.error("Failed to remove from favorites");
+      }
+    };
+  
+    const handleFavoriteToggle = (e, receiverId) => {
+      e.stopPropagation();
+      const isCurrentlyHearted = hearted[receiverId];
+      if (isCurrentlyHearted) {
+        removeFromFavorites(e, receiverId);
+      } else {
+        addToFavorites(e, receiverId);
+      }
+    };
 
   useEffect(() => {
     if (popupVisible) {
@@ -278,12 +392,13 @@ useEffect(() => {
     <div className="w-100">
       <header className="bg-gradient-custom-div p-3 rounded-3">
         <h3 className="pb-4">Messages</h3>
-        <p className="mb-3 fs-4 fw-light">You have 0 unread messages</p>
+        <p className="mb-3 fs-4 fw-light">Messages from {userType === "expert" ? "users" : "experts"}</p>
       </header>
       <main className="d-flex" style={{ minHeight: "calc(100vh - 14rem)" }}>
 
         <section className="px-2 py-2 w-40 border-end pe-4">
-         
+
+
 
           <div
             className="d-flex align-items-center gap-5 mb-3"
@@ -332,6 +447,7 @@ useEffect(() => {
                       icon={faXmark}
                     />
                   </span>
+                  
                   <input
                     type="text"
                     id="search"
@@ -429,7 +545,9 @@ useEffect(() => {
             />
           </div>
           <div className="mt-3 pe-1 w-100" style={{marginBottom:"10%", height: "80%", overflowY:"auto" }}>
-            {chatList.map((chat) => (
+            {
+            chatList.length === 0 ? <p>No users found with this name</p>:
+            chatList.map((chat) => (
               <div
                 key={chat.chat_id}
                 className={`cursor-pointer bg-white d-flex justify-content-between p-3 mb-3 border rounded-3 ${
@@ -446,14 +564,28 @@ useEffect(() => {
                   />
                   <div>
                     <h6 className="mb-0">{chat.name}</h6>
-                    <p className="text-muted mb-0">{chat.message}</p>
+                    <p style={{fontWeight:chat?.is_read ? "600":"normal"}} className={`text-muted mb-0 `}>{chat.message.slice(0, 15) + "..."}</p>
                   </div>
                 </div>
                 <div className="d-flex flex-column justify-content-between">
                   <small>{getTimeDifference(chat.updated_at)}</small>{" "}
+                  {hearted[chat.expert_id] ? ( // Check if the specific chat is hearted
+  <FontAwesomeIcon
+    onClick={(e) => handleFavoriteToggle(e, chat.expert_id)}
+    id="heart-messages"
+    icon={faHeart}
+    style={{ zIndex: "10", color: "red" }} // Add color for the hearted state
+  />
+) : (
+  <CiHeart
+    style={{ zIndex: "10", color: "black" }} // Default color for unhearted state
+    onClick={(e) => handleFavoriteToggle(e, chat.expert_id)}
+    id="unHeart-messages"
+  />
+)}
                   {/* Use the time difference here */}
                 </div>
-                {chat.is_read ? 0 : 1}
+                
               </div>
             ))}
           </div>
@@ -516,7 +648,7 @@ useEffect(() => {
   ))}
 </div>
 <div ref={chatBottomRef}/>
-              <form onSubmit={handleSendMessage} style={{bottom:"1%", right:"10%"}} className="d-flex position-fixed">
+              <form style={{bottom:"1%", right:"10%"}} className="d-flex position-fixed">
                 <input
                   type="text"
                   value={inputValue}
@@ -524,7 +656,7 @@ useEffect(() => {
                   className="form-control me-2"
                   placeholder="Type your message"
                 />
-                <button type="submit" className="btn btn-primary">
+                <button disabled={inputValue === "" ? true: false} onClick={handleSendMessage} className="btn btn-primary">
                   Send
                 </button>
               </form>
