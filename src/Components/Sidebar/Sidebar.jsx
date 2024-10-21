@@ -128,7 +128,7 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                 {!collapsed && <span className="text">Login/Signup</span>}
               </Link>
             </motion.div>
-            <motion.div variants={sidebarAnimation}>
+            {/* <motion.div variants={sidebarAnimation}>
               <Link
                 to="/support"
                 className={`menu-item d-flex align-items-center p-3 ${
@@ -150,7 +150,7 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                 </motion.div>
                 {!collapsed && <span className="text">Support</span>}
               </Link>
-            </motion.div>
+            </motion.div> */}
           </>
         )}
        
@@ -245,6 +245,29 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                   <RiWallet2Fill className="fs-5" />
                 </motion.div>
                 {!collapsed && <span className="text">Wallet</span>}
+              </Link>
+            </motion.div>
+            <motion.div variants={sidebarAnimation}>
+              <Link
+                to="/support"
+                className={`menu-item d-flex align-items-center p-3 ${
+                  location.pathname === "/support"
+                    ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
+                    : ""
+                }`}
+              >
+                <motion.div
+                  animate={controls}
+                  variants={linkAnimation}
+                  className={`me-4 ${
+                    location.pathname === "/support"
+                      ? "text-white"
+                      : "primary-color"
+                  }`}
+                >
+                  <RiLifebuoyFill className="fs-5" />
+                </motion.div>
+                {!collapsed && <span className="text">Support</span>}
               </Link>
             </motion.div>
           </>
@@ -489,6 +512,29 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
               {!collapsed && <span className="text">Wallet</span>}
             </Link>
           </motion.div>
+          <motion.div variants={sidebarAnimation}>
+              <Link
+                to="/support"
+                className={`menu-item d-flex align-items-center p-3 ${
+                  location.pathname === "/support"
+                    ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
+                    : ""
+                }`}
+              >
+                <motion.div
+                  animate={controls}
+                  variants={linkAnimation}
+                  className={`me-4 ${
+                    location.pathname === "/support"
+                      ? "text-white"
+                      : "primary-color"
+                  }`}
+                >
+                  <RiLifebuoyFill className="fs-5" />
+                </motion.div>
+                {!collapsed && <span className="text">Support</span>}
+              </Link>
+            </motion.div>
         </>
       )}
 </motion.div>

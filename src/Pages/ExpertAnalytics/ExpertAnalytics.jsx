@@ -75,7 +75,7 @@ export default function ExpertAnalytics() {
      
         const weeklyEnrollments = Array(7).fill(0);
         const weeklyRevenue = Array(7).fill(0);
-        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   
         // Populate weekly data
         analyticsData.Enrolled.forEach((item) => {

@@ -40,7 +40,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
   const navigate = useNavigate();
   const { contextSafe } = useGSAP();
   const token = localStorage.getItem("token");
-
+const userType = localStorage.getItem("userType");
   const handleLeftToggle = (chapterIndex) => {
     setOpenChapters((prevOpenChapters) => ({
       ...prevOpenChapters,
@@ -345,7 +345,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                 <span className="d-flex justify-content-between align-items-center p-1">
                   <h5 style={{ fontSize: "1.3rem", fontWeight: "bold" }}>
                     <FontAwesomeIcon icon={faCoins} />{" "}
-                    {/* {courseData[0]?.coins} coins backend */}12
+                    {courseData[0]?.coins}
                   </h5>
                 </span>
               </div>
@@ -355,23 +355,26 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                   <h5
                     style={{ textDecoration: "line-through", fontSize: "1rem" }}
                   >
-                    $70
-                    {/* {courseData[0]?.price || "No price available"} */}
+                    $
+                    {courseData[0]?.price || "No price available"}
                   </h5>
                   <h5 style={{ fontSize: "1.3rem", fontWeight: "bold" }}>
-                    $80
-                    {/* {courseData[0]?.discounted_price ||
-                      "No discount available"} */}
+                    $
+                    {courseData[0]?.discounted_price ||
+                      "No discount available"}
                   </h5>
                 </span>
                 
               </div>
             </span>
-            {courseData[0]?.status === "approved" ? (
+            {
+            
+            courseData[0]?.status === "approved" ? (
                   <div onClick={handleEditCourse} style={{background:"white", borderRadius:"0.4rem", display:"flex", justifyContent:"center", alignItems:"center", padding:"0 1rem" , cursor:"pointer"}}>
                     <h6 style={{ color:"black"}}>Edit Course</h6>
                   </div>
                 ) : (
+                  userType !== "admin" &&
                   <span
                     style={{
                       display: "flex",

@@ -13,7 +13,9 @@ import DOMPurify from "dompurify";
 import { PulseLoader } from "react-spinners";
 import { MdDone } from "react-icons/md";
 
+const tagsData = ['JavaScript', 'React', 'CSS', 'HTML', 'Node.js', 'Python', 'Java', "i", "i"];
 export default function CourseCreation({ editCourse, courseeId }) {
+  
   const [courseData, setCourseData] = useState({
     title: "",
     description: "",
@@ -37,17 +39,60 @@ export default function CourseCreation({ editCourse, courseeId }) {
   const [isLoadingDeleteCourse, setIsLoadingDeleteCourse] = useState(false);
   const tagsUrl = `${BASE_URI}/api/v1/tags`;
   const categoriesUrl = `${BASE_URI}/api/v1/category`;
-
   const fetchOptions = {
     headers: {
       Authorization: "Bearer " + token,
     },
   };
+  const [searchTerm, setSearchTerm] = useState('');
+  const [tags, setTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  // Function to fetch tags based on search
+  const fetchTags = async () => {
+    if (searchTerm) {
+      try {
+        const response = await axios.get(`${BASE_URI}/api/v1/tags?search=${searchTerm}`, fetchOptions);
+        console.log(response?.data)
+        setTags(response?.data?.data); // Adjust based on your API response structure
+      } catch (error) {
+        console.error('Error fetching tags:', error);
+      }
+    } else {
+      setTags([]); // Clear tags if search term is empty
+    }
+  };
+
+  useEffect(() => {
+    const debounceFetch = setTimeout(() => {
+      fetchTags();
+    }, 300); // Debounce to reduce API calls
+
+    return () => clearTimeout(debounceFetch);
+  }, [searchTerm]);
+
+  // Function to handle tag selection
+  const handleTagSelect = (tag) => {
+    if (!selectedTags.includes(tag)) {
+      setSelectedTags((prev) => [...prev, tag]);
+    }
+  };
+
+  // Function to remove a tag from selected
+  const handleTagRemove = (tag) => {
+    setSelectedTags((prev) => prev.filter((t) => t !== tag));
+  };
+
+
+
   const navigate = useNavigate();
 
   const { data } = useFetch(tagsUrl, fetchOptions);
-  const tags = useMemo(() => data?.data || [], [data]);
-
+  const gettags = useMemo(() => data?.data || [], [data]);
+  console.log(gettags)
+  // useEffect(()=>{
+  //   setSelectedTags(gettags)
+  // })
   const { data: categoriesData } = useFetch(categoriesUrl, fetchOptions);
   const categories = useMemo(
     () => categoriesData?.data || [],
@@ -63,8 +108,20 @@ export default function CourseCreation({ editCourse, courseeId }) {
           },
         })
         .then((response) => {
-          const courseDetails = response.data.data[0];
-          // console.log(response.data);
+          const courseDetails = response?.data?.data[0];
+  
+          // Ensure both course details and gettags are available before sorting
+          if (courseDetails?.tag_ids && gettags.length > 0) {
+            const sortedTags = courseDetails.tag_ids
+              .map((tagId) => {
+                const tag = gettags.find((tag) => tag.id === tagId);
+                return tag ? { id: tag.id, name: tag.name } : null;
+              })
+              .filter((tag) => tag !== null); // Remove any null values
+  
+            setSelectedTags(sortedTags);
+          }
+  
           setCourseData({
             title: courseDetails.title || "",
             description: courseDetails.description || "",
@@ -76,6 +133,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
             tag_ids: courseDetails.tag_ids || [],
             access: courseDetails.access || "",
           });
+  
           setThumbnailPreview(
             courseDetails.thumbnail ? courseDetails.thumbnail : null
           );
@@ -84,7 +142,12 @@ export default function CourseCreation({ editCourse, courseeId }) {
           toast.error("Failed to load course details.");
         });
     }
-  }, [editCourse, courseeId, token]);
+  }, [editCourse, courseeId, token, gettags]);
+  
+
+  useEffect(()=>{
+    
+  },[])
 
   const handleChange = (event) => {
     setShowPopover(false);
@@ -171,12 +234,15 @@ export default function CourseCreation({ editCourse, courseeId }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // console.log(courseData);
-
-    axios
-      .post(`${BASE_URI}/api/v1/courses`, courseData, {
+    const dataToSend = {
+      ...courseData,
+      tag_ids: selectedTags.map(tag => tag.id), // Assuming tag has an 'id' property
+    };
+    await axios
+      .post(`${BASE_URI}/api/v1/courses`, dataToSend, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -194,12 +260,24 @@ export default function CourseCreation({ editCourse, courseeId }) {
       });
   };
 
+  const handleCreateTag = async () => {
+    await axios.post(`${BASE_URI}/api/v1/tags`, { name: searchTerm }, fetchOptions).then((res) => {
+      toast.success("tag added succussfully")
+      fetchTags()
+    }).catch((err) => {
+      toast.err("failed to add toast")
+    })
+  }
+
   const handleSaveChanges = (e) => {
     e.preventDefault();
     setLoading(true);
-
+    const dataToSend = {
+      ...courseData,
+      tag_ids: selectedTags.map(tag => tag.id), // Assuming tag has an 'id' property
+    };
     axios
-      .patch(`${BASE_URI}/api/v1/courses/${courseeId}`, courseData, {
+      .patch(`${BASE_URI}/api/v1/courses/${courseeId}`, dataToSend, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -384,31 +462,66 @@ export default function CourseCreation({ editCourse, courseeId }) {
             <label htmlFor="tag_ids" className="d-block mb-1 fs-5 fw-light">
               Select Tags <span className="text-danger">*</span>
             </label>
-            <select
-              className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100"
-              name="tag_ids"
-              value={courseData.tag_ids}
-              onChange={handleTagChange}
-              required
-              multiple
-            >
-              <option
-                value=""
-                disabled
-                className="border  px-2 py-2 text-center"
-              >
-                Select
-              </option>
-              {tags.map((tag) => (
-                <option
-                  value={tag.id}
-                  key={tag.id}
-                  className="border  px-2 py-2 text-center"
-                >
-                  {tag.name}
-                </option>
-              ))}
-            </select>
+            <div className="container mt-4">
+  <span style={{ display: "flex", gap: "1rem" }}>
+    <input
+      type="text"
+      placeholder="Search tags..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100"
+      style={{ borderColor: "#007bff", borderWidth: "2px" }}
+    />
+    {tags.length === 0 && searchTerm !== "" && (
+      <div
+        style={{
+          border: "1px solid #007bff",
+          cursor: "pointer",
+          padding: "0.3rem 0.6rem",
+          borderRadius: "0.5rem",
+          backgroundColor: "#007bff",
+          color: "white",
+          transition: "background-color 0.3s",
+        }}
+        onClick={handleCreateTag}
+        className="text-center"
+      >
+        Create tag
+      </div>
+    )}
+  </span>
+
+  <div className="row mt-4">
+    {tags?.map((tag) => (
+      <div
+        key={tag.id} // Adjust based on your tag structure
+        className={`col-4 mb-2`} // 3 columns layout with Bootstrap
+      >
+        <div
+          className={`tag-item p-2 rounded border ${selectedTags.includes(tag) ? 'bg-primary text-white' : 'bg-light'}`}
+          onClick={() => handleTagSelect(tag)}
+          style={{ cursor: "pointer", transition: "background-color 0.3s" }}
+        >
+          {tag.name} {/* Adjust based on your tag structure */}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div className="selected-tags mt-4 d-flex flex-wrap gap-1">
+    {selectedTags.map((tag) => (
+      <span key={tag.id} className="badge bg-secondary d-flex align-items-center">
+        {tag.name} {/* Adjust based on your tag structure */}
+        <button
+          onClick={() => handleTagRemove(tag)}
+          className="btn-close btn-close-white ms-2"
+          aria-label="Close"
+        ></button>
+      </span>
+    ))}
+  </div>
+</div>
+
           </div>
 
           <div className="mb-3">

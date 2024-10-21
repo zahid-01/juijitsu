@@ -3,6 +3,44 @@
   background-color: #c9d1d530;
 }
 
+@keyframes heart-bounce {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.25);
+  }
+  60% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+#heart-messages{
+  /* position: absolute;
+  right: 5%;
+  top: 10%; */
+
+  cursor: pointer;
+  color: red;
+  font-size: 1.2rem;
+  animation: heart-bounce 0.4s ease-in-out;
+}
+
+#unHeart-messages{
+  animation: heart-bounce 0.4s ease-in-out;
+  /* position: absolute; */
+  cursor: pointer;
+  /* right: 5%;
+  top: 10%; */
+  width: 100%;
+  color: white;
+  font-size: 1.3rem;
+}
+
 .received .message-content {
   align-self: flex-start;
   background-color: #c9d1d530;
@@ -21,6 +59,17 @@
   
 }
 @media (max-width: 615px) {
+
+.message-container {
+  background: white; /* Background color */
+  border-radius: 10px; /* Rounded corners */
+  padding: 10px; /* Padding inside the message */
+  margin: 5px; /* Margin around the message */
+  max-width: 70%; /* Limit the width of the message */
+  word-wrap: break-word; /* Break long words */
+  overflow-wrap: break-word; /* Fallback for older browsers */
+}
+
   .c-rep {
     flex-direction: column; 
     align-items: flex-start;

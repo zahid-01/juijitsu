@@ -6,6 +6,7 @@ import {
   faAngleDown,
   faArrowRight,
   faCoins,
+  faHeart,
   faPencil,
   faPlus,
   faXmarkCircle,
@@ -24,6 +25,7 @@ import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
 import ReactPlayer from "react-player";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { loadStripe } from "@stripe/stripe-js";
+import { CiHeart } from "react-icons/ci";
 
 const stripePromise = loadStripe(
   "pk_test_51PubCwDq08j41MMz9w7CFKlaPOPT4YlfciU9GCgXcxBmve17go3ryZQKVBcQJ3pzW86Z1mDb1bLTnkXFiTZKBu8O00CGdw624j"
@@ -274,6 +276,26 @@ const UserPurchasedCourse = () => {
       console.error(error);
     }
   };
+
+  const handleFavrouite = async (e) => {
+        e.stopPropagation();
+        if (!token) {
+          navigate("/");
+        }
+        try {
+          setHearted(!hearted);
+          await axios({
+            method: "post",
+            url: `${BASE_URI}/api/v1/courses/favouriteCourse/${id}`,
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          });
+        } catch (err) {
+          console.log(err);
+          toast.error("Failed to add to favorites");
+        }
+      };
 
   return (
     <>
@@ -538,22 +560,49 @@ const UserPurchasedCourse = () => {
             <h3 className="text-uppercase">
               {courseData?.course?.title || "No title available"}
             </h3>
-
-            {is_rated ? (
+            <div style={{display:"flex", gap:"1rem", alignItems:"center"}}>
+            {hearted ? (
                 <FontAwesomeIcon
-                  className="cursor-pointer"
-                  onClick={handleEditClick}
-                  icon={faPencil}
+                  onClick={handleFavrouite}
+                  id="heart-PurchasedCourses"
+                  icon={faHeart}
+                  style={{ zIndex: "10" }}
                 />
               ) : (
-                <>
-                <FontAwesomeIcon
+                <CiHeart
+                  style={{ zIndex: "10", color: "black" }}
+                  onClick={handleFavrouite}
+                  id="unHeart-PurchasedCourses"
+                />
+              )}
+              {is_rated ? (
+
+                <span onClick={handleEditClick} style={{display:"flex", gap:"0.5rem", alignItems:"center" , background:"white", color:"black", padding:"0.2rem 0.5rem", borderRadius:"0.5rem", cursor:"pointer"}}>
+                 
+                  <FontAwesomeIcon
                   className="cursor-pointer"
-                  onClick={handleAddRatingClick}
+                  
+                  icon={faPencil}
+                />
+                 Edit Rating
+                </span>
+                
+              ) : (
+               
+                <span onClick={handleAddRatingClick} style={{display:"flex", gap:"0.5rem", alignItems:"center" , background:"white", color:"black", padding:"0.2rem 0.5rem", borderRadius:"0.5rem", cursor:"pointer"}}>
+<FontAwesomeIcon
+                  className="cursor-pointer"
+                  
                   icon={faPlus}
                 />
-                </>
+                Add Rating
+                </span>
+                
+               
               )}
+            </div>
+            
+            
 
           </div>
           <div className="mid-userCourseview">

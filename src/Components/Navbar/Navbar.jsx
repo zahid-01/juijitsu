@@ -30,6 +30,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const oldUserType = localStorage.getItem("oldUserType");
   const [experts, setExperts] = useState([]);
   const [profileCompletion, setProfileCompletion] = useState(null);
+  const [UserType, setUserType] = useState("Expert")
   const profileUrl = `${BASE_URI}/api/v1/users/profile`;
 
   const fetchOptions = {
@@ -80,6 +81,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
 
   useEffect(() => {
     if (token) {
+      // console.log(profileCompletion)
       axios
         .get(`${BASE_URI}/api/v1/users/profileCompletion`, {
           headers: {
@@ -87,7 +89,8 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           },
         })
         .then((resp) => {
-          console.log(resp.data.data.profileCompletion);
+          console.log(parseInt(resp.data.data.profileCompletion, 10));
+          
           setProfileCompletion(parseInt(resp.data.data.profileCompletion, 10));
         });
     }
@@ -129,6 +132,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
     const oldUserType = localStorage.getItem("oldUserType");
     if(userType === "expert" ){
       localStorage.setItem("userType", "user");
+      setUserType("Expert");
       localStorage.setItem("oldUserType", userType);
       window.location.reload();
       toast.success("You have been toggled as user");
@@ -136,6 +140,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
     else if(oldUserType === "expert" && userType === "user"){
       localStorage.setItem("userType", "expert");
       localStorage.removeItem("oldUserType");
+      setUserType("Student");
       window.location.reload();
       toast.success(`You are now an expert`);
     }
@@ -178,7 +183,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   <span class="circle" aria-hidden="true">
   <span class="icon arrow"></span>
   </span>
-  <span class="button-text">Toggle As Student</span>
+  <span class="button-text">Toggle As {UserType}</span>
 </button>
           }
         </div>
@@ -235,7 +240,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
                     textColor: '#fff',
                     trailColor: '#fff',
                   })}
-                  value={profileCompletion} text={`${profileCompletion}`} />
+                  value={100} text={`${profileCompletion}`} />
 
               </div>
              
@@ -262,7 +267,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
                     textColor: '#fff',
                     trailColor: '#fff',
                   })}
-                  value={profileCompletion} text={`${profileCompletion}`} />
+                  value={100} text={`${profileCompletion}`} />
 
               </div>
               <FaUserCircle
@@ -304,7 +309,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
                     textColor: '#fff',
                     trailColor: '#fff',
                   })}
-                  value={profileCompletion} text={`${profileCompletion}`} />
+                  value={100} text={`${profileCompletion}`} />
 
               </div>
              
@@ -331,7 +336,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
                     textColor: '#fff',
                     trailColor: '#fff',
                   })}
-                  value={profileCompletion} text={`${profileCompletion}`} />
+                  value={100} text={`${profileCompletion}`} />
 
               </div>
               <FaUserCircle

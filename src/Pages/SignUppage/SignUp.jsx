@@ -84,10 +84,7 @@ export const SignUp = () => {
               <FcGoogle className="googleIcon" />
               Sign Up with Google
             </button>
-            <button type="button" className="bttns">
-              <FaApple className="appleIcon" />
-              Sign Up with Apple
-            </button>
+            
           </div>
           <div className="d-flex align-items-center py-4">
             <p
