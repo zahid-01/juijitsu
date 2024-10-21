@@ -130,6 +130,7 @@ const UserCourseOverview = () => {
   );
 
   const handleCoinCheckout = async () => {
+    if(!token){return navigate("/")}
     try {
       const response = await axios.post(
         `${BASE_URI}/api/v1/payment/purchase/${id}`,
@@ -153,8 +154,8 @@ const UserCourseOverview = () => {
 
   const checkoutHandler = async () => {
     console.log(id)
+    if(!token){return navigate("/")}
     try {
-
       const stripe = await stripePromise;
       // Fetch the session from your backend
       // const session = await axios(`http://localhost:3000/api/v1/payment`);
