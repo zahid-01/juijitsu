@@ -17,7 +17,12 @@ export const Layout = ({ children, search, setSearch, cartItemNumber }) => {
     <>
       <div className="layout position-relative">
         <div className="responsive-md">
-          <SmallerScreenNavbar />
+          <SmallerScreenNavbar 
+          collapsed={collapsed}
+          search={search}
+          setSearch={setSearch}
+          cartItemNumber={cartItemNumber}
+          />
         </div>
         <div className="responsive-lg w-100" style={{background: '#FAF9F6'}}>
           <Navbar

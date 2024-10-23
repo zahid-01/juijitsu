@@ -329,7 +329,7 @@ export default function UserWallet() {
       setWithdrawalHistory(response?.data);
     } catch (err) {
       console.log(err);
-      toast.error(err?.response?.data?.message);
+      // toast.error(err?.response?.data?.message);
     }
   };
 
@@ -496,6 +496,13 @@ export default function UserWallet() {
           </div>
         </div>
         {activeTab === "activity" && (
+           orders?.length === 0 ? <>
+           <div className="no-courses-userCourses">
+             <div>
+               <h1>No Purchase History Found Yet!</h1>
+             </div>
+           </div>
+         </> :
           <div className="tab-pane active" style={{ overflowX: "auto" }}>
             <table className="table w-md-reverse-50">
               <thead>
@@ -556,6 +563,13 @@ export default function UserWallet() {
       
         )}
         {activeTab === "withdrawl-history" && (
+          (!withdrawalHistory || withdrawalHistory?.data?.length === "0" ) ? <>
+          <div className="no-courses-userCourses">
+            <div>
+              <h1>No History Found Yet!</h1>
+            </div>
+          </div>
+        </>:
           <div className="tab-pane active" style={{ overflowX: "auto" }}>
             <table className="table w-md-reverse-50">
               <thead>

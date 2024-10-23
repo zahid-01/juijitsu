@@ -66,12 +66,12 @@ const UserCourseOverview = () => {
     } else if (seconds < 3600) {
       const minutes = Math.floor(seconds / 60);
       const remainingSeconds = seconds % 60;
-      return `${minutes} min ${remainingSeconds} sec`;
+      return `${minutes} min `;
     } else {
       const hours = Math.floor(seconds / 3600);
       const remainingMinutes = Math.floor((seconds % 3600) / 60);
       const remainingSeconds = seconds % 60;
-      return `${hours} hr ${remainingMinutes} min ${remainingSeconds} sec`;
+      return `${hours} hr ${remainingMinutes} min `;
     }
   }
 

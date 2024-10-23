@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BASE_URI } from "../../Config/url";
 import axios from "axios";
+import "./Students.css"
 import formatDate from "../../utils/formatDate";
 
 const UserManagement = () => {
@@ -62,7 +63,8 @@ const UserManagement = () => {
       );
       fetchStudents();
     } catch (err) {
-      setError(err.message);
+      console.log(err)
+      setError(err.data.response.message);
     }
   };
 
@@ -135,7 +137,7 @@ const UserManagement = () => {
       >
         <div className="px-4 exp">
           {activeTab === "users" &&
-            (error === "no students found" ? (
+            (error === "no users found" ? (
               <>
                 <div className="no-courses-userCourses">
                   <div>
@@ -165,7 +167,9 @@ const UserManagement = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {experts.map((student, index) => {
+                    {
+                    
+                    experts?.map((student, index) => {
                       const { text: statusText, color: statusColor } =
                         getStatusDetails(student.status);
                       return (

@@ -52,6 +52,7 @@
     /* left: 80px; */
   }
 }
+
 @media (max-width: 780px) {
   .content {
     position: static;
@@ -67,5 +68,9 @@
   .content {
     width: 100%;
     padding: 1rem;
+  }
+  .navbar {
+    width: 100%;
+    left: 0;
   }
 }

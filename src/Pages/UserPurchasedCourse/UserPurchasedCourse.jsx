@@ -67,12 +67,12 @@ const UserPurchasedCourse = () => {
     } else if (seconds < 3600) {
       const minutes = Math.floor(seconds / 60);
       const remainingSeconds = seconds % 60;
-      return `${minutes} min ${remainingSeconds} sec`;
+      return `${minutes} min `;
     } else {
       const hours = Math.floor(seconds / 3600);
       const remainingMinutes = Math.floor((seconds % 3600) / 60);
       const remainingSeconds = seconds % 60;
-      return `${hours} hr ${remainingMinutes} min ${remainingSeconds} sec`;
+      return `${hours} hr ${remainingMinutes} min `;
     }
   }
 
@@ -84,15 +84,20 @@ const UserPurchasedCourse = () => {
 
   const courseData = useMemo(() => data?.data || [], [data]);
  console.log(data?.data);
+
+
   useEffect(() => {
-    setIs_rated(data?.data?.course?.is_rated);
-    setHearted(courseData?.course?.is_favourite);
-    if (courseData?.course?.is_rated) {
-      setSelectedRating(courseData?.course?.rating);
-      setReview(courseData?.course?.comment);
+    if (data?.data) {
+        setIs_rated(data.data.course.is_rated);
+        setHearted(courseData?.course?.is_favourite);
+        if (courseData?.course?.is_rated) {
+            setSelectedRating(courseData.course.rating); // This will be updated correctly
+            setReview(courseData.course.comment);
+        }
     }
-  
-  }, [data]);
+}, [data]);
+
+ 
  
 
   useEffect(() => {
@@ -107,6 +112,9 @@ const UserPurchasedCourse = () => {
     setSelectedLesson(
       courseData?.courseChapters?.chapters[0]?.lessons[0]?.lesson_id
     );
+    checkedLesson({
+      lesson_id: courseData?.courseChapters?.chapters[0]?.lessons[0]?.lesson_id
+    })
   }, [courseData]);
 
   const chapters = useMemo(
@@ -131,10 +139,14 @@ const UserPurchasedCourse = () => {
   });
 
   const handleVideoChange = useCallback(
+    
     (video_url, video_thumb, lesson_id, noLesson) => {
       setVideo_url(video_url);
       setVideo_thumb(video_thumb);
       setSelectedLesson(lesson_id);
+      checkedLesson({
+        lesson_id: lesson_id,
+      })
     },
     []
   );
@@ -197,30 +209,49 @@ const UserPurchasedCourse = () => {
 
     console.log(selectedRating, review, id);
     try {
-      const url = `${BASE_URI}/api/v1/reviews`;
-      const response = await axios({
-        method: "POST",
-        url,
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-        data: {
-          comment: review,
-          rating: selectedRating,
-          courseId: id,
-        },
-      });
-      toast.success("Rating Added successfully");
-      setReview("");
-      setSelectedRating(0);
-      setIs_rated(true)
-      setAddRatingPopUp(false);
-      setReviewsLoading(false);
-      refetch();
+        const url = `${BASE_URI}/api/v1/reviews`;
+        const response = await axios({
+            method: "POST",
+            url,
+            headers: {
+                Authorization: "Bearer " + token,
+            },
+            data: {
+                comment: review,
+                rating: selectedRating,
+                courseId: id,
+            },
+        });
+        toast.success("Rating Added successfully");
+
+        // Update state immediately after adding the rating
+        setReviewData(response.data); // Update the review data state
+        setIs_rated(true); // Update the is_rated state
+        setSelectedRating(selectedRating); // Update the selected rating state
+        setAddRatingPopUp(false); // Close the add rating popup
+        refetch(); // Refetch data to ensure you have the latest state
+
     } catch (error) {
-      toast.error(error.response.data.message);
-      console.error(error);
+        toast.error(error.response.data.message);
+        console.error(error);
     }
+};
+
+  const checkedLesson = async ({ chapter_id, lesson_id }) => {
+    const checkResponse = await axios({
+      method: "PATCH",
+      url: `${BASE_URI}/api/v1/lessons/markLessonAsRead`,
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+      data: {
+        course_id: id,
+        lesson_id: lesson_id,
+      },
+    });
+
+    // window.location.reload();
+    // console.log(checkResponse?.data )
   };
 
   const updateRating = async () => {
@@ -287,6 +318,13 @@ const UserPurchasedCourse = () => {
           console.log(err);
           toast.error("Failed to add to favorites");
         }
+      };
+
+      const handleResponsiveLeftToggle = (chapterIndex) => {
+        setResponsiveOpenChapters((prevOpenChapters) => ({
+          ...prevOpenChapters,
+          [chapterIndex]: !prevOpenChapters[chapterIndex],
+        }));
       };
 
   return (
@@ -610,15 +648,109 @@ const UserPurchasedCourse = () => {
                 className="tumbnail-userCourseview"
               />
 
-              <div className="details-right-mid-userCourseview">
-                <span>
-                  <img
-                    src={courseData?.course?.profile_picture}
-                    alt="Profile"
-                    style={{ width: "8%", height: "8%", borderRadius: "50%" }}
-                  />
-                  <h6>{courseData?.course?.name}</h6>
+<div className="left-bottom-mid-userCourseview second-leftuserCourse">
+                <span style={{display:"flex", justifyContent:"space-between", width:"100%"}}>
+ <h4>Course Lessons</h4> 
+ {hearted ? (
+                <FontAwesomeIcon
+                  onClick={handleFavrouite}
+                  id="heart-PurchasedCourses"
+                  icon={faHeart}
+                  style={{ zIndex: "10" }}
+                />
+              ) : (
+                <CiHeart
+                  style={{ zIndex: "10", color: "black" }}
+                  onClick={handleFavrouite}
+                  id="unHeart-PurchasedCourses"
+                />
+              )}
                 </span>
+               
+                <div>
+                {courseData?.courseChapters?.chapters?.length > 0 ? (
+                    chapters.map((chapter, chapterIndex) => (
+                      <details
+                        key={chapter?.chapter_id}
+                        open={
+                          (chapterIndex === 0 && true) ||
+                          openChapters[chapterIndex]
+                        }
+                        onToggle={() => handleResponsiveLeftToggle(chapterIndex)}
+                      >
+                        <summary>
+                          <FontAwesomeIcon
+                            icon={faAngleDown}
+                            className={
+                              openChapters[chapterIndex]
+                                ? "up-icon"
+                                : "down-icon"
+                            }
+                          />
+                          <h6>
+                            {chapter.chapter_no || "No chapter number"}.{" "}
+                            {chapter.chapterTitle || "No chapter title"}
+                          </h6>
+                        </summary>
+                        {chapter?.lessons.map((lesson, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() =>
+                              handleVideoChange(
+                                lesson?.video_url,
+                                lesson?.thumbnail,
+                                lesson?.lesson_id
+                              )
+                                                                 
+                                                              
+                            }
+                            style={{
+                              cursor: "pointer",
+                              color:
+                                selectedLesson === lesson?.lesson_id && "red",
+                            }}
+                          >
+                            <h6>
+                              <FaYoutube
+                                color="black"
+                                style={{
+                                  cursor: "pointer",
+                                  color:
+                                    selectedLesson === lesson?.lesson_id &&
+                                    "red",
+                                  transition: "all ease-in-out 0.5s",
+                                }}
+                              />
+                              Lesson {idx + 1}:{" "}
+                              {lesson?.lessonTitle || "No lesson title"}
+                            </h6>
+                            <h6>
+                              {formatTime(lesson?.duration) ||
+                                "No duration available"}
+                            </h6>
+                          </div>
+                        ))}
+                      </details>
+                    ))
+                  ) : (
+                    <div>No chapters found</div>
+                  )}
+                </div>
+              </div>
+
+              <div className="details-right-mid-userCourseview">
+              <div  className="overView-profile cursor-pointer"
+                    onClick={() => {
+                      navigate(`/UserProfile/${courseData?.course?.expert_id}`);
+                    }}
+                  >
+                    <img
+                      src={courseData?.course?.profile_picture}
+                      alt="Profile"
+                      style={{ width: "8%", height: "8%", borderRadius: "50%" }}
+                    />
+                    <h6>{courseData?.course?.name}</h6>
+                  </div>
 
                 <span>
                   <h5>Access:</h5>

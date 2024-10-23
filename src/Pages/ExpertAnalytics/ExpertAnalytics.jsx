@@ -832,7 +832,7 @@ export default function ExpertAnalytics() {
       </div>
       <div className="row mt-3 mb-5 position-relative">
       <select 
-  style={{ top: "-10%", right: "7%", width: "7rem" }} 
+  style={{ top: "-10%", left:"1%", width: "7rem" }} 
   className="position-absolute w-10"
   value={type} // This binds the select element to the state
   onChange={(e) => setType(e.target.value)} // Handle change here
