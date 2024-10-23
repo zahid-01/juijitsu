@@ -109,7 +109,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
         })
         .then((response) => {
           const courseDetails = response?.data?.data[0];
-  
+          console.log(response)
           // Ensure both course details and gettags are available before sorting
           if (courseDetails?.tag_ids && gettags.length > 0) {
             const sortedTags = courseDetails.tag_ids
@@ -292,9 +292,9 @@ export default function CourseCreation({ editCourse, courseeId }) {
       })
       .catch((error) => {
         setLoading(false);
-        toast.error(
-          error.response ? error.response.data.message : "Something went wrong"
-        );
+        // toast.error(
+        //   error.response ? error.response.data.message : "Something went wrong"
+        // );
       });
   };
 
@@ -644,7 +644,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
                   <input
                     type="text"
                     name="discount"
-                    value={courseData.discount}
+                    value={courseData?.discount}
                     onChange={handleChange}
                     placeholder="Enter Discount"
                     className="form-control px-5 py-2-half-5 input-custom"

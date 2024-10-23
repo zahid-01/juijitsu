@@ -50,16 +50,18 @@ const userType = localStorage.getItem("userType");
 
   function formatTime(seconds) {
     if (seconds < 60) {
-      return `${seconds} sec`;
+      return `${seconds} s`;
     } else if (seconds < 3600) {
       const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;
-      return `${minutes} min ${remainingSeconds} sec`;
+      // const remainingSeconds = seconds % 60;
+      return `${minutes} m`;
     } else {
       const hours = Math.floor(seconds / 3600);
+      
       const remainingMinutes = Math.floor((seconds % 3600) / 60);
-      const remainingSeconds = seconds % 60;
-      return `${hours} hr ${remainingMinutes} min ${remainingSeconds} sec`;
+
+      // const remainingSeconds = seconds % 60;
+      return `${hours} h ${remainingMinutes === 0 ? "" : remainingMinutes} ${remainingMinutes === 0 ? "" : "m"}`;
     }
   }
 
@@ -207,6 +209,13 @@ const userType = localStorage.getItem("userType");
       console.log(e);
       toast.error("Something went wrong");
     }
+  };
+
+  const handleResponsiveLeftToggle = (chapterIndex) => {
+    setResponsiveOpenChapters((prevOpenChapters) => ({
+      ...prevOpenChapters,
+      [chapterIndex]: !prevOpenChapters[chapterIndex],
+    }));
   };
 
   return (
@@ -370,7 +379,7 @@ const userType = localStorage.getItem("userType");
             {
             
             courseData[0]?.status === "approved" ? (
-                  <div onClick={handleEditCourse} style={{background:"white", borderRadius:"0.4rem", display:"flex", justifyContent:"center", alignItems:"center", padding:"0 1rem" , cursor:"pointer"}}>
+                  <div className="edit-course-expert" onClick={handleEditCourse} style={{background:"white", borderRadius:"0.4rem", display:"flex", justifyContent:"center", alignItems:"center", paddingLeft:"1rem",paddingRight:"1rem" , cursor:"pointer"}}>
                     <h6 style={{ color:"black"}}>Edit Course</h6>
                   </div>
                 ) : (
@@ -409,6 +418,80 @@ const userType = localStorage.getItem("userType");
                 videoType={viseo_type}
                 className="tumbnail-userCourseview"
               />
+              <div className="left-bottom-mid-userCourseview second-leftuserCourse">
+                <span style={{display:"flex", justifyContent:"space-between", width:"100%"}}>
+ <h4>Course Lessons</h4> 
+ 
+                </span>
+               
+                <div>
+                {Chapters?.length > 0 ? (
+                    Chapters?.map((chapter, chapterIndex) => (
+                      <details
+                        key={chapter?.chapter_id}
+                        open={
+                          (chapterIndex === 0 && true) ||
+                          openChapters[chapterIndex]
+                        }
+                        onToggle={() => handleResponsiveLeftToggle(chapterIndex)}
+                      >
+                        <summary>
+                          <FontAwesomeIcon
+                            icon={faAngleDown}
+                            className={
+                              openChapters[chapterIndex]
+                                ? "up-icon"
+                                : "down-icon"
+                            }
+                          />
+                          <h6>
+                            {chapter.chapter_no || "No chapter number"}.{" "}
+                            {chapter.chapterTitle || "No chapter title"}
+                          </h6>
+                        </summary>
+                        {chapter?.lessons.map((lesson, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() =>
+                              handleVideoChange(
+                                lesson?.video_url,
+                                lesson?.thumbnail,
+                                lesson?.lesson_id
+                              )
+                            }
+                            style={{
+                              cursor: "pointer",
+                              color:
+                                selectedLesson === lesson?.lesson_id && "red",
+                            }}
+                          >
+                            <h6>
+                              <FaYoutube
+                                color="black"
+                                style={{
+                                  cursor: "pointer",
+                                  color:
+                                    selectedLesson === lesson?.lesson_id &&
+                                    "red",
+                                  transition: "all ease-in-out 0.5s",
+                                }}
+                              />
+                              Lesson {idx + 1}:{" "}
+                              {lesson?.lessonTitle || "No lesson title"}
+                            </h6>
+                            <h6 >
+                              {formatTime(lesson?.duration) ||
+                                "No duration available"}
+                            </h6>
+                          </div>
+                        ))}
+                      </details>
+                    ))
+                  ) : (
+                    <div>No chapters found</div>
+                  )}
+                </div>
+              </div>
 
               {/* second */}
               <div className="left-bottom-mid-userCourseview  second-leftuserCourse">
@@ -484,14 +567,18 @@ const userType = localStorage.getItem("userType");
               
 
               <div className="details-right-mid-userCourseview">
-                <span>
-                  <img
-                    src={courseData[0]?.profile_picture}
-                    alt="Profile"
-                    style={{ width: "8%", height: "8%", borderRadius: "50%" }}
-                  />
-                  <h6>{courseData[0]?.name}</h6>
-                </span>
+              <div  className="overView-profile cursor-pointer"
+                    onClick={() => {
+                      navigate(`/UserProfile/${courseData[0]?.expert_id}`);
+                    }}
+                  >
+                    <img
+                      src={courseData[0]?.profile_picture}
+                      alt="Profile"
+                      style={{ width: "8%", height: "8%", borderRadius: "50%" }}
+                    />
+                    <h6>{courseData[0]?.name}</h6>
+                  </div>
 
                 <span>
                   <h5>Access:</h5>
@@ -580,7 +667,7 @@ const userType = localStorage.getItem("userType");
                               Lesson {idx + 1}:{" "}
                               {lesson?.lessonTitle || "No lesson title"}
                             </h6>
-                            <h6>
+                            <h6 style={{ width:"6rem", display:"flex", justifyContent:"end"}}>
                               {formatTime(lesson?.duration) ||
                                 "No duration available"}
                             </h6>

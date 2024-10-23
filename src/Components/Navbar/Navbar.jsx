@@ -176,7 +176,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
               className="navbar-input form-control border-start-0 ps-0"
             />
           </div>
-          <CiFilter className="primary-color fs-2 ms-3 cursor-pointer" />
+          {/* <CiFilter className="primary-color fs-2 ms-3 cursor-pointer" /> */}
           {
             oldUserType === "expert" &&
             <button class="learn-more-user" onClick={handleExpertToggle}>
@@ -356,7 +356,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           >
             Continue your journey and Inspire many
           </p>
-          <div className="d-flex align-items-center justify-content-between px-4">
+          {/* <div className="d-flex align-items-center justify-content-between px-4">
             <p
               className="d-flex align-items-center justify-content-center rounded-circle border border-secondary mb-0"
               style={{ height: "3rem", width: "3rem" }}
@@ -375,7 +375,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
             >
               <PiFolderUserFill className="fs-4 primary-color" />
             </p>
-          </div>
+          </div> */}
           <div style={{ height: "8rem" }}></div>
 
           {/* other experts */}

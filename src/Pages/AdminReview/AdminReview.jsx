@@ -88,6 +88,7 @@ const getApproval = async()=>{
     })
         toast.success(response?.data?.message)
         setShowDeclinePopup(false);
+        getApproval();
         
  }
  catch(err){
@@ -156,14 +157,14 @@ const getApproval = async()=>{
                       Overview
                     </button>
                     <button
-                      onClick={() => handleDeclineClick(1, approval?.request_id)}
+                      onClick={() => handleDeclineClick("approved", approval?.request_id)}
                       className="approve"
                     >
                       Approve
                     </button>
                     <button
                       className="decline"
-                      onClick={() => handleDeclineClick(0, approval?.request_id)}
+                      onClick={() => handleDeclineClick("declined", approval?.request_id)}
 
                     >
                       Decline
@@ -182,14 +183,14 @@ const getApproval = async()=>{
           <div className="popup-content-review">
             <h5 style={{ fontWeight: "500" }}>
               Are you sure you want to{" "}
-              {selectedCourse === 1 ? "approve" : "decline"} the request?
+              {selectedCourse === "approved" ? "approve" : "decline"} the request?
             </h5>
+            {selectedCourse === "approved" ? "" : <textarea onChange={(e)=> setReview(e.target.value)}></textarea>}
             <div className="popup-buttons-review">
               <button
                 className="cancel-button-review"
                 onClick={handleDeclineCancel}
               >
-
                 Cancel
               </button>
               <button

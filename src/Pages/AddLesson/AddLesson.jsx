@@ -2,6 +2,7 @@ import { FaPen, FaYoutube } from "react-icons/fa";
 import { IoMdTrash } from "react-icons/io";
 import { MdAddBox, MdDone } from "react-icons/md";
 import { BASE_URI } from "../../Config/url";
+import "./AddLesson.css"
 import useFetch from "../../hooks/useFetch";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -475,7 +476,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                   >
                     {(provided) => (
                       <div
-                        className="rounded-2 border border-secondary-subtle text-start px-5 py-3 mb-3"
+                        className="rounded-2 border border-secondary-subtle text-start px-5 py-3 mb-3 "
                         {...provided.droppableProps}
                         ref={provided.innerRef}
                       >
@@ -511,8 +512,8 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                             </div>
                           </div>
                         ) : (
-                          <div className="d-flex align-items-center justify-content-between">
-                            <div className="d-flex align-items-center gap-4">
+                          <div className="align-items-center justify-content-between addlesson-content">
+                            <div className=" addlesson-content align-items-center gap-4 ">
                               <p className="mb-0 fs-4 fw-lightBold">
                                 {index + 1}. {chapter.title}
                               </p>
@@ -528,7 +529,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                               />
                             </div>
                             <button
-                              className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
+                              className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto addlesson-button"
                               onClick={() => handleAddLessonClick(chapter.id)}
                             >
                               Add Lesson
@@ -552,7 +553,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                                   handleAddLessonClick(chapter.id, lesson)
                                 }
                               >
-                                <div className="d-flex align-items-center justify-content-between">
+                                <div className="d-flex align-items-center justify-content-between addlesson-content">
                                   <div className="d-flex align-items-center gap-3">
                                     <FaYoutube
                                       className="primary-color fs-5 cursor-pointer"
@@ -899,7 +900,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
           )}
 
           {chapters?.length > 0 && (
-            <div className="w-100 text-start flex justify-content-between">
+            <div className="w-100 text-start flex justify-content-between addlesson-content">
               <button
                 className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
                 onClick={() => setIsAddChapter(true)}

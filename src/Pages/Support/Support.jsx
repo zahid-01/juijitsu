@@ -721,7 +721,7 @@ import { BASE_URI } from "../../Config/url";
 import axios from "axios";
 import { FaUserCircle } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faUserCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { PulseLoader } from "react-spinners";
 import { io } from "socket.io-client";
 import { socket } from "../../socket";
@@ -768,6 +768,7 @@ const Support = () => {
   const [selectedImage, setselectedImage] = useState("")
   const [selectedName, setSelectedName] = useState("")
   const [searchChat, setSearchChat] = useState("");
+  const [isChatOpen, setIsChatOpen] = useState(false);
   // const [hearted , setHearted] = useState({})
 
   const popupRef = useRef(null);
@@ -775,7 +776,7 @@ const Support = () => {
   const token = localStorage.getItem("token");
   const chatListUrl =`${BASE_URI}/api/v1/chat/supportChat${searchChat && `?search=${searchChat}`}`;
   const chatBottomRef = useRef(null);
-
+  const chatBottom1Ref = useRef(null);
   const fetchOptions = {
     headers: {
       Authorization: "Bearer " + token,
@@ -784,19 +785,8 @@ const Support = () => {
 
   const { data,refetch } = useFetch(chatListUrl, fetchOptions);
   const chatList = useMemo(() => data?.data || [], [data]);
-console.log(chatList.length);
-// useEffect(() => {
-//   // Initialize hearted state based on chatList data
-//   const initialHearted = {};
-//   chatList.forEach(chat => {
-//     initialHearted[chat.expert_id] = chat.is_favourite; // Assuming expert_id corresponds to the chat's unique identifier
-//   });
-//   setHearted(initialHearted);
-// }, [chatList]);
+console.log(chatList);
 
-// const time = new Date(Date.now()).toLocaleTimeString(
-// )
-// console.log(time)
 
 const handleOpenChat = (receiverId, receiverEmail, image, name) => {
   setselectedImage(image);
@@ -804,7 +794,8 @@ const handleOpenChat = (receiverId, receiverEmail, image, name) => {
   setAllExpertsPopUp(false);
   setSelecetedEmail(receiverEmail);
   setSelectedChat(receiverId);
-  
+  setIsChatOpen(true);
+
   console.log(receiverId, receiverEmail, image, name);
   
   axios
@@ -879,6 +870,8 @@ socket?.emit("support_message", {
 useEffect(() => {
   // Scroll to the bottom of the chat after messages update
   chatBottomRef?.current?.scrollIntoView({ behavior: "smooth" });
+  chatBottom1Ref.current?.scrollIntoView({ behavior: "smooth" });
+
 }, [messages]);
 
 
@@ -964,73 +957,6 @@ useEffect(() => {
   
   
     
- 
-
-  
-    
-  // const addToFavorites = async (e, receiverId) => {
-  //   e.stopPropagation();
-  //   if (!token) {
-  //     navigate("/");
-  //   }
-  //   setHearted((prev) => ({
-  //     ...prev,
-  //     [receiverId]: true, // Set to true as it's now a favorite
-  //   }));
-  //   try {
-  //     await axios({
-  //       method: "post",
-  //       url: `${BASE_URI}/api/v1/chat`,
-  //       data: { receiver: receiverId },
-  //       headers: {
-  //         Authorization: "Bearer " + token,
-  //       },
-  //     });
-  //     // Update the hearted state
-      
-  //     toast.success("Added to favorites");
-  //   } catch (err) {
-  //     console.log(err);
-  //     toast.error("Failed to add to favorites");
-  //   }
-  // };
-
-  //   const removeFromFavorites = async (e, receiverId) => {
-  //     e.stopPropagation();
-  //     if (!token) {
-  //       navigate("/");
-  //     }
-  //     // Update the hearted state
-  //     setHearted((prev) => ({
-  //       ...prev,
-  //       [receiverId]: false, // Set to false as it's no longer a favorite
-  //     }));
-  //     try {
-  //       await axios({
-  //         method: "delete",
-  //         url: `${BASE_URI}/api/v1/chat`,
-  //         data: { receiver: receiverId },
-  //         headers: {
-  //           Authorization: "Bearer " + token,
-  //         },
-  //       });
-        
-  //       toast.success("Removed from favorites");
-  //     } catch (err) {
-  //       console.log(err);
-  //       toast.error("Failed to remove from favorites");
-  //     }
-  //   };
-  
-  //   const handleFavoriteToggle = (e, receiverId) => {
-  //     e.stopPropagation();
-  //     const isCurrentlyHearted = hearted[receiverId];
-  //     if (isCurrentlyHearted) {
-  //       removeFromFavorites(e, receiverId);
-  //     } else {
-  //       addToFavorites(e, receiverId);
-  //     }
-  //   };
 
   useEffect(() => {
     if (popupVisible) {
@@ -1072,14 +998,14 @@ useEffect(() => {
   };
 
   return (
-    <div className="w-100">
+    <div className="w-100 position-relative">
       <header className="bg-gradient-custom-div p-3 rounded-3">
         <h3 className="pb-4">Support</h3>
         {/* <p className="mb-3 fs-4 fw-light">You have 0 unread messages</p> */}
       </header>
       <main className="d-flex" style={{ minHeight: "calc(100vh - 14rem)" }}>
 
-        <section className="px-2 py-2 w-40 border-end pe-4">
+        <section className="chatlist-messages px-2 py-2 border-end pe-4 position-relative">
 
 
 
@@ -1091,130 +1017,9 @@ useEffect(() => {
 
 
 
-{/* 
-            <select
-              name=""
-              id=""
-              className="p-2 bg-custom-secondary rounded-2 w-50 border-0"
-            >
-              <option value="allMessages">All Messages</option>
-              <option value="unread">Unread</option>
-              <option value="read">Read</option>
-            </select> */}
 
             <div className="position-relative w-50">
-              {/* {userType === "user" && <button
-
-                onClick={() => handleComposeClick("click")}
-                className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto  "
-
-              >
-                Compose
-              </button>}
-              {allExpertsPopUp && (
-                <div
-                  style={{
-                    bottom: "-550%",
-                    color: "black",
-                    zIndex: "100",
-                    height: "40vh",
-                    width: "25vw",
-                    boxShadow: "0px 0px 4px 0.2px #00000040",
-                  }}
-
-                  className="position-absolute bg-white  p-3 rounded"
-
-                >
-                  <span className="flex justify-content-between pb-1 align-items-center">
-                    <p style={{ marginLeft: "30%" }}>All Experts</p>
-                    <FontAwesomeIcon
-                      onClick={() => setAllExpertsPopUp(false)}
-                      className="cursor-pointer"
-                      icon={faXmark}
-                    />
-                  </span>
-                  
-                  <input
-                    type="text"
-                    id="search"
-                    placeholder="Search here..."
-                    aria-label="search"
-
-                    className=" form-control border-end-0 px-3 bg-custom-secondary"
-
-                    onChange={(e) => setAllExpertsInput(e.target.value)}
-                  />
-                  <div
-                    style={{
-                      height: "70%",
-                      scrollbarWidth: "none",
-                      overflowX: "hidden",
-                    }}
-                    className="flex flex-column position-relative"
-                  >
-                    {allExpertsLoading ? (
-                      <PulseLoader
-                        size={8}
-                        style={{ top: "40%", left: "45%" }}
-                        color="black"
-
-                        className="position-absolute "
-                      />
-                    ) : allExpertsError === "No expert found" ? (
-                      <p
-                        style={{
-                          top: "40%",
-                          left: "25%",
-                          whiteSpace: "nowrap",
-                        }}
-                        className="position-absolute "
-                      >
-                        {allExpertsError}
-                      </p>
-                    ) : (
-                      allExpertsData?.map((profile, index) => (
-                        <span
-                          key={index}
-                           onClick={() => userType !== "admin" ? handleOpenChat(profile?.id, profile?.email, logo, "Support"): handleOpenChat(profile?.id, profile?.email, profile?.profile_picture, profile?.name)}
-                          
-                          className="d-flex gap-2 align-items-center m-2 cursor-pointer bg-blue"
-                        >
-                          {profile.profile_picture ? (
-                            <img
-                              src={profile.profile_picture}
-                              alt={profile.name}
-                              className="rounded-circle"
-                              width="30"
-                              height="30"
-                            />
-                          ) : (
-                            <div
-                              style={{
-                                width: "30px",
-                                height: "30px",
-                                borderRadius: "50%",
-                                backgroundColor: getRandomColor(), // Function to get a random color
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                            >
-                              <span
-                                style={{ color: "#fff", fontWeight: "bold" }}
-                              >
-                                {profile.name.charAt(0).toUpperCase()}{" "}
-                                {/* Display first letter */}
-                              {/* </span> */}
-                            {/* </div> */}
-                          {/* )} */}
-                          {/* <p className="fs-6">{profile.name}</p> */}
-                        {/* </span> */}
-                      {/* )) */}
-
-                    {/* )} */}
-                  {/* </div> */}
-                {/* </div> */}
-              {/* )}  */}
+             
             </div>
           </div>
          {userType === "admin" && <div className="position-relative w-100">
@@ -1232,7 +1037,7 @@ useEffect(() => {
           </div>}
           <div className="mt-3 pe-1 w-100" style={{marginBottom:"10%", height: "80%", overflowY:"auto" }}>
             {
-            chatList.length === 0 ? <p>No users found with this name</p>:
+            chatList.length === 0 ? <div className="w-100 h-20 d-flex justify-content-center mt-1 custom-box bg-gradient-custom-div align-items-center"><p>No users found!</p></div>:
             chatList?.map((chat) => (
               <div
                 key={chat?.chat_id}
@@ -1241,7 +1046,7 @@ useEffect(() => {
                 }`}
 
 
-                onClick={() => userType !== "admin" ? userType === "expert" ? handleOpenChat(chat?.user_id, chat?.email, logo, "Support") : handleOpenChat(chat?.user_id, chat?.email, logo, "Support") :  handleOpenChat(chat?.user_id,chat?.email, chat?.profile_picture, chat?.name)}
+                onClick={() => userType !== "admin" ? userType === "expert" ? handleOpenChat(chat?.user_id, chat?.email, logo, "Support") : handleOpenChat(chat?.id, chat?.email, logo, "Support") :  handleOpenChat(chat?.user_id,chat?.email, chat?.profile_picture, chat?.name)}
               >
                 <div className="d-flex gap-2 align-items-center">
                   <img
@@ -1252,7 +1057,7 @@ useEffect(() => {
                   />
                   <div>
                     <h6 className="mb-0">{userType !== "admin" ? "Support": chat.name}</h6>
-                    <p style={{fontWeight:chat?.is_read ? "600":"normal"}} className={`text-muted mb-0 `}>{chat?.message?.slice(0, 15) + "..."}</p>
+                    <p style={{fontWeight:chat?.is_read ? "600":"normal"}} className={`text-muted mb-0 `}>{chat?.message ? chat?.message?.slice(0, 15) + "...": ""}</p>
                   </div>
                 </div>
                 <div className="d-flex flex-column justify-content-between">
@@ -1278,7 +1083,78 @@ useEffect(() => {
             ))}
           </div>
         </section>
-        <section className="px-4 py-2 w-60 flex-grow-1" style={{height:"80%"}}>
+        <section className={`responsive-support-full position-absolute bg-white px-4 py-2 w-100 flex-grow-1 ${isChatOpen ? 'slide-in' : 'slide-out'}`} style={{}}>
+          <div style={{ height: "3rem", display: "flex", alignItems: "center", gap: "1rem" }}>
+<FontAwesomeIcon onClick={()=>setIsChatOpen(false)} icon={faArrowLeft}/>
+            {
+
+              selectedImage ? (
+                <img
+                  src={selectedImage}
+                  alt={selectedName}
+                  className="rounded-circle"
+                  style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                />
+              ) : (
+                (selectedImage !== "" && selectedName !== "") ?
+                  <div
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "50%",
+                      backgroundColor: getRandomColor(), // Function to get a random color
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <span
+                      style={{ color: "#fff", fontWeight: "bold" }}
+                    >
+                      {selectedName.charAt(0).toUpperCase()}{" "}
+                      {/* Display first letter */}
+                    </span>
+                  </div> : <></>
+              )}
+            <p>{selectedName}</p>
+          </div>
+          {selectedChat === null ? (
+            <div className="d-flex justify-content-center align-items-center h-100">
+              <p>Select a conversation to start yoyo</p>
+            </div>
+          ) : (
+            <div className="messages-long-messages d-flex flex-column justify-content-between" style={{ overflowY: "auto" }}>
+              <div className="d-flex flex-column">
+                {messages[selectedChat]?.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`d-flex ${msg?.sender === "You" ? "justify-content-end" : "justify-content-start"
+                      }`}
+                  >
+                    <div className="message-container">
+                      <p className="mb-0">{msg.text}</p>
+                      <small className="text-muted">{msg.time}</small>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div ref={chatBottomRef} />
+              <form className="sendmessagesinput d-flex position-fixed">
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  className="form-control me-2"
+                  placeholder="Type your message"
+                />
+                <button disabled={inputValue === "" ? true : false} onClick={handleSendMessage} className="btn btn-primary">
+                  Send
+                </button>
+              </form>
+            </div>
+          )}
+        </section>
+        <section className="responsive-messages-short px-4 py-2 w-60 flex-grow-1" style={{height:"80%"}}>
           <div style={{height:"3rem", display:"flex", alignItems:"center",paddingLeft:"1rem", gap:"1rem"}}>
          
                   {

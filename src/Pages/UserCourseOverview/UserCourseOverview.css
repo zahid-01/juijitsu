@@ -851,10 +851,15 @@ gap:4vw;
 }
 .card-bottom-userCourseview {
   height: 18vh;
- 
 }
 .left-top-mid-userCourseview h3 {
   font-size: 2.3vw;
+}
+.edit-course-expert{
+  width: max-content;
+  margin-top: 7px;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
 }
 }
 
@@ -864,6 +869,9 @@ gap:4vw;
   }
   .left-top-mid-userCourseview h4 {
     font-size: 1.7vw;
+}
+.edit-course-expert h6{
+  font-size: 0.7rem;
 }
 }
 @media (max-width: 717px) {

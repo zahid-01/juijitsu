@@ -138,10 +138,10 @@ export default function ExpertWallet() {
   const { lastWithdrawal, orders, payable_amount } = walletData;
   const recentPayout = lastWithdrawal[0]?.withdrawal_amount || "$0.00";
   const accountBalance = `$${payable_amount}`;
+  console.log(orders.length)
 
   const handleClear = () => {
     console.log("Clearing fields");
-
     setCountry("");
     setRouting("");
     setAccountNumber("");
@@ -242,7 +242,12 @@ export default function ExpertWallet() {
       );
       console.log(response?.data);
       toast.success("Account deleted successfully");
-      bankClick();
+      
+      // Resetting the state
+      setEditable(false); // Set editable to false
+      handleClear(); // Clear all input fields
+      setBankDetails(""); // Clear bank details
+  
     } catch (err) {
       toast.error(err?.response?.data?.message);
     }
@@ -289,9 +294,13 @@ export default function ExpertWallet() {
       setWithdrawalHistory(response?.data);
     } catch (err) {
       console.log(err);
-      toast.error(err?.response?.data?.message);
+      // toast.error(err?.response?.data?.message);
     }
   }
+
+  // useEffect(()=>{
+  //   console.log(withdrawalHistory)
+  // },[withdrawalHistory])
 
   // console.log(accountType)
   return (
@@ -422,6 +431,13 @@ export default function ExpertWallet() {
           
         </div>
         {activeTab === "activity" && (
+          orders?.length === 0 ? <>
+          <div className="no-courses-userCourses">
+            <div>
+              <h1>No Purchase History Found Yet!</h1>
+            </div>
+          </div>
+        </> :
           <div className="tab-pane active" style={{ overflowX: "auto" }}>
             <table className="table w-md-reverse-50">
               <thead>
@@ -480,7 +496,15 @@ export default function ExpertWallet() {
           </div>
         )}
 {activeTab === "withdrawl-history" && (
+  (!withdrawalHistory || withdrawalHistory?.data?.length === "0" ) ? <>
+  <div className="no-courses-userCourses">
+    <div>
+      <h1>No History Found Yet!</h1>
+    </div>
+  </div>
+</>:
           <div className="tab-pane active" style={{ overflowX: "auto" }}>
+            
             <table className="table w-md-reverse-50">
               <thead>
                 <tr>
@@ -535,7 +559,7 @@ export default function ExpertWallet() {
                 type="text"
                 className="pl-1 w-80"
                 placeholder={
-                  bankDetails?.account_number || "Enter account number"
+                  "Enter account number"
                 }
                 disabled={editable}
               />
@@ -550,7 +574,7 @@ export default function ExpertWallet() {
                 className="pl-1 w-80"
                 type="text"
                 placeholder={
-                  bankDetails?.account_holder_name ||
+                  // bankDetails?.account_holder_name ||
                   "Enter account holder name"
                 }
                 disabled={editable}
@@ -566,7 +590,7 @@ export default function ExpertWallet() {
                 className="pl-1 w-80"
                 type="text"
                 placeholder={
-                  bankDetails?.routing_number || "Enter Routing / IFSC Number"
+                  "Enter Routing / IFSC Number"
                 }
                 disabled={editable}
               />

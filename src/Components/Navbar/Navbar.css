@@ -14,7 +14,7 @@
   height: 100%;
   display: flex;
   align-items: center;
-
+  
   position: relative;
 }
 
@@ -225,7 +225,7 @@ input::placeholder {
  }
  
 .learn-more-user {
-  width: 20rem;
+  width: 15rem;
   height: auto;
  }
  
@@ -261,7 +261,7 @@ input::placeholder {
   position: absolute;
   content: "";
   top: -0.29rem;
-  right: 0.0625rem;
+  right: 0.065rem;
   width: 0.625rem;
   height: 0.625rem;
   border-top: 0.125rem solid #fff;
@@ -275,7 +275,7 @@ input::placeholder {
   top: 0;
   left: 0;
   right: 0;
-  right:-45px;
+  right:-20px;
   bottom: 0;
   padding: 0.75rem 0;
   margin: 0 0 0 1.85rem;
@@ -306,6 +306,32 @@ input::placeholder {
  .navbar-expand-lg .admin-cart-container{
   margin-left: 55vw;
 } 
+@media (max-width:493px) {
+  .user-navbar{
+    margin-bottom: 1rem;
+  }
+  .search-input{
+    margin-top: 0.5rem;
+  }
+}
+@media (max-width: 780px) {
+ .navbar{
+  width: 100%;
+  left: 0;
+ }
+ .navbar-expand-lg .admin-cart-container {
+  margin-left: 0vw !important;
+}
+ 
+  /* .navbar.collapsed .admin-cart-container{
+    margin-left: 0px;
+    width: 100%;
+  } 
+   .navbar-expand-lg .admin-cart-container{
+    margin-left: 0px;
+    width: 100%;
+  }  */
+}
 @media  (min-width:911px) and (max-width: 1082px) {
   .navbar-expand-lg .admin-cart-container {
     margin-left: 60vw !important;

@@ -50,7 +50,7 @@ const UserManagement = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      // setPayoutRequests(response?.data?.data || []);
+      setPayoutRequests(response?.data?.data || []);
       // setTotalPages(Math.ceil(response?.data?.total / limit));
     } catch (err) {
       setError(err?.response?.data?.message);
@@ -258,26 +258,26 @@ const UserManagement = () => {
         className="header-container p-3 pb-0 rounded-bottom-0 custom-box  "
         style={{ backgroundColor: "white", overflowX: "auto" }}
       >
-        <div className="d-flex gap-5 px-4">
-          {[
-            // "payExperts",
-            "payoutRequests", // New tab for payout requests
-            "transactions",
-            "editCommission",
-          ].map((tab) => (
-            <h5
-              key={tab}
-              className={`tab-item px-3 pb-3 py-1 fw-light cursor-pointer ${
-                activeTab === tab ? "active-tab" : "inactive-tab"
-              }`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab
-                .replace(/([A-Z])/g, " $1")
-                .replace(/\b\w/g, (char) => char.toUpperCase())}
-            </h5>
-          ))}
-        </div>
+        <div className="d-flex gap-5 px-4 ">
+  {[
+    "payoutRequests", // New tab for payout requests
+    "transactions",
+    "editCommission",
+  ].map((tab) => (
+    <h5
+      key={tab}
+      className={`tab-item px-3 pb-3 py-1 fw-light ${
+        activeTab === tab ? "active-tab" : "inactive-tab"
+      }`}
+      onClick={() => setActiveTab(tab)}
+      style={{ cursor: "pointer" }} // Add cursor pointer style here
+    >
+      {tab
+        .replace(/([A-Z])/g, " $1")
+        .replace(/\b\w/g, (char) => char.toUpperCase())}
+    </h5>
+  ))}
+</div>
       </header>
 
       <div
@@ -314,13 +314,13 @@ const UserManagement = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {payoutRequests.map((request, index) => (
+                      {payoutRequests?.map((request, index) => (
                         <tr key={index}>
                           <td className="align-middle fs-small py-2 text-capitalize">
                             <div
                               style={{ display: "flex", alignItems: "center" }}
                             >
-                              {request.profile_picture ? (
+                              {request?.profile_picture ? (
                                 <img
                                   src={request.profile_picture}
                                   alt={request.name}
@@ -348,19 +348,19 @@ const UserManagement = () => {
                                     color: "#fff",
                                   }}
                                 >
-                                  {request.name.charAt(0).toUpperCase()}{" "}
+                                  {request?.name?.charAt(0)?.toUpperCase()}{" "}
                                   {/* Display the first initial */}
                                 </div>
                               )}
-                              {request.name}
+                              {request?.name}
                             </div>
                           </td>
                           <td className="text-center align-middle fs-small">
-                            ${request.amount}
+                            ${request?.amount}
                           </td>
                           <td className="text-center align-middle fs-small">
-                            {request.created_at}
-                          </td>
+  {request?.created_at ? new Date(request.created_at).toLocaleString() : "N/A"}
+</td>
                           <td className="text-center align-middle fs-small">
                             <button
                               className="btn"
@@ -369,7 +369,7 @@ const UserManagement = () => {
                                   "linear-gradient(92.36deg, #0c243c 0%, #7e8c9c 98.67%)",
                                 color: "white",
                               }}
-                              onClick={() => handleAction(request.id)}
+                              onClick={() => handleAction(request?.id)}
                             >
                               Pay Now
                             </button>

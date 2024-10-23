@@ -243,7 +243,10 @@
 }
 @media (max-width: 768px) {
   .top-courses {
-    display: none;
+    margin: 0;
+  }
+  .top-button{
+    border-radius: 0.4rem;
   }
   .bottom-courses {
     grid-template-columns: repeat(2, 1fr);
@@ -252,9 +255,16 @@
     padding-inline: 0.8rem;
   }
  
- 
+  .card-bottom-courses{
+    border-radius: 0.5rem;
+  }
+  .addCourse-card-courses{
+    border-radius: 0.3rem;
+    padding: 0.7rem 0.5rem;
+  }
     .card-bottom-courses img {
         height: 22vw;
+        border-radius: 0.5rem;
     }
     .middle-sec-card-courses {
       height: 5vw;

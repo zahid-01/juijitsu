@@ -141,6 +141,12 @@
   .signup-image {
     display: none;
   }
+  .signup-auth{
+    width: 100%;
+  }
+  .signup-auth .bttns{
+    width: 70%;
+  }
   .signUp-form {
     width: 100% !important;
   }

@@ -89,18 +89,18 @@ export default function Settings() {
     website,
     bio,
   } = data?.data[0] || [];
-  console.log(data?.data[0]);
+  console.log(data);
 
   useEffect(() => {
     if (data) {
       setUserData({
         users: {
-          name: data.data[0].name,
-          company_name: data.data[0].company_name,
-          youtube: data.data[0].youtube,
-          twitter: data.data[0].twitter,
-          website: data.data[0].website,
-          bio: data.data[0].bio,
+          name: data?.data[0]?.name,
+          company_name: data?.data[0]?.company_name,
+          youtube: data?.data[0]?.youtube,
+          twitter: data?.data[0]?.twitter,
+          website: data?.data[0]?.website,
+          bio: data?.data[0]?.bio,
         },
       });
     }
@@ -259,6 +259,7 @@ export default function Settings() {
   // };
   const handleEditNameClick = () => {
     setIsReadOnly(!isReadOnly);
+    console.log("ok")
   };
   const handleEditcompanyClick = () => {
     setIsReadOnly(false);

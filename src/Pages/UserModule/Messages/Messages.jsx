@@ -8,9 +8,9 @@ import { BASE_URI } from "../../../Config/url";
 import axios from "axios";
 import { FaUserCircle } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faUserCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faHeart, faUserCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { PulseLoader } from "react-spinners";
-import  {socket}  from "../../../socket";
+import { socket } from "../../../socket";
 import toast from "react-hot-toast";
 
 
@@ -64,9 +64,8 @@ const getTimeDifference = (date) => {
   } else if (differenceInHours > 0) {
     return `${differenceInHours} hour${differenceInHours > 1 ? "s" : ""} ago`;
   } else if (differenceInMinutes > 0) {
-    return `${differenceInMinutes} minute${
-      differenceInMinutes > 1 ? "s" : ""
-    } ago`;
+    return `${differenceInMinutes} minute${differenceInMinutes > 1 ? "s" : ""
+      } ago`;
   } else {
     return `Just now`;
   }
@@ -87,21 +86,23 @@ const Messages = () => {
   const [selectedImage, setselectedImage] = useState("")
   const [selectedName, setSelectedName] = useState("")
   const [searchChat, setSearchChat] = useState("");
-  const [hearted , setHearted] = useState({})
+  const [hearted, setHearted] = useState({})
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
 
   const popupRef = useRef(null);
   const userType = localStorage.getItem("userType");
   const token = localStorage.getItem("token");
   const chatListUrl = `${BASE_URI}/api/v1/chat${searchChat && `?search=${searchChat}`}`;
   const chatBottomRef = useRef(null);
-
+  const chatBottom1Ref = useRef(null);
   const fetchOptions = {
     headers: {
       Authorization: "Bearer " + token,
     },
   };
 
-  const { data,refetch } = useFetch(chatListUrl, fetchOptions);
+  const { data, refetch } = useFetch(chatListUrl, fetchOptions);
   const chatList = useMemo(() => data?.data || [], [data]);
 
   console.log(chatList)
@@ -115,48 +116,49 @@ const Messages = () => {
     }
   }, [chatList]);
 
-// const time = new Date(Date.now()).toLocaleTimeString(
-// )
-// console.log(time)
+  // const time = new Date(Date.now()).toLocaleTimeString(
+  // )
+  // console.log(time)
 
-const handleOpenChat = (receiverId, receiverEmail, image, name) => {
-  setselectedImage(image);
-  setSelectedName(name);
-  setAllExpertsPopUp(false);
-  setSelecetedEmail(receiverEmail);
-  setSelectedChat(receiverId);
-  
-  console.log(receiverEmail);
-  axios
-    .get(`${BASE_URI}/api/v1/chat/chatMessages/${receiverId}`, fetchOptions)
-    .then((resp) => {
-      // Map the response data to the desired format
-      const chatMessages = resp?.data?.data?.map((msg) => ({
-        id: msg.id,
-        text: msg.message,
-        sender: msg.sender_id === receiverId ? "Receiver" : "You",
-        time: new Date(msg.created_at).toLocaleTimeString("en-US", {
-          timeZone: "Asia/kolkata",
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        timestamp: new Date(msg.created_at).getTime(), // Add a timestamp for sorting
-      }));
+  const handleOpenChat = (receiverId, receiverEmail, image, name) => {
+    setselectedImage(image);
+    setSelectedName(name);
+    setAllExpertsPopUp(false);
+    setSelecetedEmail(receiverEmail);
+    setSelectedChat(receiverId);
+    setIsChatOpen(true);
 
-      // Sort messages based on the timestamp
-      const sortedMessages = chatMessages.sort((a, b) => a.timestamp - b.timestamp);
+    console.log(receiverEmail);
+    axios
+      .get(`${BASE_URI}/api/v1/chat/chatMessages/${receiverId}`, fetchOptions)
+      .then((resp) => {
+        // Map the response data to the desired format
+        const chatMessages = resp?.data?.data?.map((msg) => ({
+          id: msg.id,
+          text: msg.message,
+          sender: msg.sender_id === receiverId ? "Receiver" : "You",
+          time: new Date(msg.created_at).toLocaleTimeString("en-US", {
+            timeZone: "Asia/kolkata",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          timestamp: new Date(msg.created_at).getTime(), // Add a timestamp for sorting
+        }));
 
-      // Update the messages state with sorted messages
-      setMessages((prevMessages) => ({
-        ...prevMessages,
-        [receiverId]: sortedMessages, // Save the sorted messages for the selected chat
-      }));
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-  
+        // Sort messages based on the timestamp
+        const sortedMessages = chatMessages.sort((a, b) => a.timestamp - b.timestamp);
+
+        // Update the messages state with sorted messages
+        setMessages((prevMessages) => ({
+          ...prevMessages,
+          [receiverId]: sortedMessages, // Save the sorted messages for the selected chat
+        }));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
 
 
 
@@ -164,46 +166,48 @@ const handleOpenChat = (receiverId, receiverEmail, image, name) => {
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!selectedChat || selectedChat === "") return;
-  // Create a new message object
-  const newMessage = {
-    id: Date.now(), // Unique ID for the message
-    text: inputValue,
-    sender: "You",
-    time: new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
+    // Create a new message object
+    const newMessage = {
+      id: Date.now(), // Unique ID for the message
+      text: inputValue,
+      sender: "You",
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+
+    // Update the messages state without fetching data
+    setMessages((prevMessages) => ({
+      ...prevMessages,
+      [selectedChat]: [...(prevMessages[selectedChat] || []), newMessage],
+    }));
+
+
+
+    console.log("Sending message:", inputValue);
+    console.log("sending messaage to :", selectedEmail)
+
+    socket?.emit("private_message", {
+      msg: inputValue,
+      friend: selectedEmail,
+    })
+      , (response) => {
+        console.log('Server acknowledgment received:', response);
+      };
+    setInputValue("");
   };
 
-  // Update the messages state without fetching data
-  setMessages((prevMessages) => ({
-    ...prevMessages,
-    [selectedChat]: [...(prevMessages[selectedChat] || []), newMessage],
-  }));
-
-                  
-
-  console.log("Sending message:", inputValue);
-  console.log("sending messaage to :",selectedEmail)
-  
-socket?.emit("private_message", {
-  msg: inputValue,
-  friend: selectedEmail,
-})
-, (response) => {
-  console.log('Server acknowledgment received:', response);
-};
-  setInputValue("");
-};
-
-useEffect(() => {
-  // Scroll to the bottom of the chat after messages update
-  chatBottomRef?.current?.scrollIntoView({ behavior: "smooth" });
-}, [messages]);
+  useEffect(() => {
+    console.log("triggered")
+        chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        chatBottom1Ref.current?.scrollIntoView({ behavior: "smooth" });
+      // }, 100); // Delay to allow DOM to update
+    // }
+  }, [messages, selectedChat]);
 
 
 
-  
 
   const handleOutsideClick = (e) => {
     if (popupRef.current && !popupRef.current.contains(e.target)) {
@@ -217,9 +221,8 @@ useEffect(() => {
     }
 
     setAllExpertsLoading(true);
-    const url = `${BASE_URI}/api/v1/users/otherExperts${
-      allExpertsInput !== "" ? `?search=${allExpertsInput}` : ""
-    }`;
+    const url = `${BASE_URI}/api/v1/users/otherExperts${allExpertsInput !== "" ? `?search=${allExpertsInput}` : ""
+      }`;
     console.log(url);
     await axios({
       method: "GET",
@@ -247,15 +250,15 @@ useEffect(() => {
     handleComposeClick();
   }, [allExpertsInput]);
 
-  
+
 
   useEffect(() => {
     if (!socket || !selectedChat) return;
-  
+
     // Listen to socket event
     const messageListener = (message) => {
       console.log("received", message);
-  
+
       const newMessage = {
         id: Date.now(), // Unique ID for the message
         text: message.message,
@@ -265,29 +268,29 @@ useEffect(() => {
           minute: "2-digit",
         })
       };
-  
+
       // Update the messages state without fetching data
       setMessages((prevMessages) => ({
         ...prevMessages,
         [selectedChat]: [...(prevMessages[selectedChat] || []), newMessage],
       }));
     };
-  
+
     socket.on("privateMessage", messageListener);
-  
+
     // Cleanup function to remove the listener
     return () => {
       socket.off("privateMessage", messageListener);
     };
   }, [socket, selectedChat]); // Add selectedChat as a dependency
-  
-  
-  
-    
- 
 
-  
-    
+
+
+
+
+
+
+
   const addToFavorites = async (e, receiverId) => {
     e.stopPropagation();
     if (!token) {
@@ -307,7 +310,7 @@ useEffect(() => {
         },
       });
       // Update the hearted state
-      
+
       toast.success("Added to favorites");
     } catch (err) {
       console.log(err);
@@ -315,42 +318,42 @@ useEffect(() => {
     }
   };
 
-    const removeFromFavorites = async (e, receiverId) => {
-      e.stopPropagation();
-      if (!token) {
-        navigate("/");
-      }
-      // Update the hearted state
-      setHearted((prev) => ({
-        ...prev,
-        [receiverId]: false, // Set to false as it's no longer a favorite
-      }));
-      try {
-        await axios({
-          method: "delete",
-          url: `${BASE_URI}/api/v1/chat`,
-          data: { receiver: receiverId },
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        });
-        
-        toast.success("Removed from favorites");
-      } catch (err) {
-        console.log(err);
-        toast.error("Failed to remove from favorites");
-      }
-    };
-  
-    const handleFavoriteToggle = (e, receiverId) => {
-      e.stopPropagation();
-      const isCurrentlyHearted = hearted[receiverId];
-      if (isCurrentlyHearted) {
-        removeFromFavorites(e, receiverId);
-      } else {
-        addToFavorites(e, receiverId);
-      }
-    };
+  const removeFromFavorites = async (e, receiverId) => {
+    e.stopPropagation();
+    if (!token) {
+      navigate("/");
+    }
+    // Update the hearted state
+    setHearted((prev) => ({
+      ...prev,
+      [receiverId]: false, // Set to false as it's no longer a favorite
+    }));
+    try {
+      await axios({
+        method: "delete",
+        url: `${BASE_URI}/api/v1/chat`,
+        data: { receiver: receiverId },
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      toast.success("Removed from favorites");
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to remove from favorites");
+    }
+  };
+
+  const handleFavoriteToggle = (e, receiverId) => {
+    e.stopPropagation();
+    const isCurrentlyHearted = hearted[receiverId];
+    if (isCurrentlyHearted) {
+      removeFromFavorites(e, receiverId);
+    } else {
+      addToFavorites(e, receiverId);
+    }
+  };
 
   useEffect(() => {
     if (popupVisible) {
@@ -392,21 +395,22 @@ useEffect(() => {
   };
 
   return (
-    <div className="w-100">
+    <div className="w-100 position-relative">
       <header className="bg-gradient-custom-div p-3 rounded-3">
         <h3 className="pb-4">Messages</h3>
         <p className="mb-3 fs-4 fw-light">Messages from {userType === "expert" ? "users" : "experts"}</p>
       </header>
       <main className="d-flex" style={{ minHeight: "calc(100vh - 14rem)" }}>
 
-        <section className="px-2 py-2 w-40 border-end pe-4">
+        <section className="chatlist-messages px-2 py-2 pe-4 position-relative">
 
 
 
           <div
             className="d-flex align-items-center gap-5 mb-3"
-           
+
           >
+
 
 
             <div
@@ -415,7 +419,7 @@ useEffect(() => {
               className="p-2 bg-custom-secondary rounded-2 w-50 border-0"
             >
               <p>All Messages</p>
-             
+
             </div>
 
             <div className="position-relative w-50">
@@ -429,16 +433,9 @@ useEffect(() => {
               </button>}
               {allExpertsPopUp && (
                 <div
-                  style={{
-                    bottom: "-550%",
-                    color: "black",
-                    zIndex: "100",
-                    height: "40vh",
-                    width: "25vw",
-                    boxShadow: "0px 0px 4px 0.2px #00000040",
-                  }}
+                  
 
-                  className="position-absolute bg-white  p-3 rounded"
+                  className="compose-popup position-absolute bg-white p-3 rounded"
 
                 >
                   <span className="flex justify-content-between pb-1 align-items-center">
@@ -449,7 +446,7 @@ useEffect(() => {
                       icon={faXmark}
                     />
                   </span>
-                  
+
                   <input
                     type="text"
                     id="search"
@@ -491,8 +488,8 @@ useEffect(() => {
                       allExpertsData?.map((profile, index) => (
                         <span
                           key={index}
-                           onClick={() => handleOpenChat(profile?.id, profile?.email, profile?.profile_picture, profile?.name)}
-                          
+                          onClick={() => handleOpenChat(profile?.id, profile?.email, profile?.profile_picture, profile?.name)}
+
                           className="d-flex gap-2 align-items-center m-2 cursor-pointer bg-blue"
                         >
                           {profile.profile_picture ? (
@@ -542,115 +539,139 @@ useEffect(() => {
               type="text"
               placeholder="Search Messages"
               value={searchChat}
-              onChange={(e)=> setSearchChat(e.target.value)}
+              onChange={(e) => setSearchChat(e.target.value)}
               className="form-control bg-custom-secondary border-end-0 px-5 py-2 rounded-2 w-100"
             />
           </div>
-          <div className="mt-3 pe-1 w-100" style={{marginBottom:"10%", height: "80%", overflowY:"auto" }}>
+          <div className="mt-3 pe-1 w-100" style={{ marginBottom: "10%", height: "80%", overflowY: "auto" }}>
             {
-            chatList.length === 0 ? <p>No users found with this name</p>:
-            chatList.map((chat) => (
-              <div
-                key={chat.chat_id}
-                className={`cursor-pointer bg-white d-flex justify-content-between p-3 mb-3 border rounded-3 ${
-                  selectedChat === chat.chat_id && "selected"
-                }`}
-                onClick={() => handleOpenChat(chat?.expert_id, chat?.email, chat?.profile_picture, chat?.name)}
-              >
-                <div className="d-flex gap-2 align-items-center">
-                  <img
-                    src={chat.profile_picture || logo}
-                    alt={chat.name}
-                    className="rounded-circle"
-                    style={{ width: "50px", height: "50px" }}
-                  />
-                  <div>
-                    <h6 className="mb-0">{chat.name}</h6>
-                    <p style={{fontWeight:chat?.is_read ? "600":"normal"}} className={`text-muted mb-0 `}>{chat.message.slice(0, 15) + "..."}</p>
-                  </div>
-                </div>
-                <div className="d-flex flex-column justify-content-between">
-                  <small>{getTimeDifference(chat.updated_at)}</small>{" "}
-                  {hearted[chat.expert_id] ? ( // Check if the specific chat is hearted
-  <FontAwesomeIcon
-    onClick={(e) => handleFavoriteToggle(e, chat.expert_id)}
-    id="heart-messages"
-    icon={faHeart}
-    style={{ zIndex: "10", color: "red" }} // Add color for the hearted state
-  />
-) : (
-  <CiHeart
-    style={{ zIndex: "10", color: "black" }} // Default color for unhearted state
-    onClick={(e) => handleFavoriteToggle(e, chat.expert_id)}
-    id="unHeart-messages"
-  />
-)}
-                  {/* Use the time difference here */}
-                </div>
-                
-              </div>
-            ))}
-          </div>
-        </section>
-        <section className="px-4 py-2 w-60 flex-grow-1" style={{height:"80%"}}>
-          <div style={{height:"3rem", display:"flex", alignItems:"center",paddingLeft:"1rem", gap:"1rem"}}>
-         
-                  {
-                  
-                  selectedImage ? (
+              chatList.length === 0 ? <div className="w-100 h-20 d-flex justify-content-center mt-1 custom-box bg-gradient-custom-div align-items-center"><p>No users found!</p></div> :
+                chatList.map((chat) => (
+                  <div
+                    key={chat.chat_id}
+                    className={`cursor-pointer bg-white d-flex justify-content-between p-3 mb-3 border rounded-3 ${selectedChat === chat.chat_id && "selected"
+                      }`}
+                    onClick={() => handleOpenChat(chat?.expert_id, chat?.email, chat?.profile_picture, chat?.name)}
+                  >
+                    <div className="d-flex gap-2 align-items-center">
+                      
+                      {/* <img
+                        src={chat.profile_picture || logo}
+                        alt={chat.name}
+                        className="rounded-circle"
+                        style={{ width: "50px", height: "50px" }}
+                      /> */}
+                      {chat.profile_picture ? (
                             <img
-                            src={selectedImage}
-                            alt={selectedName}
-                            className="rounded-circle"
-                            style={{ width: "40px", height: "40px", objectFit:"cover" }}
-                          />
+                              src={chat.profile_picture}
+                              alt={chat.name}
+                              className="rounded-circle"
+                              width="30"
+                              height="30"
+                            />
                           ) : (
-                           (selectedImage !== "" && selectedName !== "") ?
                             <div
                               style={{
-                                width: "30px",
-                                height: "30px",
+                                width: "35px",
+                                height: "35px",
                                 borderRadius: "50%",
                                 backgroundColor: getRandomColor(), // Function to get a random color
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                               }}
-                            >
-                              <span
-                                style={{ color: "#fff", fontWeight: "bold" }}
-                              >
-                                {selectedName.charAt(0).toUpperCase()}{" "}
-                                {/* Display first letter */}
-                              </span>
-                            </div> : <></>
-                          )}
-                  <p>{selectedName}</p>
+                            >  <span
+                            style={{ color: "#fff", fontWeight: "bold" }}
+                          >
+                            {chat.name.charAt(0).toUpperCase()}{" "}
+                            {/* Display first letter */}
+                          </span></div>)}
+                      <div>
+                        <h6 className="mb-0">{chat.name}</h6>
+                        <p style={{ fontWeight: chat?.is_read ? "600" : "normal" }} className={`text-muted mb-0 `}>{chat?.message ? chat?.message?.slice(0, 15) + "..." : ""}</p>
+                      </div>
+                    </div>
+                    <div className="d-flex flex-column justify-content-between">
+                      <small>{getTimeDifference(chat.updated_at)}</small>{" "}
+                      {hearted[chat.expert_id] ? ( // Check if the specific chat is hearted
+                        <FontAwesomeIcon
+                          onClick={(e) => handleFavoriteToggle(e, chat.expert_id)}
+                          id="heart-messages"
+                          icon={faHeart}
+                          style={{ zIndex: "10", color: "red" }} // Add color for the hearted state
+                        />
+                      ) : (
+                        <CiHeart
+                          style={{ zIndex: "10", color: "black" }} // Default color for unhearted state
+                          onClick={(e) => handleFavoriteToggle(e, chat.expert_id)}
+                          id="unHeart-messages"
+                        />
+                      )}
+                      {/* Use the time difference here */}
+                    </div>
+
+                  </div>
+                ))}
+          </div>
+        </section>
+        <section className="responsive-messages-short px-4 py-2 w-60 flex-grow-1" style={{ height: "80%"}}>
+          <div style={{ height: "3rem", display: "flex", alignItems: "center", paddingLeft: "1rem", gap: "1rem" }}>
+
+            {
+
+              selectedImage ? (
+                <img
+                  src={selectedImage}
+                  alt={selectedName}
+                  className="rounded-circle"
+                  style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                />
+              ) : (
+                (selectedImage !== "" && selectedName !== "") ?
+                  <div
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "50%",
+                      backgroundColor: getRandomColor(), // Function to get a random color
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <span
+                      style={{ color: "#fff", fontWeight: "bold" }}
+                    >
+                      {selectedName.charAt(0).toUpperCase()}{" "}
+                      {/* Display first letter */}
+                    </span>
+                  </div> : <></>
+              )}
+            <p>{selectedName}</p>
           </div>
           {selectedChat === null ? (
             <div className="d-flex justify-content-center align-items-center h-100">
               <p>Select a conversation to start messaging</p>
             </div>
           ) : (
-            <div className="d-flex flex-column justify-content-between" style={{height:"55vh", overflowY:"auto"}}>
+            <div className="d-flex flex-column justify-content-between" style={{ height: "55vh", overflowY: "auto" }}>
               <div className="d-flex flex-column">
-  {messages[selectedChat]?.map((msg, index) => (
-    <div
-    key={index}
-    className={`d-flex ${
-      msg?.sender === "You" ? "justify-content-end" : "justify-content-start"
-    }`}
-  >
-    <div className="message-container">
-      <p className="mb-0">{msg.text}</p>
-      <small className="text-muted">{msg.time}</small>
-    </div>
-  </div>
-  
-  ))}
-</div>
-<div ref={chatBottomRef}/>
-              <form style={{bottom:"1%", right:"10%"}} className="d-flex position-fixed">
+                {messages[selectedChat]?.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`d-flex ${msg?.sender === "You" ? "justify-content-end" : "justify-content-start"
+                      }`}
+                  >
+                    <div className="message-container">
+                      <p className="mb-0">{msg.text}</p>
+                      <small className="text-muted">{msg.time}</small>
+                    </div>
+                  </div>
+
+                ))}
+              </div>
+              <div ref={chatBottom1Ref} />
+              <form style={{ bottom: "1%", right: "10%" }} className="d-flex position-fixed">
                 <input
                   type="text"
                   value={inputValue}
@@ -658,12 +679,85 @@ useEffect(() => {
                   className="form-control me-2"
                   placeholder="Type your message"
                 />
-                <button disabled={inputValue === "" ? true: false} onClick={handleSendMessage} className="btn btn-primary">
+                <button disabled={inputValue === "" ? true : false} onClick={handleSendMessage} className="btn btn-primary">
                   Send
                 </button>
               </form>
-              
-            
+
+
+            </div>
+          )}
+        </section>
+
+
+        <section className={`responsive-messages-full position-absolute bg-white px-4 py-2 w-100 flex-grow-1 ${isChatOpen ? 'slide-in' : 'slide-out'}`} style={{}}>
+          <div style={{ height: "3rem", display: "flex", alignItems: "center", gap: "1rem" }}>
+<FontAwesomeIcon onClick={()=>setIsChatOpen(false)} icon={faArrowLeft}/>
+            {
+
+              selectedImage ? (
+                <img
+                  src={selectedImage}
+                  alt={selectedName}
+                  className="rounded-circle"
+                  style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                />
+              ) : (
+                (selectedImage !== "" && selectedName !== "") ?
+                  <div
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "50%",
+                      backgroundColor: getRandomColor(), // Function to get a random color
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <span
+                      style={{ color: "#fff", fontWeight: "bold" }}
+                    >
+                      {selectedName.charAt(0).toUpperCase()}{" "}
+                      {/* Display first letter */}
+                    </span>
+                  </div> : <></>
+              )}
+            <p>{selectedName}</p>
+          </div>
+          {selectedChat === null ? (
+            <div className="d-flex justify-content-center align-items-center h-100">
+              <p>Select a conversation to start yoyo</p>
+            </div>
+          ) : (
+            <div className="messages-long-messages d-flex flex-column justify-content-between" style={{ overflowY: "auto" }}>
+              <div className="d-flex flex-column">
+                {messages[selectedChat]?.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`d-flex ${msg?.sender === "You" ? "justify-content-end" : "justify-content-start"
+                      }`}
+                  >
+                    <div className="message-container">
+                      <p className="mb-0">{msg.text}</p>
+                      <small className="text-muted">{msg.time}</small>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div ref={chatBottomRef} />
+              <form className="sendmessagesinput d-flex position-fixed">
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  className="form-control me-2"
+                  placeholder="Type your message"
+                />
+                <button disabled={inputValue === "" ? true : false} onClick={handleSendMessage} className="btn btn-primary">
+                  Send
+                </button>
+              </form>
             </div>
           )}
         </section>

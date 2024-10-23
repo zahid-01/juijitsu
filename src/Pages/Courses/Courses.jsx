@@ -114,7 +114,7 @@ const Courses = ({ search, setEditCourse , setCourseId}) => {
       title={course.title}
       description={course.description}
       price={course.price}
-      discount={course.discount}
+      discount={course.discounted_price}
       thumbnail={course.thumbnail}
       category={course.category}
       reason={course.remarks} // Correct field
