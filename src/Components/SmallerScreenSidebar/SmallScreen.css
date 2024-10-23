@@ -10,12 +10,21 @@
 .responsive-md{
     z-index: 100;
 }
+@media (max-width:655px){
+    .small-screen-text-admin {
+        display: none; /* Hides the text */
+    }
+    .u-screen{
+            margin-top: 2vw;
+           }
+      }
+
 @media (max-width:431px){
     .small-screen-text {
-        display: none; /* Hides the text */
+        display: none !important; 
       }
       .u-screen{
-     margin-top: 2vw;
+     margin-top: 2.5vw;
     }
 }
 @media (max-width:335px){
