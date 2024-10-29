@@ -7,7 +7,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { CiHeart } from "react-icons/ci";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { PulseLoader, SyncLoader } from "react-spinners";
+import { HashLoader, PulseLoader, SyncLoader } from "react-spinners";
 import { Outlet } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faSquarePlus, faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
@@ -86,6 +86,7 @@ const Card = ({
   };
 
   return (
+    
     <div
       className="card-bottom-userCourses"
       onMouseEnter={() => setIsHovered(true)}  // Start playing on hover
@@ -247,6 +248,7 @@ const Card = ({
 };
 
 const UserCourses = ({ search }) => {
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
@@ -321,12 +323,7 @@ const UserCourses = ({ search }) => {
   return (
     <>
       {isLoading2 ? (
-        <l-grid
-          id="spinner-usercourseview"
-          size="60"
-          speed="1.5"
-          color="black"
-        ></l-grid>
+        <HashLoader size="60" color="#0c243c" id="spinner-usercourseview"/>
       ) : (
         <div className="wrapper-userCourses w-100">
           <div className="bg-gradient-custom-div px-3 rounded">

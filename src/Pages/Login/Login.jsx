@@ -255,7 +255,7 @@ export default function Login() {
             <h2 className="mt-3">Sign In</h2>
             <p className="mb-4">Start your Inspiring journey now!</p>
           </div>
-          <div className="signup-auth">
+          {/* <div className="signup-auth">
             <button
               type="button"
               className="bttns google-signup"
@@ -265,8 +265,8 @@ export default function Login() {
               Sign In with Google
             </button>
             
-          </div>
-          <div className="d-flex align-items-center py-4">
+          </div> */}
+          {/* <div className="d-flex align-items-center py-4">
             <p
               className="mb-0"
               style={{
@@ -284,7 +284,7 @@ export default function Login() {
               }}
               className="mb-0"
             ></p>
-          </div>
+          </div> */}
           <form action="signIn" onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="email" className="form-label fw-bold fs-small">
@@ -369,7 +369,7 @@ export default function Login() {
           </form>
           <div className="text-center">
             <p className="fs-small">
-              Don’t have account yet?
+              Don’t have account yet?{" "}
               <Link to="/signUp" className="login-link text-black fw-bold">
                 Sign Up
               </Link>

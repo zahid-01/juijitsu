@@ -9,7 +9,7 @@
 #spinner-usercourseview {
   position: absolute;
   top: 600%;
-  left: 50%;
+  margin-top: 20%;
 }
 .top-userCourseview {
   width: 100%;

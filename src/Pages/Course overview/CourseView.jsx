@@ -22,9 +22,10 @@ import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
 import ReactPlayer from "react-player";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { loadStripe } from "@stripe/stripe-js";
+import { HashLoader } from "react-spinners";
 
 const stripePromise = loadStripe(
-  "pk_test_51PubCwDq08j41MMz9w7CFKlaPOPT4YlfciU9GCgXcxBmve17go3ryZQKVBcQJ3pzW86Z1mDb1bLTnkXFiTZKBu8O00CGdw624j"
+  import.meta.env.VITE_STRIPE_KEY
 );
 
 const CourseView = ({ setEditCourse, setCourseId }) => {
@@ -213,12 +214,7 @@ const userType = localStorage.getItem("userType");
   return (
     <>
       {isLoading ? (
-        <l-grid
-          id="spinner-usercourseview"
-          size="60"
-          speed="1.5"
-          color="black"
-        ></l-grid>
+        <HashLoader size="60" color="#0c243c" id="spinner-usercourseview"/>
       ) : (
         <div className="wrapper-userCourseview position-relative">
           {verificationPopUp && (

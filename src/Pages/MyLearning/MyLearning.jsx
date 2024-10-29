@@ -76,7 +76,7 @@ const Card = ({
               <span style={{ width: `${completed}%` }}></span>
             </span>
             <div>
-              <p>{completed}% complete</p>
+              <p>{Math.floor(completed)}% complete</p>
               {rating ? (
                 <div style={{ display: "flex" }}>
                   <h6>{rating} ⭐,</h6>

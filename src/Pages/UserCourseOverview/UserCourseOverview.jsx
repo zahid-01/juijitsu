@@ -24,10 +24,14 @@ import ReactPlayer from "react-player";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { loadStripe } from "@stripe/stripe-js";
 import { CiHeart } from "react-icons/ci";
+import { HashLoader } from "react-spinners";
+// import { LineWave } from "react-spinners";
 
 const stripePromise = loadStripe(
-  "pk_test_51PubCwDq08j41MMz9w7CFKlaPOPT4YlfciU9GCgXcxBmve17go3ryZQKVBcQJ3pzW86Z1mDb1bLTnkXFiTZKBu8O00CGdw624j"
+  import.meta.env.VITE_STRIPE_KEY
 );
+
+
 
 const UserCourseOverview = () => {
   const [loadingItems, setLoadingItems] = useState(null);
@@ -228,15 +232,17 @@ const UserCourseOverview = () => {
 
   return (
     <>
-      {isLoading ? (
-        <l-grid
-          id="spinner-usercourseview"
-          size="60"
-          speed="1.5"
-          color="black"
-        ></l-grid>
+      
+        <div style={{
+    ...(isLoading
+      && { justifyContent: 'center', alignItems: 'center', display: 'flex', height:'90vh' }
+      ) }}
+      className={`wrapper-userCourseview position-relative`}>
+        {isLoading ? (
+        <HashLoader size="60" color="#0c243c"/>
+        
       ) : (
-        <div className="wrapper-userCourseview position-relative">
+        <>
           {verificationPopUp && (
             <div className="popup ">
               <div className="popup-content-review">
@@ -782,8 +788,9 @@ const UserCourseOverview = () => {
               )}
             </div>
           </div>
+          </>)}
         </div>
-      )}
+      
     </>
   );
 };

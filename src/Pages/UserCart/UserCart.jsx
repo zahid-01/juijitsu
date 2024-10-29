@@ -18,7 +18,7 @@ import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(
-  "pk_test_51PubCwDq08j41MMz9w7CFKlaPOPT4YlfciU9GCgXcxBmve17go3ryZQKVBcQJ3pzW86Z1mDb1bLTnkXFiTZKBu8O00CGdw624j"
+  import.meta.env.VITE_STRIPE_KEY
 );
 
 import { Link, useNavigate } from "react-router-dom";

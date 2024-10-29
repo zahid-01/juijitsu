@@ -26,9 +26,10 @@ import ReactPlayer from "react-player";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { loadStripe } from "@stripe/stripe-js";
 import { CiHeart } from "react-icons/ci";
+import { HashLoader } from "react-spinners";
 
 const stripePromise = loadStripe(
-  "pk_test_51PubCwDq08j41MMz9w7CFKlaPOPT4YlfciU9GCgXcxBmve17go3ryZQKVBcQJ3pzW86Z1mDb1bLTnkXFiTZKBu8O00CGdw624j"
+  import.meta.env.VITE_STRIPE_KEY
 );
 
 const UserPurchasedCourse = () => {
@@ -47,6 +48,7 @@ const UserPurchasedCourse = () => {
   const [optionsPopUp, setOptionsPopUp] = useState(false);
   const [reviewData, setReviewData] = useState(null);
   const [hearted, setHearted] = useState(null);
+  const [certificate, setcertificate] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
   const { contextSafe } = useGSAP();
@@ -327,15 +329,80 @@ const UserPurchasedCourse = () => {
         }));
       };
 
+        const handlePrint = async (id) => {
+    try {
+      const url = `${BASE_URI}/api/v1/users/certificates/${id}`;
+      const response = await axios({
+        method: "GET",
+        url,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      setcertificate(response?.data?.data);
+      console.log(response?.data?.data);
+    } catch (error) {
+      toast.error(
+        "Certificate cant be generated as the course is not completed yet!."
+      );
+      // alert("No certificate found for the provided ID.");
+    }
+    
+    const printContent = `
+    <html>
+    <head>
+   <link rel="stylesheet" type="text/css" href="/src/Pages/UserPurchasedCourse/UserPurchasedCourse.css">
+    </head>
+    <body>
+    <div class="certificate">
+      <div class="certificate-container">
+        <div>
+          <div class="certificate-number">Certificate no: <strong> ${
+            certificate.certificate_id
+          }</strong></div>
+          <div class="firstHeader" >jiujitsux</div>
+        </div>
+        <div class="header">Certificate of Completion</div>
+        <div class="title">${certificate.title}</div>
+        <div class="instructors">Instructors: <strong>${
+          certificate.expert_name
+        }</strong></div>
+        <div class="description">
+          This certificate above verifies that <strong>${
+            certificate.user
+          }</strong> successfully completed the course ${
+      certificate.title
+    } on 11/09/2024 as taught by <strong>${
+      certificate.expert_name
+    }</strong> on Juijitsux. The certificate indicates the entire course was completed as validated by the student. The course duration represents the total video hours of the course at time of most recent completion.
+        </div>
+        <div class="signature"><strong>${certificate.expert_name}</strong></div>
+        <div class="date"> Date: <strong>${new Date(
+          certificate.created_at
+        ).toLocaleDateString("en-GB")}</strong></div>
+        <div class="length">Length: <strong>
+          ${Math.floor(certificate.total_duration / 3600)} hours 
+          ${Math.floor((certificate.total_duration % 3600) / 60)} minutes
+        </strong></div>
+        <div class="watermark">Jiujitsux</div>
+      </div>
+    </div>
+    </body>
+    </html>
+  `;
+
+    const newWindow = window.open("", "_blank", "width=600,height=400");
+    newWindow.document.open();
+    newWindow.document.write(printContent);
+    newWindow.document.close();
+    newWindow.focus(); // Ensure the new window is focused before printing
+    newWindow.print();
+  };
+
   return (
     <>
       {isLoading ? (
-        <l-grid
-          id="spinner-usercourseview"
-          size="60"
-          speed="1.5"
-          color="black"
-        ></l-grid>
+        <HashLoader size="60" color="#0c243c" id="spinner-usercourseview"/>
       ) : (
         <div className="wrapper-userCourseview position-relative">
                {optionsPopUp && (
@@ -578,7 +645,6 @@ const UserPurchasedCourse = () => {
                 height: "100vh", // Full viewport height
                 width: "100vw", // Full viewport width
                 position: "fixed", // Fixed to cover the entire viewport
-                zIndex: 100,
                 backgroundColor: "grey", // Ensure background color covers the area
                 display: "flex", // Center the content inside
                 alignItems: "center",
@@ -605,6 +671,13 @@ const UserPurchasedCourse = () => {
                   id="unHeart-PurchasedCourses"
                 />
               )}
+              <span
+                          // className="signup-now  fw-lightBold fs-small mb-0 h-auto"
+                          style={{display:"flex", gap:"0.5rem", alignItems:"center" , background:"white", color:"black", padding:"0.2rem 0.5rem", borderRadius:"0.5rem", cursor:"pointer"}}
+                          onClick={() => handlePrint(courseData?.course?.id)}
+                        >
+                          Certificate
+                        </span>
               {is_rated ? (
 
                 <span onClick={handleEditClick} style={{display:"flex", gap:"0.5rem", alignItems:"center" , background:"white", color:"black", padding:"0.2rem 0.5rem", borderRadius:"0.5rem", cursor:"pointer"}}>
