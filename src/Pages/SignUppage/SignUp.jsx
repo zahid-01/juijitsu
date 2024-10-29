@@ -79,7 +79,7 @@ export const SignUp = () => {
             <h2 className="">Sign Up</h2>
             <p>Start your Inspiring journey now!</p>
           </div>
-          <div className="signup-auth">
+          {/* <div className="signup-auth">
             <button type="button" className="bttns google-signup">
               <FcGoogle className="googleIcon" />
               Sign Up with Google
@@ -104,7 +104,7 @@ export const SignUp = () => {
               }}
               className="mb-0"
             ></p>
-          </div>
+          </div> */}
           <div className="mb-3">
             <label htmlFor="fullName" className="form-label fw-bold fs-small">
               Full Name
@@ -211,7 +211,7 @@ export const SignUp = () => {
             </div>
           </div>
           <p className="fs-small mb-4">
-            Already have an account?
+            Already have an account?{" "}
             <Link to="/" className="login-link text-black fw-bold">
               LOGIN
             </Link>

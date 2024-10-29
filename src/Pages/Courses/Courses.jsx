@@ -212,10 +212,10 @@ const Courses = ({ search, setEditCourse , setCourseId}) => {
         ) : (
           <div className="no-courses-courses">
             <div>
-              <h1>No Course uploaded yet</h1>
+              <h1>{activeTab === "incomplete" ? "No Incomplete Courses Found": activeTab === "live" ? "No Live Courses Found" : activeTab === "requested" ? "No Requested Courses Found":"No Declined Courses Found" }</h1>
               <h5>
 
-                Get started by uploading your first course and inspire
+                Get started by uploading your courses and inspire
                 athletes around the world!
 
               </h5>
