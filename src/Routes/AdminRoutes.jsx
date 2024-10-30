@@ -6,7 +6,6 @@ import Students from "../Pages/Students/Students";
 import Transactions from "../Pages/Transactions/Transactions";
 import Settings from "../Pages/Settings/Settings"; 
 import AdminReview from "../Pages/AdminReview/AdminReview";
-
 import CourseView from "../Pages/Course overview/CourseView";
 import Support from "../Pages/Support/Support";
 

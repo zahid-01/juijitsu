@@ -9,6 +9,7 @@ import { FaPen } from "react-icons/fa";
 import "./Transactions.css";
 import { useDispatch } from "react-redux";
 import { payoutActions } from "../../Store/payoutSlice";
+import { HashLoader } from "react-spinners";
 
 const UserManagement = () => {
   const dispatch = useDispatch();
@@ -39,10 +40,10 @@ const UserManagement = () => {
 
   // const [pageNumber, setPageNumber] = useState(1);
   // const [totalPages, setTotalPages] = useState(2);
-  // console.log("totalPages:", totalPages);
   // const [limit, setLimit] = useState(7);
 
   const fetchPayoutRequests = async () => {
+    setLoading(true)
     // New function to fetch payout requests
     try {
       const response = await axios.get(payoutRequestsUrl, {
@@ -66,10 +67,8 @@ const UserManagement = () => {
   //         Authorization: `Bearer ${token}`,
   //       }
   //     });
-  //     console.log(response)
   //     setTransactions(response.data?.data?.history || []);
 
-  //     // console.log(response.data?.data?.history); // Log the data to check structure
   //   } catch (err) {
   //     setError(err?.response?.data?.message);
   //   } finally {
@@ -78,6 +77,7 @@ const UserManagement = () => {
   // };
 
   const fetchTransactions = async (pageNumber) => {
+    setLoading(true)
     try {
       const response = await axios.get(transactionsUrl, {
         headers: {
@@ -97,6 +97,7 @@ const UserManagement = () => {
     }
   };
   const fetchEditCommission = async () => {
+    setLoading(true)
     try {
       const response = await axios.get(getCommissionUrl, {
         headers: {
@@ -104,7 +105,6 @@ const UserManagement = () => {
         },
       });
       const commissionData = response.data.commission || {};
-      console.log(response);
       setEditCommission(commissionData);
       setOriginalCommission(commissionData.commission || "");
     } catch (err) {
@@ -126,7 +126,7 @@ const UserManagement = () => {
   }, [activeTab]);
 
   const handleAction = async (request) => {
-    console.log(` expert:`, request, token);
+    setLoading(true)
 
     try {
       const response = await axios.post(
@@ -141,14 +141,13 @@ const UserManagement = () => {
       setPayoutSuccess(true);
     } catch (err) {
       setError(err?.response?.data?.message);
-      console.log(error);
     } finally {
       setLoading(false);
     }
   };
 
   const handlesave = async () => {
-    console.log(editCommission);
+    setLoading(true)
     try {
       const response = await axios.patch(
         editCommissionUrl,
@@ -165,7 +164,6 @@ const UserManagement = () => {
       // setEditCommission(response.data || []);
       setIsEditable(false);
 
-      console.log(response.data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -223,6 +221,14 @@ const UserManagement = () => {
   };
   return (
     <div className="w-100">
+
+{
+        loading ? 
+        <div style={{height:"90vh"}} className="flex align-items-center justify-content-center w-100">
+        <HashLoader size="60" color="#0c243c"/>
+      </div>
+      :
+      <>
       {payoutSuccess && (
         <div className="popup">
           <div className="popup-content">
@@ -614,6 +620,8 @@ const UserManagement = () => {
           )}
         </div>
       </div>
+      </>
+      }
     </div>
   );
 };

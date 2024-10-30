@@ -15,10 +15,12 @@ import {
 import { FaCalendar } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
 import axios from "axios";
+import { RiH1 } from "react-icons/ri";
+import { HashLoader } from "react-spinners";
 
 ChartJS.register(
   LineElement,
@@ -37,19 +39,19 @@ function AdminDashboard() {
   const [enrollments, setEnrollments] = useState([]);
   const [type, setType] = useState("week");
   const [revenue, setRevenue] = useState([]);
+  const [loading, setIsLoading] = useState(false)
+  const [loading1, setIsLoading1] = useState(false)
   const [isOpen, setIsOpen] = useState(false);
 
   const token = localStorage.getItem("token");
-  // console.log(token);
+
   // const url = `${BASE_URI}/api/v1/admin/adminDashboard?from=2024-09-1&to=2024-09-6`;
   // const { adminData, error, refetch, isLoading } = useFetch(url, {
   //   headers: {
   //     Authorization: "Bearer " + token,
   //   },
   // });
-  // console.log(token)
-  // console.log(adminData)
-  // // console.log(data.data);
+
   // // // const coursesData = data;
   // const coursesData = useMemo(() => adminData?.data || [], [adminData]);
 
@@ -73,14 +75,14 @@ function AdminDashboard() {
 
   // Usage
   const { from, to } = getCurrentWeekDates();
-  // console.log(`From: ${from}, To: ${to}`);
+  
 
   // You can now use this in your API call
   // const url = `${BASE_URI}/api/v1/admin/adminDashboard?from=${from}&to=${to}`;
 
   const fetchDashboard = async () => {
     const reqData = formatWeekRange();
-    console.log(reqData);
+    setIsLoading(true)
     const adminData = await axios({
       method: "GET",
       url: `${BASE_URI}/api/v1/admin/adminDashboard`,
@@ -88,7 +90,7 @@ function AdminDashboard() {
         Authorization: "Bearer " + token,
       },
     });
-    // console.log(adminData)
+    
     setData({
       TotalStudents: {
         value: adminData?.data?.data?.enrolls?.total_students,
@@ -121,8 +123,10 @@ function AdminDashboard() {
           color: colors[index],
         }))
     );
+    setIsLoading(false)
   };
   const fetchGraphDashboard = async () => {
+    setIsLoading1(true)
     const adminGraphData = await axios({
       method: "GET",
       url: `${BASE_URI}/api/v1/admin/adminDashboardGraphs?type=${type}`,
@@ -130,7 +134,7 @@ function AdminDashboard() {
         Authorization: "Bearer " + token,
       },
     });
-    console.log(adminGraphData?.data?.data);
+    
   
     if (type === "week") {
       // Handling weekly data
@@ -255,6 +259,7 @@ function AdminDashboard() {
       setEnrollments(allTimeEnrollments);
       setRevenue(allTimeRevenue);
     }
+    setIsLoading1(false)
     
   };
   
@@ -387,6 +392,11 @@ const revenueData = {
 
   return (
     <div className="container-fluid">
+      {(loading || loading1) ? <div style={{height:"90vh"}} className="flex align-items-center justify-content-center w-100">
+        <HashLoader size="60" color="#0c243c"/>
+      </div>
+      :
+      <>
       <div className="d-flex align-items-center justify-content-between w-100 mb-5">
         <div>
           <h3>Welcome Back, Basit</h3>
@@ -507,6 +517,9 @@ const revenueData = {
           </div>
         </div>
       </div>
+      </>
+      }
+      
     </div>
   );
 }

@@ -44,13 +44,11 @@ const UserCart = () => {
 
   const APIdata = useMemo(() => data?.data || [data], [data]);
   const cartItems = APIdata[0];
-  console.log((error && error) || (cartItems && cartItems));
 
   const handleCart = async (id, e) => {
     e.stopPropagation();
     setLoadingItems((prev) => ({ ...prev, [id]: true }));
     try {
-      console.log(id);
       const response = await axios.post(
         `${BASE_URI}/api/v1/cart`,
         { course_id: id },
@@ -62,7 +60,6 @@ const UserCart = () => {
       );
       toast.success(`${response.data.message}`);
       const data = await refetch();
-      console.log(data);
     } catch (err) {
       toast.error(`Error: ${err?.response?.data?.message}`);
     } finally {
@@ -118,7 +115,6 @@ const UserCart = () => {
         sessionId: session.data.session.id,
       });
     } catch (e) {
-      console.log(e);
       toast.error("Something went wrong");
     }
   };

@@ -69,7 +69,6 @@ export default function Settings() {
 
   const role = localStorage.getItem("userType");
   const profileUrl = `${BASE_URI}/api/v1/users/profile`;
-  console.log(profileUrl);
 
   const fetchOptions = {
     headers: {
@@ -89,7 +88,6 @@ export default function Settings() {
     website,
     bio,
   } = data?.data[0] || [];
-  console.log(data);
 
   useEffect(() => {
     if (data) {
@@ -114,7 +112,6 @@ export default function Settings() {
         fetchOptions
       )
       .then((resp) => {
-        console.log(resp.data);
         toast.success(resp.data.message);
         setUpdatePasswordData({
           password: "",
@@ -149,7 +146,6 @@ export default function Settings() {
         }
       );
 
-      console.log(response.data);
       toast.success(response.data.message);
       setCategoryName(""); // Clear input after saving
     } catch (err) {
@@ -164,7 +160,6 @@ export default function Settings() {
     const formData = new FormData();
 
     if (profilePicture) {
-      console.log("profile");
       formData.append("profile_picture", profilePicture);
     } else {
       formData.append("profile_picture", profile_picture);
@@ -246,7 +241,6 @@ export default function Settings() {
         localStorage.removeItem("userType");
         localStorage.removeItem("token");
         localStorage.removeItem("rememberMe");
-        console.log(resp);
       })
       .catch((err) => {
         toast.error(err?.response?.data?.message);
@@ -259,7 +253,6 @@ export default function Settings() {
   // };
   const handleEditNameClick = () => {
     setIsReadOnly(!isReadOnly);
-    console.log("ok")
   };
   const handleEditcompanyClick = () => {
     setIsReadOnly(false);
@@ -298,9 +291,7 @@ export default function Settings() {
 
   const handleVerifyClick = async () => {
     try {
-      console.log(newEmail, newpassword);
       const payload = { email: newEmail, password: newpassword };
-      console.log("Payload:", payload);
       const response = await axios.patch(
         `${BASE_URI}/api/v1/auth/email/updateEmail`,
         payload,
@@ -310,7 +301,6 @@ export default function Settings() {
           },
         }
       );
-      console.log(response);
       closeModalEmailChange();
       localStorage.removeItem("user");
       localStorage.removeItem("userType");
@@ -333,9 +323,7 @@ export default function Settings() {
         },
       });
 
-      console.log("API response data:", response.data.data);
       setCategories(response.data.data);
-      console.log("Updated categories state:", categories);
     } catch (err) {
       console.error("Error fetching categories:", err);
       // setError("Failed to load categories"); // Set error state
@@ -362,7 +350,6 @@ export default function Settings() {
   };
 
   const handleUpdateCategory = async () => {
-    console.log();
     try {
       const response = await axios.patch(
         `${BASE_URI}/api/v1/category/${updateCategoryData.id}`,
@@ -373,7 +360,6 @@ export default function Settings() {
           },
         }
       );
-      console.log("API response data:", response.data);
       addedcategories();
       setPopupVisible(false);
     } catch (err) {

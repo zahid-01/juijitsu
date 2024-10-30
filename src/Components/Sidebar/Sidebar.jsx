@@ -72,8 +72,8 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
           className="fs-1 primary-color cursor-pointer"
         />
         {!collapsed && (
-          <h3 className="text w-100 offset-3 gradient-text fw-bold">
-            Jiujitsux
+          <h3 style={{fontSize:"1.5rem", fontWeight:"bold"}}  className="text w-100 offset-1 gradient-text fw-bold">
+            MY JIU JITSU
           </h3>
         )}
       </div>

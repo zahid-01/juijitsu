@@ -1,5 +1,5 @@
 const VideoPlayer = ({ videoUrl, videoType, className = "" }) => {
-  console.log(videoUrl, videoType);
+
   let content;
 
   const extractYouTubeId = (url) => {
@@ -11,7 +11,7 @@ const VideoPlayer = ({ videoUrl, videoType, className = "" }) => {
 
   if (videoType === "youtube") {
     const videoId = extractYouTubeId(videoUrl);
-    console.log(videoId);
+  
     content = (
       <iframe
         // width="560"

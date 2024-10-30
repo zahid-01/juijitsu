@@ -4,8 +4,8 @@ export let socket;
 
 export const socketConnect = (token = null) => {
     const socketUrl = `${BASE_URI}/?token=${token}`
-    console.log(token);
-    console.log(socketUrl)
+    
+    
     try {
         socket = io(socketUrl, {
             transports: ['websocket'], // Force WebSocket transport
@@ -14,19 +14,11 @@ export const socketConnect = (token = null) => {
 
         socket.connect();
 
-        socket.on("connect", () => {
-            console.log("Socket connected:", socket.connected);
-        });
+        
 
-        socket.on("connect_error", (error) => {
-            console.error("Connection error:", error);
-        });
-
-        socket.on("disconnect", (reason) => {
-            console.log("Socket disconnected:", reason);
-        });
+    
 
     } catch (e) {
-        console.log(e);
+      
     }
 }

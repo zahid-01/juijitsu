@@ -3,6 +3,7 @@ import { BASE_URI } from "../../Config/url";
 import axios from "axios";
 import "./Students.css"
 import formatDate from "../../utils/formatDate";
+import { HashLoader } from "react-spinners";
 
 const UserManagement = () => {
   const [activeTab, setActiveTab] = useState("users");
@@ -13,13 +14,13 @@ const UserManagement = () => {
   const token = localStorage.getItem("token");
   const studentsUrl = `${BASE_URI}/api/v1/admin/usersForAdmin`;
   const fetchStudents = async () => {
+    setLoading(true)
     try {
       const response = await axios.get(studentsUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data.data.users);
       setStudents(response.data?.data?.users || []);
     } catch (err) {
       setError(err.message);
@@ -30,13 +31,13 @@ const UserManagement = () => {
 
   useEffect(() => {
     const fetchStudents = async () => {
+      setLoading(true)
       try {
         const response = await axios.get(studentsUrl, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(response.data.data.users);
         setStudents(response.data?.data?.users || []);
       } catch (err) {
         setError(err?.response?.data?.message);
@@ -49,8 +50,8 @@ const UserManagement = () => {
   }, [studentsUrl, token]);
 
   const handleAction = async (student, action) => {
+    setLoading(true)
     // Handle suspend or activate action
-    // console.log(`${action} user:`, student);
     try {
       const response = await axios.patch(
         `${BASE_URI}/api/v1/admin/suspenduser/${student}`,
@@ -63,8 +64,10 @@ const UserManagement = () => {
       );
       fetchStudents();
     } catch (err) {
-      console.log(err)
       setError(err.data.response.message);
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -108,6 +111,14 @@ const UserManagement = () => {
 
   return (
     <div className="w-100">
+      
+      {
+        loading ? 
+        <div style={{height:"90vh"}} className="flex align-items-center justify-content-center w-100">
+        <HashLoader size="60" color="#0c243c"/>
+      </div>
+      :
+      <>
       <div
         style={{
           marginBottom: "4vh",
@@ -247,6 +258,8 @@ const UserManagement = () => {
             ))}
         </div>
       </div>
+      </>
+      }
     </div>
   );
 };

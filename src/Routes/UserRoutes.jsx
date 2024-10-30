@@ -5,9 +5,7 @@ import Messages from "../Pages/UserModule/Messages/Messages";
 import Settings from "../Pages/Settings/Settings";
 import MyLearning from "../Pages/MyLearning/MyLearning";
 // import UserWallet from "../Pages/userWallet/UserWallet";
-
 import UserPurchasedCourse from "../Pages/UserPurchasedCourse/UserPurchasedCourse";
-
 import Checkout from "../Pages/Checkout/Checkout";
 import Logout from "../Pages/Logout/Logout";
 import NotFound from "../Pages/NotFound/NotFound";

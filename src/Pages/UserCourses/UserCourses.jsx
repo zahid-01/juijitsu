@@ -71,7 +71,6 @@ const Card = ({
         },
       });
     } catch (err) {
-      console.log(err);
       toast.error("Failed to add to favorites");
     }
   };
@@ -289,7 +288,6 @@ const UserCourses = ({ search }) => {
       : ""
   }`;
 
-  // console.log(url);
 
   const { data, error, refetch, isLoading } = useFetch(url, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -307,7 +305,6 @@ const UserCourses = ({ search }) => {
   //   }
   // };
   const handleNavigate = (id, status) => {
-    // console.log("Navigating with ID:", id, "Status:", status);
     if (!status) {
       navigate(`/userCourses/userCourseView/${id}`);
     } else if (status === "Purchased") {

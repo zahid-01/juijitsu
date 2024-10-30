@@ -86,7 +86,6 @@ const UserCourseOverview = () => {
   });
 
   const courseData = useMemo(() => data?.data || [], [data]);
-  console.log(courseData);
 
   useEffect(() => {
     setVideo_url(
@@ -108,7 +107,6 @@ const UserCourseOverview = () => {
     [courseData]
   );
   const paymentPopUpClick = contextSafe(() => {
-    console.log("popup has been clicked");
     gsap.to(".paymentPopUp", {
       scale: 1,
       duration: 0.3,
@@ -116,7 +114,6 @@ const UserCourseOverview = () => {
     });
   });
   const removePayPopUp = contextSafe(() => {
-    console.log("popup has been removed");
     gsap.to(".paymentPopUp", {
       scale: 0,
       duration: 0.2,
@@ -157,7 +154,6 @@ const UserCourseOverview = () => {
   };
 
   const checkoutHandler = async () => {
-    console.log(id)
     if(!token){return navigate("/")}
     try {
       const stripe = await stripePromise;
@@ -173,7 +169,6 @@ const UserCourseOverview = () => {
         sessionId: session.data.session.id,
       });
     } catch (e) {
-      console.log(e);
       toast.error("Something went wrong");
     }
   };
@@ -200,7 +195,6 @@ const UserCourseOverview = () => {
             },
           });
         } catch (err) {
-          console.log(err);
           toast.error("Failed to add to favorites");
         }
       };
@@ -219,7 +213,7 @@ const UserCourseOverview = () => {
       ) : (
         <>
           {verificationPopUp && (
-            <div className="popup ">
+            <div className="popup">
               <div className="popup-content-review">
                 <div className="popup-buttons-review">
                   <h5
@@ -270,13 +264,14 @@ const UserCourseOverview = () => {
             className="paymentPopUp"
           >
             <div
+            className="payment-verify-popup"
               style={{
                 zIndex: 101,
                 padding: "2%",
                 backgroundColor: "white",
                 borderRadius: "1rem",
                 height: "60%",
-                width: "50%",
+                
               }}
             >
               <div className="flex justify-content-between pb-3 align-items-center">

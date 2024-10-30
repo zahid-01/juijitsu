@@ -138,10 +138,8 @@ export default function ExpertWallet() {
   const { lastWithdrawal, orders, payable_amount } = walletData;
   const recentPayout = lastWithdrawal[0]?.withdrawal_amount || "$0.00";
   const accountBalance = `$${payable_amount}`;
-  console.log(orders.length)
 
   const handleClear = () => {
-    console.log("Clearing fields");
     setCountry("");
     setRouting("");
     setAccountNumber("");
@@ -159,7 +157,6 @@ export default function ExpertWallet() {
           },
         }
       );
-      console.log(response?.data);
 
       setEditable(true);
       setAccountName(response?.data?.data?.account_holder_name);
@@ -169,7 +166,6 @@ export default function ExpertWallet() {
       setRouting(response?.data?.data?.routing_number);
       setBankDetails(response?.data?.data);
     } catch (err) {
-      console.log(err?.response?.data?.message);
       // toast.error(err?.response?.data?.message);
     }
   };
@@ -196,7 +192,6 @@ export default function ExpertWallet() {
           },
         }
       );
-      console.log(response?.data);
       toast.success("Account added successfully");
       bankClick();
     } catch (err) {
@@ -222,7 +217,6 @@ export default function ExpertWallet() {
           },
         }
       );
-      console.log(response?.data);
       toast.success("Account updated successfully");
       bankClick();
     } catch (err) {
@@ -240,7 +234,6 @@ export default function ExpertWallet() {
           },
         }
       );
-      console.log(response?.data);
       toast.success("Account deleted successfully");
       
       // Resetting the state
@@ -270,12 +263,10 @@ export default function ExpertWallet() {
           },
         }
       );
-      console.log(response?.data);
       setWithdrawalAmount(null);
       setWithDrawPopup(false);
       toast.success("Withdrawal successful");
     } catch (err) {
-      console.log(err);
       toast.error(err?.response?.data?.message);
     }
   };
@@ -290,19 +281,12 @@ export default function ExpertWallet() {
           },
         }
       );
-      console.log(response?.data?.data);
       setWithdrawalHistory(response?.data);
     } catch (err) {
-      console.log(err);
       // toast.error(err?.response?.data?.message);
     }
   }
 
-  // useEffect(()=>{
-  //   console.log(withdrawalHistory)
-  // },[withdrawalHistory])
-
-  // console.log(accountType)
   return (
     <div className="w-100 position-relative">
       {withDrawPopup && (

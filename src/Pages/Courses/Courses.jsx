@@ -77,7 +77,7 @@ const Courses = ({ search, setEditCourse , setCourseId}) => {
     },
   });
 
-  console.log(data || error);
+ 
 
   const coursesData = useMemo(() => data?.data || [], [data]);
 
@@ -85,7 +85,7 @@ const Courses = ({ search, setEditCourse , setCourseId}) => {
     navigate(`/courses/courseView/${id}`);
   };
   const handleEditCourse = (e,id) => {
-    console.log(id)
+  
     e.stopPropagation()
     navigate(`/courses/addLesson/${id}`);
     // setEditCourse(true);
@@ -102,7 +102,6 @@ const Courses = ({ search, setEditCourse , setCourseId}) => {
     setActiveId(id); // Set id correctly
    
     setReasonPopUp(true); // Open the popup
-    console.log(id, reason)
   };
   
 

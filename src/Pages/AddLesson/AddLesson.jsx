@@ -68,7 +68,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
   };
 
   const { data } = useFetch(courseUrl, fetchOptions);
-  // console.log(data);
+
   const { title } = data?.data[0] || "";
 
   const {
@@ -138,9 +138,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
             video_url: file,
           }));
           setFilePreview(URL.createObjectURL(file));
-        } else {
-          console.log("Unsupported file type:", fileType);
-        }
+        } 
       }
     },
     [setNewLesson]
@@ -303,7 +301,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
   };
 
   const handleDeleteChapter = () => {
-    // console.log(chapterToDelete);
+ 
     axios
       .delete(`${BASE_URI}/api/v1/chapters`, {
         data: { chapter_id: chapterToDelete, course_id: id },
@@ -373,8 +371,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
     const destinationLesson = destinationChapter.lessons[destination.index];
     const destinationLessonSequence = destinationLesson?.sequence;
 
-    // console.log("Dragged Lesson Sequence:", draggedLessonSequence);
-    // console.log("Destination Lesson Sequence:", destinationLessonSequence);
+   
 
     const payload = {
       course_id: id,
@@ -383,7 +380,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
       chapter_id_from: Number(sourceChapterId),
       chapter_id_to: Number(destinationChapterId),
     };
-    console.log("Payload:", payload);
+  
 
     try {
       await axios.patch(`${BASE_URI}/api/v1/lessons/changeSeq`, payload, {
@@ -391,11 +388,11 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
           Authorization: "Bearer " + token,
         },
       });
-      // console.log(resp.data);
+    
       toast.success("Sequence updated successfully");
       refetch();
     } catch (error) {
-      toast.error("Error updating sequence");
+      // toast.error("Error updating sequence");
     }
   };
 
@@ -406,12 +403,12 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
   };
 
   const handleYouTubeClick = (lesson) => {
-    // console.log(lesson);
+   
     setSelectedLesson(lesson);
   };
 
   async function handleSendApproval(){
-    console.log(id)
+   
     try {
       await axios.post(`${BASE_URI}/api/v1/expert/reviewRequest`, 
         {course_id: id}, 
@@ -422,7 +419,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
       });
       toast.success("Course sent for approval successfully!");
     } catch (err) {
-      console.log(err)
+     
       toast.error(err?.response?.data?.message);
     }
   }

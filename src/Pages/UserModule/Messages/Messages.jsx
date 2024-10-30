@@ -72,7 +72,6 @@ const getTimeDifference = (date) => {
 };
 
 const Messages = () => {
-  console.log("COMPONENT")
   const [messages, setMessages] = useState({});
   const [selectedChat, setSelectedChat] = useState(null);
   const [inputValue, setInputValue] = useState("");
@@ -105,7 +104,6 @@ const Messages = () => {
   const { data, refetch } = useFetch(chatListUrl, fetchOptions);
   const chatList = useMemo(() => data?.data || [], [data]);
 
-  console.log(chatList)
   useEffect(() => {
     if (chatList.length > 0) {
       const initialHearted = {};
@@ -118,7 +116,6 @@ const Messages = () => {
 
   // const time = new Date(Date.now()).toLocaleTimeString(
   // )
-  // console.log(time)
 
   const handleOpenChat = (receiverId, receiverEmail, image, name) => {
     setselectedImage(image);
@@ -128,7 +125,6 @@ const Messages = () => {
     setSelectedChat(receiverId);
     setIsChatOpen(true);
 
-    console.log(receiverEmail);
     axios
       .get(`${BASE_URI}/api/v1/chat/chatMessages/${receiverId}`, fetchOptions)
       .then((resp) => {
@@ -155,7 +151,6 @@ const Messages = () => {
         }));
       })
       .catch((err) => {
-        console.log(err);
       });
   };
 
@@ -185,21 +180,19 @@ const Messages = () => {
 
 
 
-    console.log("Sending message:", inputValue);
-    console.log("sending messaage to :", selectedEmail)
 
     socket?.emit("private_message", {
       msg: inputValue,
       friend: selectedEmail,
     })
       , (response) => {
-        console.log('Server acknowledgment received:', response);
+  
       };
     setInputValue("");
   };
 
   useEffect(() => {
-    console.log("triggered")
+
         chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
         chatBottom1Ref.current?.scrollIntoView({ behavior: "smooth" });
       // }, 100); // Delay to allow DOM to update
@@ -223,7 +216,7 @@ const Messages = () => {
     setAllExpertsLoading(true);
     const url = `${BASE_URI}/api/v1/users/otherExperts${allExpertsInput !== "" ? `?search=${allExpertsInput}` : ""
       }`;
-    console.log(url);
+   
     await axios({
       method: "GET",
       url: url,
@@ -232,13 +225,13 @@ const Messages = () => {
       },
     })
       .then((res) => {
-        console.log(res?.data);
+     
         setAllExpertsError("");
         setAllExpertsData(res?.data?.data);
         setAllExpertsLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+    
         setAllExpertsError(err?.response?.data?.message);
         setAllExpertsLoading(false);
       });
@@ -257,7 +250,7 @@ const Messages = () => {
 
     // Listen to socket event
     const messageListener = (message) => {
-      console.log("received", message);
+     
 
       const newMessage = {
         id: Date.now(), // Unique ID for the message
@@ -313,7 +306,7 @@ const Messages = () => {
 
       toast.success("Added to favorites");
     } catch (err) {
-      console.log(err);
+
       toast.error("Failed to add to favorites");
     }
   };
@@ -340,7 +333,7 @@ const Messages = () => {
 
       toast.success("Removed from favorites");
     } catch (err) {
-      console.log(err);
+   
       toast.error("Failed to remove from favorites");
     }
   };

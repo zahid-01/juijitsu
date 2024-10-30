@@ -78,7 +78,7 @@ const userType = localStorage.getItem("userType");
   });
 
   const ratings = useMemo(() => ratingsdata?.data || [], [ratingsdata]);
-  console.log(ratingsdata);
+  
 
   const url = `${BASE_URI}/api/v1/courses/courseOverview/${id}`;
 
@@ -88,9 +88,9 @@ const userType = localStorage.getItem("userType");
     },
   });
   //  setData(data.data[0]);
-  //  console.log(data);
+ 
   const Chapters = useMemo(() => data?.data?.chapters || [], [data]);
-  console.log(data);
+ 
   const url2 = `${BASE_URI}/api/v1/courses/${id}`;
   // const token2 = localStorage.getItem("token");
   const {
@@ -103,7 +103,7 @@ const userType = localStorage.getItem("userType");
       Authorization: "Bearer " + token,
     },
   });
-  console.log(data2);
+ 
 
   const courseData = useMemo(() => data2?.data || [], [data2]);
 
@@ -116,7 +116,7 @@ const userType = localStorage.getItem("userType");
   }, [Chapters]);
 
   const paymentPopUpClick = contextSafe(() => {
-    console.log("popup has been clicked");
+  
     gsap.to(".paymentPopUp", {
       scale: 1,
       duration: 0.3,
@@ -124,7 +124,7 @@ const userType = localStorage.getItem("userType");
     });
   });
   const removePayPopUp = contextSafe(() => {
-    console.log("popup has been removed");
+    
     gsap.to(".paymentPopUp", {
       scale: 0,
       duration: 0.4,
@@ -174,7 +174,7 @@ const userType = localStorage.getItem("userType");
   };
 
   async function handleSendApproval() {
-    console.log(id);
+   
     try {
       await axios.post(
         `${BASE_URI}/api/v1/expert/reviewRequest`,
@@ -187,7 +187,7 @@ const userType = localStorage.getItem("userType");
       );
       toast.success("Course sent for approval successfully!");
     } catch (err) {
-      console.log(err);
+    
       toast.error(err?.response?.data?.message);
     }
   }
@@ -207,7 +207,7 @@ const userType = localStorage.getItem("userType");
         sessionId: session.data.session.id,
       });
     } catch (e) {
-      console.log(e);
+      
       toast.error("Something went wrong");
     }
   };

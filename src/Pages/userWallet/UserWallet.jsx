@@ -47,7 +47,6 @@ export default function UserWallet() {
 
         setWalletData(response?.data?.data);
       } catch (error) {
-        console.log("Error fetching wallet data:", error);
       } finally {
         setLoading(false);
       }
@@ -65,9 +64,7 @@ export default function UserWallet() {
   };
 
   const { data } = useFetch(historyUrl, fetchOptions);
-  console.log(data);
   const orders = useMemo(() => data?.data?.orders || [], [data]);
-  console.log(orders);
 
   if (loading) {
     return (
@@ -162,7 +159,6 @@ export default function UserWallet() {
   const accountBalance = total_points;
 
   const handleClear = () => {
-    console.log("Clearing fields");
     setCountry("");
     setRouting("");
     setAccountNumber("");
@@ -180,7 +176,6 @@ export default function UserWallet() {
           },
         }
       );
-      console.log(response?.data);
 
       setEditable(true);
       setAccountName(response?.data?.data?.account_holder_name);
@@ -190,7 +185,6 @@ export default function UserWallet() {
       setRouting(response?.data?.data?.routing_number);
       setBankDetails(response?.data?.data);
     } catch (err) {
-      console.log(err?.response?.data?.message);
       // toast.error(err?.response?.data?.message);
     }
   };
@@ -217,7 +211,6 @@ export default function UserWallet() {
           },
         }
       );
-      console.log(response?.data);
       toast.success("Account added successfully");
       bankClick();
     } catch (err) {
@@ -243,7 +236,6 @@ export default function UserWallet() {
           },
         }
       );
-      console.log(response?.data);
       toast.success("Account updated successfully");
       bankClick();
     } catch (err) {
@@ -261,7 +253,6 @@ export default function UserWallet() {
           },
         }
       );
-      console.log(response?.data);
       toast.success("Account deleted successfully");
       bankClick();
     } catch (err) {
@@ -284,16 +275,13 @@ export default function UserWallet() {
           },
         }
       );
-      console.log(response?.data);
       setCoinCost(response?.data?.amount);
     } catch (err) {
-      console.log(err);
       // toast.error(err?.response?.data?.message);
     }
   };
 
   const handleWithdraw = async () => {
-    console.log(withdrawalAmount);
     try {
       const stripe = await stripePromise;
       // Fetch the session from your backend
@@ -310,7 +298,6 @@ export default function UserWallet() {
         sessionId: session.data.session.id,
       });
     } catch (e) {
-      console.log(e);
       toast.error(e?.response?.data?.message);
     }
   };
@@ -325,10 +312,8 @@ export default function UserWallet() {
           },
         }
       );
-      console.log(response?.data?.data);
       setWithdrawalHistory(response?.data);
     } catch (err) {
-      console.log(err);
       // toast.error(err?.response?.data?.message);
     }
   };
@@ -350,7 +335,6 @@ export default function UserWallet() {
     newWindow.print();
   };
 
-  // console.log(accountType)
   return (
     <div className="w-100 position-relative">
       {withDrawPopup && (

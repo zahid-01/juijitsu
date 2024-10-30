@@ -34,7 +34,7 @@ export default function AddExpert() {
         }
       );
 
-      console.log(response.data);
+      
       toast.success(response.data.message);
       setExpertName(""); // Clear input after saving
       setExpertEmail(""); // Clear email input after saving
@@ -80,7 +80,7 @@ export default function AddExpert() {
       // You can add more styles here if needed, e.g. padding, margin
     }}
     onClick={() => {
-      console.log("Navigating to AddExperts");
+      
       navigate("/AddExperts");
     }}
   >

@@ -62,21 +62,23 @@ export const SignUp = () => {
         <div className="signup-image w-50">
           <img src={learnImg} alt="Image" className="img-fluid" />
           <div className="signUp-text ">
-            <h3 className="expertise mb-0">Share Your Expertise.</h3>
+            <h3 className="expertise mb-0">Get ready to start your learning
+            </h3>
             <h3 className="expertise mb-4">
-              Inspire Athletes. Transform Lives.
+            
+            journey!
             </h3>
             <div className="join-team d-flex justify-content-center">
               <p className="w-75">
-                Join our team of elite instructors and make a difference in the
-                world of sports and athletics.
+              Dive into your courses, expand your skills, and achieve your goals
+              with us.
               </p>
             </div>
           </div>
         </div>
         <div className="signUp-form col-md-5 w-50 p-4">
           <div className="signup-start mb-4">
-            <h2 className="">Sign Up</h2>
+            <h2 className="">User Sign Up</h2>
             <p>Start your Inspiring journey now!</p>
           </div>
           {/* <div className="signup-auth">
@@ -217,7 +219,7 @@ export const SignUp = () => {
             </Link>
           </p>
           <button className="signup-now" onClick={signUpHandler}>
-            {isLoading ? <PulseLoader size={8} color="white" /> : "Signup Now"}
+            {isLoading ? <PulseLoader size={8} color="white" /> : "Signup Now!"}
           </button>
         </div>
       </div>

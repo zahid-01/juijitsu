@@ -27,13 +27,10 @@ const useFetch = (url, options = {}) => {
   }, [url, method, body, headers]);
 
   useEffect(() => {
-    // console.log("Fetching data...");
+  
     fetchData();
   }, [url]);
 
-  // console.log("Data:", data);
-  // console.log("Is Loading:", isLoading);
-  // console.log("Error:", error);
 
   return { data, isLoading, error, refetch: fetchData };
 };

@@ -9,9 +9,9 @@ const payoutSlice = createSlice({
   initialState,
   reducers: {
     setNotifications: (state, actions) => {
-      console.log("hi");
+      // console.log("hi");
       state.notifications = actions.payload;
-      console.log(state.notifications);
+      // console.log(state.notifications);
     },
   },
 });

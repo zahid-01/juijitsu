@@ -47,7 +47,7 @@ import { IoIosAddCircleOutline, IoMdNotifications } from "react-icons/io";
 import { MdMessage } from "react-icons/md";
 import { PiFolderUserFill } from "react-icons/pi";
 import { BsBellFill, BsFillCartFill } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BASE_URI } from "../../Config/url";
 import toast from "react-hot-toast";
 import { FaUserCircle } from "react-icons/fa";
@@ -60,6 +60,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightFromBracket, faGear } from "@fortawesome/free-solid-svg-icons";
 
 export default function SmallerScreenNavbar({ collapsed, search, setSearch, cartItemNumber }){
+  const location = useLocation()
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
   const profileBarRef = useRef(null); // Reference for the profile-bar
@@ -70,11 +71,14 @@ export default function SmallerScreenNavbar({ collapsed, search, setSearch, cart
   const role = localStorage.getItem("userType");
   const [token, setToken] = useState(localStorage.getItem("token"));
   const userType = localStorage.getItem("userType");
+  const [searchBox, setSearchBox]= useState(false)
+  const [signUpAs , setSignUpAs] = useState('')
   const oldUserType = localStorage.getItem("oldUserType");
   const [experts, setExperts] = useState([]);
   const [profileCompletion, setProfileCompletion] = useState(null);
   const [UserType, setUserType] = useState("Expert")
   const profileUrl = `${BASE_URI}/api/v1/users/profile`;
+  
 
   const fetchOptions = {
     headers: {
@@ -83,11 +87,10 @@ export default function SmallerScreenNavbar({ collapsed, search, setSearch, cart
   };
   const notifications = useSelector((state) => state.payouts.notifications);
   useSelector((state) => state.cart);
-  // console.log(notifications);
+
   const { data, refetch } = useFetch(profileUrl, fetchOptions);
   const { name, profile_picture } = data?.data[0] || [];
 
-  // console.log(name);
   // useEffect(() => {
   //   const handleStorageChange = () => {
   //     setUser(JSON.parse(localStorage.getItem("user")));
@@ -96,6 +99,26 @@ export default function SmallerScreenNavbar({ collapsed, search, setSearch, cart
   //   const intervalId = setInterval(handleStorageChange, 1000);
   //   return () => clearInterval(intervalId);
   // }, []);
+
+  useEffect(() => {
+    if (location.pathname === "/signUp") {
+      setSignUpAs("Expert");
+    } 
+    else if (location.pathname === "/ExpertSignUp") {
+      setSignUpAs("User");
+    } 
+    else {
+      setSignUpAs("");
+    }
+  
+    if (location.pathname === "/userCourses") {
+      setSearchBox(true);
+    } else {
+      setSearchBox(false);
+    }
+  
+    
+  }, [location]);
 
   useEffect(() => {
     if (token) {
@@ -124,7 +147,7 @@ export default function SmallerScreenNavbar({ collapsed, search, setSearch, cart
 
   useEffect(() => {
     if (token) {
-      // console.log(profileCompletion)
+
       axios
         .get(`${BASE_URI}/api/v1/users/profileCompletion`, {
           headers: {
@@ -132,7 +155,7 @@ export default function SmallerScreenNavbar({ collapsed, search, setSearch, cart
           },
         })
         .then((resp) => {
-          console.log(parseInt(resp.data.data.profileCompletion, 10));
+        
           
           setProfileCompletion(parseInt(resp.data.data.profileCompletion, 10));
         });
@@ -199,11 +222,12 @@ export default function SmallerScreenNavbar({ collapsed, search, setSearch, cart
         token ? "justify-content-between" : "justify-content-center"
       } ${collapsed ? "collapsed" : ""}`}
     >
-     <h4 className="text gradient-text fw-bold">JIUJITSU</h4>
+     <h4 className="text gradient-text fw-bold">MY JIU JITSU</h4>
      {!token && 
      <div className="d-flex gap-3 align-items-center">
         
      <div style={{marginLeft:`${!token ? "0.7rem" : 0}`}} className="search-input input-group">
+       {searchBox &&<>
        <label
          className="input-group-text search-icon border-end-0"
          htmlFor="search"
@@ -220,7 +244,18 @@ export default function SmallerScreenNavbar({ collapsed, search, setSearch, cart
          onChange={(e) => setSearch(e.target.value)}
          ref={searchInputRef}
          className="navbar-input form-control border-start-0 ps-0"
-       />
+       /></>}
+        {
+              (signUpAs === "User" || signUpAs === "Expert") && 
+              <span onClick={signUpAs === 'User' ? () => navigate("/signUp") : () => navigate("/ExpertSignUp")} style={{color:"black", textDecoration:"underLine", fontSize:"0.8rem", textAlign:"center", whiteSpace:"nowrap"}} classname="text-black">SignUp As {signUpAs}</span>
+//               <button onClick={signUpAs === 'User' ? () => navigate("/signUp") : () => navigate("/ExpertSignUp")}
+//               style={{marginLeft:"50%"}} class="mt-3 learn-more-user">
+//   <span class="circle" aria-hidden="true">
+//   <span class="icon arrow"></span>
+//   </span>
+//   <span class="button-text">SignUp As {signUpAs}</span>
+// </button>
+            }
      </div>
      
    </div>

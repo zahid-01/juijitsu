@@ -36,7 +36,6 @@ export default function UserProfile() {
         const response = await axios.get(
           `${BASE_URI}/api/v1/expert/profile/${expertId}`
         );
-        console.log(response.data.data);
         setProfile(response?.data?.data.expert); // Set profile data
         setCourse(response?.data?.data?.courses || []);
       } catch (err) {
