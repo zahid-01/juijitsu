@@ -26,7 +26,6 @@ function PasswordRecovery() {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setLinkSent(true);
         toast.success("Password reset link sent successfully!");
       })

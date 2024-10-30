@@ -7,7 +7,7 @@ import { IoIosAddCircleOutline, IoMdNotifications } from "react-icons/io";
 import { MdMessage } from "react-icons/md";
 import { PiFolderUserFill } from "react-icons/pi";
 import { BsBellFill, BsFillCartFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BASE_URI } from "../../Config/url";
 import toast from "react-hot-toast";
 import { FaUserCircle } from "react-icons/fa";
@@ -18,6 +18,8 @@ import { useSelector } from "react-redux";
 import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
 
 export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
+  const location = useLocation()
+  const navigate = useNavigate()
   const searchInputRef = useRef(null);
   const profileBarRef = useRef(null); // Reference for the profile-bar
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -30,6 +32,8 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   const oldUserType = localStorage.getItem("oldUserType");
   const [experts, setExperts] = useState([]);
   const [profileCompletion, setProfileCompletion] = useState(null);
+  const [searchBox, setSearchBox]= useState(false)
+  const [signUpAs , setSignUpAs] = useState('')
   const [UserType, setUserType] = useState("Expert")
   const profileUrl = `${BASE_URI}/api/v1/users/profile`;
 
@@ -40,11 +44,11 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   };
   const notifications = useSelector((state) => state.payouts.notifications);
   useSelector((state) => state.cart);
-  // console.log(notifications);
+  
   const { data, refetch } = useFetch(profileUrl, fetchOptions);
   const { name, profile_picture } = data?.data[0] || [];
 
-  // console.log(name);
+ 
   // useEffect(() => {
   //   const handleStorageChange = () => {
   //     setUser(JSON.parse(localStorage.getItem("user")));
@@ -54,6 +58,26 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
   //   return () => clearInterval(intervalId);
   // }, []);
 
+  useEffect(() => {
+    if (location.pathname === "/signUp") {
+      setSignUpAs("Expert");
+    } 
+    else if (location.pathname === "/ExpertSignUp") {
+      setSignUpAs("User");
+    } 
+    else {
+      setSignUpAs("");
+    }
+  
+    if (location.pathname === "/userCourses") {
+      setSearchBox(true);
+    } else {
+      setSearchBox(false);
+    }
+  
+    
+  }, [location]);
+  
   useEffect(() => {
     if (token) {
       const fetchUsers = async () => {
@@ -81,7 +105,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
 
   useEffect(() => {
     if (token) {
-      // console.log(profileCompletion)
+    
       axios
         .get(`${BASE_URI}/api/v1/users/profileCompletion`, {
           headers: {
@@ -89,7 +113,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           },
         })
         .then((resp) => {
-          console.log(parseInt(resp.data.data.profileCompletion, 10));
+         
           
           setProfileCompletion(parseInt(resp.data.data.profileCompletion, 10));
         });
@@ -158,6 +182,8 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
       {(userType === "user" || !token) && (
         <div className="d-flex gap-3 align-items-center w-75 ">
           <div className="search-input input-group w-75">
+
+           {searchBox && <>
             <label
               className="input-group-text search-icon border-end-0"
               htmlFor="search"
@@ -175,10 +201,21 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
               ref={searchInputRef}
               className="navbar-input form-control border-start-0 ps-0"
             />
+           </>}
+            {
+              (signUpAs === "User" || signUpAs === "Expert") && 
+              <button onClick={signUpAs === 'User' ? () => navigate("/signUp") : () => navigate("/ExpertSignUp")}
+              style={{marginLeft:"50%"}} class="mt-3 learn-more-user">
+  <span class="circle" aria-hidden="true">
+  <span class="icon arrow"></span>
+  </span>
+  <span class="button-text">SignUp As {signUpAs}</span>
+</button>
+            }
           </div>
           {/* <CiFilter className="primary-color fs-2 ms-3 cursor-pointer" /> */}
           {
-            oldUserType === "expert" &&
+            (oldUserType === "expert" && token) &&
             <button class="learn-more-user" onClick={handleExpertToggle}>
   <span class="circle" aria-hidden="true">
   <span class="icon arrow"></span>

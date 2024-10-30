@@ -36,7 +36,6 @@ export default function Login() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const response = params.get("response");
-    // console.log(response);
     if (response) {
       try {
         const parsedResponse = JSON.parse(decodeURIComponent(response));
@@ -49,7 +48,6 @@ export default function Login() {
          
 
           toast.success("Logged In Successfully!");
-          console.log(parsedResponse.user);
 
           if (parsedResponse.user.user_type === "expert") {
             navigate("/courses");
@@ -112,7 +110,6 @@ export default function Login() {
   //         },
   //       }).then(
   //         (res) => {
-  //           console.log(res.data.cart);
   //           dispatch(userCartActions.setCart(res.data.cart));
   //         },
   //         () => {}
@@ -130,7 +127,6 @@ export default function Login() {
   //       setIsLoading(false);
   //     })
   //     .catch((err) => {
-  //       console.log(err?.response?.data?.message);
   //       setIsLoading(false);
   //       toast.error(`Error: ${err?.response?.data?.message}`);
   //     });
@@ -146,7 +142,6 @@ export default function Login() {
         localStorage.setItem("user", JSON.stringify(resp.data.Data));
         localStorage.setItem("userType", resp.data.Data.user_type);
         localStorage.setItem("token", resp.data.token);
-        console.log(resp?.data?.token)
         socketConnect(resp?.data?.token)
         setData({
           email: "",
@@ -160,7 +155,6 @@ export default function Login() {
           },
         }).then(
           (res) => {
-            console.log(res.data.cart);
             dispatch(userCartActions.setCart(res.data.cart));
           },
           () => {}
@@ -176,7 +170,6 @@ export default function Login() {
         setIsLoading(false);
       })
       .catch((err) => {
-        console.log(err?.response?.data?.message);
         setIsLoading(false);
 
         // Check for specific error message
@@ -197,13 +190,12 @@ export default function Login() {
   };
 
   const emailVerifyRequest = async () => {
-    console.log(data.email);
+   
     try {
       const response = await axios.post(
         `${BASE_URI}/api/v1/auth/email/verifyEmail`,
         { email: data.email }
       );
-      console.log(response);
 
       setEmailVerify(response.data?.data?.history || []);
 
@@ -213,7 +205,6 @@ export default function Login() {
       );
       setShowSendRequestButton(false);
     } catch (err) {
-      console.log(err);
       setPopupMessage("Failed to send verification email");
     } finally {
       // Show the popup after the request

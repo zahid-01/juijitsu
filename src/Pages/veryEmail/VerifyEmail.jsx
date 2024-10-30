@@ -1,5 +1,4 @@
 import "./VerifyEmail.css";
-
 import learnImg from "../../assets/learnImg.avif";
 import { Link } from "react-router-dom";
 

@@ -53,7 +53,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
     if (searchTerm) {
       try {
         const response = await axios.get(`${BASE_URI}/api/v1/tags?search=${searchTerm}`, fetchOptions);
-        console.log(response?.data)
+    
         setTags(response?.data?.data); // Adjust based on your API response structure
       } catch (error) {
         console.error('Error fetching tags:', error);
@@ -89,7 +89,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
 
   const { data } = useFetch(tagsUrl, fetchOptions);
   const gettags = useMemo(() => data?.data || [], [data]);
-  console.log(gettags)
+  
   // useEffect(()=>{
   //   setSelectedTags(gettags)
   // })
@@ -109,7 +109,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
         })
         .then((response) => {
           const courseDetails = response?.data?.data[0];
-          console.log(response)
+        
           // Ensure both course details and gettags are available before sorting
           if (courseDetails?.tag_ids && gettags.length > 0) {
             const sortedTags = courseDetails.tag_ids
@@ -236,7 +236,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log(courseData);
+ 
     const dataToSend = {
       ...courseData,
       tag_ids: selectedTags.map(tag => tag.id), // Assuming tag has an 'id' property
@@ -249,13 +249,11 @@ export default function CourseCreation({ editCourse, courseeId }) {
         },
       })
       .then((response) => {
-        // console.log(response.data);
+       
         setCourseId(response.data.data.course_id);
         setIsModal(true);
-        // console.log(isModal);
       })
       .catch((error) => {
-        // console.log(error);
         toast.error(error.response.data.message);
       });
   };

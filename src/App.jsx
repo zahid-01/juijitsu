@@ -37,7 +37,6 @@ const App = () => {
   //     },
   //   }).then(
   //     (res) => {
-  //       console.log(res.data.cart);
   //       dispatch(userCartActions.setCart(res.data.cart));
   //     },
   //     () => {}
@@ -53,7 +52,6 @@ const App = () => {
     .then((res) => {
       dispatch(payoutActions.setNotifications(res?.data?.data.length));
     });
-
    }
     // if (data) {
     //   setCartItemNumber(data?.cart?.length);

@@ -85,7 +85,6 @@ const UserPurchasedCourse = () => {
   });
 
   const courseData = useMemo(() => data?.data || [], [data]);
- console.log(data?.data);
 
 
   useEffect(() => {
@@ -124,7 +123,6 @@ const UserPurchasedCourse = () => {
     [courseData]
   );
   const paymentPopUpClick = contextSafe(() => {
-    console.log("popup has been clicked");
     gsap.to(".paymentPopUp", {
       scale: 1,
       duration: 0.3,
@@ -132,7 +130,6 @@ const UserPurchasedCourse = () => {
     });
   });
   const removePayPopUp = contextSafe(() => {
-    console.log("popup has been removed");
     gsap.to(".paymentPopUp", {
       scale: 0,
       duration: 0.4,
@@ -187,7 +184,6 @@ const UserPurchasedCourse = () => {
         sessionId: session.data.session.id,
       });
     } catch (e) {
-      console.log(e);
       toast.error("Something went wrong");
     }
   };
@@ -209,7 +205,6 @@ const UserPurchasedCourse = () => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(selectedRating, review, id);
     try {
         const url = `${BASE_URI}/api/v1/reviews`;
         const response = await axios({
@@ -253,7 +248,6 @@ const UserPurchasedCourse = () => {
     });
 
     // window.location.reload();
-    // console.log(checkResponse?.data )
   };
 
   const updateRating = async () => {
@@ -317,7 +311,6 @@ const UserPurchasedCourse = () => {
             },
           });
         } catch (err) {
-          console.log(err);
           toast.error("Failed to add to favorites");
         }
       };
@@ -340,7 +333,6 @@ const UserPurchasedCourse = () => {
         },
       });
       setcertificate(response?.data?.data);
-      console.log(response?.data?.data);
     } catch (error) {
       toast.error(
         "Certificate cant be generated as the course is not completed yet!."
@@ -657,7 +649,7 @@ const UserPurchasedCourse = () => {
               {courseData?.course?.title || "No title available"}
             </h3>
             <div style={{display:"flex", gap:"1rem", alignItems:"center"}}>
-            {hearted ? (
+            {/* {hearted ? (
                 <FontAwesomeIcon
                   onClick={handleFavrouite}
                   id="heart-PurchasedCourses"
@@ -670,7 +662,7 @@ const UserPurchasedCourse = () => {
                   onClick={handleFavrouite}
                   id="unHeart-PurchasedCourses"
                 />
-              )}
+              )} */}
               <span
                           // className="signup-now  fw-lightBold fs-small mb-0 h-auto"
                           style={{display:"flex", gap:"0.5rem", alignItems:"center" , background:"white", color:"black", padding:"0.2rem 0.5rem", borderRadius:"0.5rem", cursor:"pointer"}}

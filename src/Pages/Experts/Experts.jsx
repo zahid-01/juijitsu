@@ -4,6 +4,7 @@ import axios from "axios";
 import formatDate from "../../utils/formatDate";
 import { useNavigate } from "react-router-dom";
 import "./Experts.css";
+import { HashLoader } from "react-spinners";
 
 const UserManagement = () => {
   const [activeTab, setActiveTab] = useState("users");
@@ -16,13 +17,14 @@ const UserManagement = () => {
   const expertsUrl = `${BASE_URI}/api/v1/admin/expertsForAdmin`;
 
   const fetchExperts = async () => {
+    setLoading(true)
     try {
       const response = await axios.get(expertsUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data.data.experts);
+    
       setExperts(response.data?.data?.experts || []);
     } catch (err) {
       setError(err.message);
@@ -33,13 +35,13 @@ const UserManagement = () => {
 
   useEffect(() => {
     const fetchExperts = async () => {
+      setLoading(true)
       try {
         const response = await axios.get(expertsUrl, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(response.data.data.experts);
         setExperts(response.data?.data?.experts || []);
       } catch (err) {
         setError(err?.response?.data?.message);
@@ -52,6 +54,7 @@ const UserManagement = () => {
   }, [expertsUrl, token]);
 
   const handleAction = async (user, action) => {
+    setLoading(true)
     try {
       const response = await axios.patch(
         `${BASE_URI}/api/v1/admin/suspenduser/${user}`,
@@ -65,6 +68,9 @@ const UserManagement = () => {
       fetchExperts();
     } catch (err) {
       setError(err.message);
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -109,7 +115,14 @@ const UserManagement = () => {
 
   return (
     <div className="w-100">
-      <div
+
+      {
+        loading ? <div style={{height:"90vh"}} className="flex align-items-center justify-content-center w-100">
+        <HashLoader size="60" color="#0c243c"/>
+      </div> : 
+        <>
+        
+        <div
         style={{
           marginBottom: "4vh",
           display: "flex",
@@ -127,7 +140,6 @@ const UserManagement = () => {
           className="add-expert add-css"
           style={{ display: "flex", alignItems: "center" }}
           onClick={() => {
-            console.log("Navigating to AddExperts");
             navigate("/AddExperts");
           }}
         >
@@ -252,6 +264,8 @@ const UserManagement = () => {
             ))}
         </div>
       </div>
+        </>
+      }
     </div>
   );
 };

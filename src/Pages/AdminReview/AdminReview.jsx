@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { BASE_URI } from "../../Config/url";
 import { useNavigate } from "react-router-dom";
+import { HashLoader } from "react-spinners";
 
 export default function AdminReview() {
   const [Approvals, setApprovals] = useState([]);
@@ -14,7 +15,7 @@ export default function AdminReview() {
   const [showDeclinePopup, setShowDeclinePopup] = useState(false); // State to manage the decline popup visibility
   const [selectedCourse, setSelectedCourse] = useState(null); // To track the course to be declined
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-
+  const [loading, setIsLoading] = useState(false)
   const [request_id, setRequest_id] = useState(null)
  const [review, setReview] = useState("");
  
@@ -34,7 +35,7 @@ export default function AdminReview() {
   const handleDeclineConfirm = () => {
     setShowDeclinePopup(false); // Hide the popup
     setShowSuccessPopup(true); 
-    console.log("Declined course:", selectedCourse);
+    
   };
 
   // Handle cancelling the decline action
@@ -50,7 +51,7 @@ export default function AdminReview() {
 
   const token = localStorage.getItem('token');
 const getApproval = async()=>{
-  // console.log("again");
+setIsLoading(true)
   try{
     const response = await axios({
       method: 'GET',
@@ -60,12 +61,14 @@ const getApproval = async()=>{
       }
     })
         setApprovals(response?.data?.data)
-        console.log(response?.data?.data)
-        // console.log(Approvals)
+        
   }
   catch(error){
-    console.log(error)
+   
     // toast.error(error?.response?.data?.message)
+  }
+  finally{
+    setIsLoading(false)
   }
 }
  useEffect(()=>{
@@ -73,7 +76,7 @@ const getApproval = async()=>{
  },[]);
 
  async function aproveRequest(){
-  console.log(selectedCourse,request_id )
+  setIsLoading(true)
   try{
     const response = await axios({
       method: 'PATCH',
@@ -94,11 +97,22 @@ const getApproval = async()=>{
  catch(err){
   toast.error(err?.response?.data?.message)
  }
+ finally{
+  setIsLoading(false)
+ }
 }
 
 
   return (
     <div className="w-100">
+
+{
+        loading ? 
+        <div style={{height:"90vh"}} className="flex align-items-center justify-content-center w-100">
+        <HashLoader size="60" color="#0c243c"/>
+      </div>
+      :
+      <>
       <header
         className="bg-gradient-custom-div p-3 pb-0 rounded-bottom-0 custom-box"
         style={{ overflowX: "auto" }}
@@ -219,6 +233,8 @@ const getApproval = async()=>{
           </div>
         </div>
       )}
+      </>
+      }
     </div>
   );
 }

@@ -754,7 +754,6 @@ const getTimeDifference = (date) => {
 };
 
 const Support = () => {
-  console.log("COMPONENT")
   const [messages, setMessages] = useState({});
   const [selectedChat, setSelectedChat] = useState(null);
   const [inputValue, setInputValue] = useState("");
@@ -785,7 +784,6 @@ const Support = () => {
 
   const { data,refetch } = useFetch(chatListUrl, fetchOptions);
   const chatList = useMemo(() => data?.data || [], [data]);
-console.log(chatList);
 
 
 const handleOpenChat = (receiverId, receiverEmail, image, name) => {
@@ -796,7 +794,6 @@ const handleOpenChat = (receiverId, receiverEmail, image, name) => {
   setSelectedChat(receiverId);
   setIsChatOpen(true);
 
-  console.log(receiverId, receiverEmail, image, name);
   
   axios
     .get(`${BASE_URI}/api/v1/chat/supportChat/${receiverId}`, fetchOptions)
@@ -824,7 +821,6 @@ const handleOpenChat = (receiverId, receiverEmail, image, name) => {
       }));
     })
     .catch((err) => {
-      console.log(err);
     });
 };
   
@@ -854,15 +850,13 @@ const handleOpenChat = (receiverId, receiverEmail, image, name) => {
 
                   
 
-  console.log("Sending message:", inputValue);
-  console.log("sending messaage to :",selectedEmail)
   
 socket?.emit("support_message", {
   msg: inputValue,
   friend: selectedEmail,
 })
 , (response) => {
-  console.log('Server acknowledgment received:', response);
+
 };
   setInputValue("");
 };
@@ -893,7 +887,7 @@ useEffect(() => {
     const url = `${BASE_URI}/api/v1/users/otherExperts${
       allExpertsInput !== "" ? `?search=${allExpertsInput}` : ""
     }`;
-    console.log(url);
+
     await axios({
       method: "GET",
       url: url,
@@ -902,13 +896,13 @@ useEffect(() => {
       },
     })
       .then((res) => {
-        console.log(res?.data);
+      
         setAllExpertsError("");
         setAllExpertsData(res?.data?.data);
         setAllExpertsLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+       
         setAllExpertsError(err?.response?.data?.message);
         setAllExpertsLoading(false);
       });
@@ -927,7 +921,7 @@ useEffect(() => {
   
     // Listen to socket event
     const messageListener = (message) => {
-      console.log("received", message);
+   
   
       const newMessage = {
         id: Date.now(), // Unique ID for the message

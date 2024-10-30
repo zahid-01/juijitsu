@@ -123,7 +123,6 @@ const RatingPopup = ({ ratingID, onSubmit, onClose }) => {
 
   const handleReview = (e) => {
     setReview(e.target.value);
-    // console.log(review)
   };
 
   const handleSubmit = () => {
@@ -182,9 +181,7 @@ const MyLearning = () => {
   });
 
   const coursesData = useMemo(() => data?.data || [], [data]);
-console.log(coursesData)
   const handleNavigate = (status,id) => {
-console.log(status)
 if(status === 'normal'){
   navigate(`/userCourses/userCourseView/${id}`);
 }
@@ -219,10 +216,8 @@ if(status === 'purchased'){
       refetch()
       toast.success("Course added to cart successfully")
     }catch(err){
-      console.log(err)
       toast.error(err)
     }
-    console.log("Course added to cart:", id);
   }
 
   const handleSubmitRating = (rating,review) => {
@@ -243,10 +238,8 @@ if(status === 'purchased'){
       refetch()
       toast.success("Rating submitted successfully")
     }catch(err){
-      console.log(err)
       toast.error(err)
     }
-    console.log("Rating submitted:", rating, review ,"for course ID:", ratingID);
     setRatingPopUp(false);
     setRatingID(null);
   };

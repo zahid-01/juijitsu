@@ -16,11 +16,10 @@ export default function ExpertAnalytics() {
   const [data, setData] = useState(null);
   const user = JSON.parse(localStorage.getItem("user"));
   const [analyticsData, setAnalyticsData] = useState(null);
+  const [loading, setIsLoading] = useState(false)
 
 
-  useEffect(()=>{
-    console.log(type)
-  },[type])
+ 
   
   // useEffect(() => {
   //   axios
@@ -38,6 +37,7 @@ export default function ExpertAnalytics() {
   // }, []);
 
   useEffect(() => {
+    setIsLoading(true)
     const fetchUserData = axios.get(
       `${BASE_URI}/api/v1/expert/expertDashboard`,
       {
@@ -56,18 +56,17 @@ export default function ExpertAnalytics() {
       }
     );
 
-    // console.log(fetchAnalyticsData)
 
     Promise.all([fetchUserData, fetchAnalyticsData])
       .then(([userResponse, analyticsResponse]) => {
 
         setData(userResponse.data.data);
         setAnalyticsData(analyticsResponse.data.data); // Set analytics data
-        console.log(userResponse.data.data, analyticsResponse.data.data);
       })
       .catch((error) => {
         console.error("Error fetching data", error);
-      });
+      }).finally(setIsLoading(false));
+      
   }, [type]);
 
   useEffect(() => {
@@ -711,6 +710,7 @@ export default function ExpertAnalytics() {
       
       }
       
+      
     
     }
     
@@ -718,7 +718,7 @@ export default function ExpertAnalytics() {
     
   }, [analyticsData]);
 
-  if (!data) {
+  if (!data || !analyticsData) {
     return (
       <div className="container-fluid p-3">
         <div className="row mb-5">
@@ -830,39 +830,47 @@ export default function ExpertAnalytics() {
           </div>
         </div>
       </div>
-      <div className="row mt-3 mb-5 position-relative">
-      <select 
-  style={{ top: "-10%", left:"1%", width: "7rem" }} 
-  className="position-absolute w-10"
-  value={type} // This binds the select element to the state
-  onChange={(e) => setType(e.target.value)} // Handle change here
->
-  <option value="week">Week</option>
-  <option value="month">Month</option>
-  <option value="year">Year</option>
-  <option value="all time">All Time</option>
-</select>
-        <div className="col-md-6 pb-4">
-          <div className="card custom-box">
-            <div className="card-body">
-              <h5 className="card-title fw-normal">Revenue</h5>
-              <canvas ref={revenueChartRef} height="200"></canvas>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="card custom-box">
-            <div className="card-body">
-              <h5 className="card-title fw-normal">New Enrollments</h5>
-              <canvas ref={enrollmentsChartRef} height="200"></canvas>
-            </div>
-          </div>
+      <div className="mt-2 mb-5 position-relative">
+  <div>
+    <select 
+      // style={{ marginLeft: "1%" }} 
+      className="mb-2 rounded"
+      value={type} // This binds the select element to the state
+      onChange={(e) => setType(e.target.value)} // Handle change here
+    >
+      <option value="week">Week</option>
+      <option value="month">Month</option>
+      <option value="year">Year</option>
+      <option value="all time">All Time</option>
+    </select>
+  </div>
+
+  <div className="row">
+    <div className="col-12 col-md-6 d-flex align-items-center justify-content-center mb-3">
+      <div className="card w-100 custom-box">
+        <div className="card-body">
+          <h5 className="card-title fw-normal">Revenue</h5>
+          <canvas ref={revenueChartRef} height="200"></canvas>
         </div>
       </div>
+    </div>
+
+    <div className="col-12 col-md-6 d-flex align-items-center justify-content-center mb-3">
+      <div className="card w-100 custom-box">
+        <div className="card-body">
+          <h5 className="card-title fw-normal">New Enrollments</h5>
+          <canvas ref={enrollmentsChartRef} height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
       <div className="row mt-3 mb-5">
         
-        <div className="col-md-6 pb-4">
-          <div className="card custom-box">
+        <div className="row">
+        <div className="col-12 col-md-6 d-flex align-items-center justify-content-center mb-3">
+          <div className="card w-100 custom-box">
             <div className="card-body">
               <h5 className="card-title">Courses in Demand</h5>
               <ul className="list-group d-flex flex-row flex-wrap">
@@ -888,6 +896,7 @@ export default function ExpertAnalytics() {
               ></canvas>{" "}
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
