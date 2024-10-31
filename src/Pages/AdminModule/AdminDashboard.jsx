@@ -43,6 +43,15 @@ function AdminDashboard() {
   const [loading1, setIsLoading1] = useState(false)
   const [isOpen, setIsOpen] = useState(false);
 
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
+
+
   const token = localStorage.getItem("token");
 
   // const url = `${BASE_URI}/api/v1/admin/adminDashboard?from=2024-09-1&to=2024-09-6`;
@@ -399,7 +408,7 @@ const revenueData = {
       <>
       <div className="d-flex align-items-center justify-content-between w-100 mb-5">
         <div>
-          <h3>Welcome Back, Basit</h3>
+          <h3>Welcome Back, {user?.name}</h3>
           <p>Track & Manage your Platform</p>
         </div>
         {/* <div className="d-flex align-items-center gap-3 border shadow-sm rounded-3 px-3 py-2"> */}

@@ -37,6 +37,14 @@ const UserManagement = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [payoutSuccess, setPayoutSuccess] = useState(false);
+  
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
 
   // const [pageNumber, setPageNumber] = useState(1);
   // const [totalPages, setTotalPages] = useState(2);
@@ -248,7 +256,7 @@ const UserManagement = () => {
       >
         <div className="upper-text">
           <span>
-            Welcome Back, <strong>Basit Bashir</strong>
+            Welcome Back, <strong>{user?.name}</strong>
           </span>
           <p style={{ fontWeight: "lighter" }}>Track & manage your platform</p>
         </div>

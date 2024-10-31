@@ -42,7 +42,9 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
       Authorization: "Bearer " + token,
     },
   };
+  
   const notifications = useSelector((state) => state.payouts.notifications);
+  // console.log(notifications);
   useSelector((state) => state.cart);
   
   const { data, refetch } = useFetch(profileUrl, fetchOptions);

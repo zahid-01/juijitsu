@@ -11,7 +11,17 @@ const UserManagement = () => {
   const [experts, setExperts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
   const navigate = useNavigate();
+
+  
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
 
   const token = localStorage.getItem("token");
   const expertsUrl = `${BASE_URI}/api/v1/admin/expertsForAdmin`;
@@ -132,11 +142,11 @@ const UserManagement = () => {
       >
         <div className="upper-text">
           <span>
-            Welcome Back, <strong>Basit Bashir</strong>
+            Welcome Back, <strong>{user?.name}</strong>
           </span>
           <p style={{ fontWeight: "lighter" }}>Track & manage your platform</p>
         </div>
-        <button
+        {/* <button
           className="add-expert add-css"
           style={{ display: "flex", alignItems: "center" }}
           onClick={() => {
@@ -144,7 +154,7 @@ const UserManagement = () => {
           }}
         >
           Add Expert
-        </button>
+        </button> */}
       </div>
 
       <div
