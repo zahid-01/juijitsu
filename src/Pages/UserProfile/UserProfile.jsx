@@ -4,6 +4,7 @@ import { BASE_URI } from "../../Config/url";
 import axios from "axios";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { HashLoader } from "react-spinners";
 
 const getSocialLinks = (profile) => [
   {
@@ -28,10 +29,13 @@ export default function UserProfile() {
   const [profile, setProfile] = useState(null);
   const [courseData, setCourse] = useState(null);
   const [loadingItems, setLoadingItems] = useState({});
+  const [loading , setLoading] = useState(false)
   // const token = localStorage.getItem("token");
 
   useEffect(() => {
+    
     const fetchProfile = async () => {
+      setLoading(true)
       try {
         const response = await axios.get(
           `${BASE_URI}/api/v1/expert/profile/${expertId}`
@@ -41,10 +45,15 @@ export default function UserProfile() {
       } catch (err) {
         console.error("Error fetching profile data:", err);
       }
+      finally{
+        setLoading(false)
+      }
     };
 
     fetchProfile();
   }, [expertId]);
+
+
   const getRandomColor = () => {
     const colors = [
       "#2C3E50", // Dark Blue-Gray
@@ -77,6 +86,14 @@ export default function UserProfile() {
       className="wrapper-userCourseview position-relative"
       style={{ backgroundColor: "white" }}
     >
+
+{
+        loading ? 
+        <div style={{height:"90vh"}} className="flex align-items-center justify-content-center w-100">
+        <HashLoader size="60" color="#0c243c"/>
+      </div>
+      :
+      <>
       <div className="px-4">
         <div className="container c-profile">
           <div className="profile-container">
@@ -206,6 +223,10 @@ export default function UserProfile() {
           </div>
         </div>
       </div>
+      </>
+}
+
+
     </div>
   );
 }

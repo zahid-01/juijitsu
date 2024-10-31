@@ -229,14 +229,13 @@ export default function Login() {
         <div className="signup-image w-50">
           <img src={learnImg} alt="Image" className="img-fluid" />
           <div className="signUp-text">
-            <h3 className="expertise mb-0">Share Your Expertise.</h3>
+            <h3 className="expertise mb-0">Share Knowledge. Ignite Learning.</h3>
             <h3 className="expertise mb-4">
-              Inspire Athletes. Transform Lives.
+            Transform Futures Together.
             </h3>
             <div className="join-team d-flex justify-content-center">
               <p className="w-75">
-                Join our team of elite instructors and make a difference in the
-                world of sports and athletics.
+              Join our community of passionate learners and expert instructors to make a difference in the world of sports and athletics.
               </p>
             </div>
           </div>

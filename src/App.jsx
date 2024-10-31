@@ -50,8 +50,14 @@ const App = () => {
       },
     })
     .then((res) => {
-      dispatch(payoutActions.setNotifications(res?.data?.data.length));
-    });
+      console.log(res)
+      dispatch(payoutActions.setNotifications(res?.data?.data?.length));
+    }).catch((err)=>{
+      console.log(err.response.data.message)
+      if(err.response.data.message){
+        dispatch(payoutActions.setNotifications("0"));
+      }
+    })
    }
     // if (data) {
     //   setCartItemNumber(data?.cart?.length);

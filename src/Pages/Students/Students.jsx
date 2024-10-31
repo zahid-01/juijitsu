@@ -11,6 +11,14 @@ const UserManagement = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
+
   const token = localStorage.getItem("token");
   const studentsUrl = `${BASE_URI}/api/v1/admin/usersForAdmin`;
   const fetchStudents = async () => {
@@ -129,7 +137,7 @@ const UserManagement = () => {
       >
         <div className="upper-text">
           <span>
-            Welcome Back, <strong>Basit Bashir</strong>
+            Welcome Back, <strong>{user?.name}</strong>
           </span>
           <p style={{ fontWeight: "lighter" }}>Track & manage your platform</p>
         </div>

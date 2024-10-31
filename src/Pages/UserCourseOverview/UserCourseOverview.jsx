@@ -195,7 +195,7 @@ const UserCourseOverview = () => {
             },
           });
         } catch (err) {
-          toast.error("Failed to add to favorites");
+          // toast.error("Failed to add to favorites");
         }
       };
 
@@ -496,7 +496,7 @@ const UserCourseOverview = () => {
               <div className="details-right-mid-userCourseview">
                 <span>
 
-                  <div  className="overView-profile"
+                  <div  className="overView-profile cursor-pointer"
                     onClick={() => {
                       navigate(`/UserProfile/${courseData?.course?.expert_id}`);
                     }}
