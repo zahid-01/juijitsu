@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../UserCourseOverview/UserCourseOverview.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
@@ -27,6 +27,15 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { loadStripe } from "@stripe/stripe-js";
 import { CiHeart } from "react-icons/ci";
 import { HashLoader } from "react-spinners";
+import MobileVideoPlayer from "../../Components/VideoPlayer/MobilePlayer";
+import { RiProgress7Line } from "react-icons/ri";
+import CourseDropdown from "../../Components/DropDown/ResponsiveDropdown";
+import { BsTwitterX } from "react-icons/bs";
+import { BiLink } from "react-icons/bi";
+import Rating from "../../Components/Rating/Rating";
+import defaultUser from "../../assets/defaultUser.svg";
+import Error from "../../Components/Error/Error";
+import reviewImage from "../../assets/reviews.svg";
 
 const stripePromise = loadStripe(
   import.meta.env.VITE_STRIPE_KEY
@@ -49,12 +58,90 @@ const UserPurchasedCourse = () => {
   const [reviewData, setReviewData] = useState(null);
   const [hearted, setHearted] = useState(null);
   const [certificate, setcertificate] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const descriptionRef = useRef(null);
+ 
+
+
   const { id } = useParams();
   const navigate = useNavigate();
   const { contextSafe } = useGSAP();
 
-  
+  const dummyCourseData = {
+    courses: [
+      {
+        title: "Introduction",
+        options: [
+          { name: "Introduction to Guard", duration: "5:30" },
+          { name: "Guard Basics", duration: "8:45" },
+          { name: "Understanding Guard Types", duration: "6:20" }
+        ],
+      },
+      {
+        title: "Guard Arm",
+        options: [
+          { name: "Arm Guarding", duration: "4:20" },
+          { name: "Advantages", duration: "7:10" },
+          { name: "Positioning Techniques", duration: "5:45" }
+        ],
+      },
+      {
+        title: "Aim Guard Front",
+        options: [
+          { name: "Opponent Aim", duration: "6:15" },
+          { name: "Back To Front", duration: "3:50" },
+          { name: "Perfect Front Defense", duration: "7:30" }
+        ],
+      },
+      {
+        title: "Advanced Guard Techniques",
+        options: [
+          { name: "Counter Moves", duration: "6:55" },
+          { name: "Energy Efficiency", duration: "5:40" },
+          { name: "Professional Guarding", duration: "8:20" }
+        ],
+      },
+      {
+        title: "Guard Movement",
+        options: [
+          { name: "Defensive Mobility", duration: "7:00" },
+          { name: "Agile Transitions", duration: "6:30" },
+          { name: "Evading Strategies", duration: "5:50" }
+        ],
+      }
+    ]
+    
+  };
 
+  const reviews = [
+    {
+      id: 1,
+      title: "Worth of Money",
+      rating: 4,
+      date: "1 day ago",
+      reviewer: "Alex",
+      avatar: "https://randomuser.me/api/portraits/men/6.jpg",
+    },
+    {
+      id: 2,
+      title: "Great Experience",
+      rating: 5,
+      date: "3 days ago",
+      reviewer: "Sophia",
+      avatar: "https://randomuser.me/api/portraits/women/2.jpg",
+    },
+    {
+      id: 3,
+      title: "Could be better",
+      rating: 3,
+      date: "1 week ago",
+      reviewer: "Michael",
+      avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+    },
+  ];
+  
 
   const handleLeftToggle = (chapterIndex) => {
     setOpenChapters((prevOpenChapters) => ({
@@ -85,6 +172,20 @@ const UserPurchasedCourse = () => {
   });
 
   const courseData = useMemo(() => data?.data || [], [data]);
+
+
+  useEffect(() => {
+      if (descriptionRef.current) {
+        // Check if content overflows beyond 4 lines
+        const lineHeight = parseFloat(
+          getComputedStyle(descriptionRef.current).lineHeight
+        );
+        const maxHeight = lineHeight * 4; // 4 lines max
+        if (descriptionRef.current.scrollHeight > maxHeight) {
+          setShowButton(true);
+        }
+      }
+    }, [courseData?.course?.description]);
 
 
   useEffect(() => {
@@ -393,9 +494,10 @@ const UserPurchasedCourse = () => {
 
   return (
     <>
-      {isLoading ? (
+      {/* {isLoading ? (
         <HashLoader size="60" color="#0c243c" id="spinner-usercourseview"/>
-      ) : (
+      ) : ( */}
+      <>
         <div className="wrapper-userCourseview position-relative">
                {optionsPopUp && (
             <div
@@ -929,7 +1031,7 @@ const UserPurchasedCourse = () => {
                 <h5>Reviews & Ratings:</h5>
                 <div className="map-ratings-right-mid-userCourseview">
                   {courseData?.review?.userReviews?.length > 0 ? (
-                    courseData.review.userReviews.map((review, index) => (
+                    courseData?.review?.userReviews?.map((review, index) => (
                       <div key={index}>
                         <div>
                           {review?.profile_picture ? (
@@ -969,82 +1071,199 @@ const UserPurchasedCourse = () => {
               </div>
             </div>
           </div>
-          {/* <div className="bottom-userCourseview">
-            <h3>Other Courses You Might Like</h3>
-            <div className="cards-userCourseview">
-              {courseData?.other_courses?.length > 0 ? (
-                courseData.other_courses.map((course, index) => (
-                  <div
-                    onClick={() =>
-                      course?.is_purchased
-                        ? navigate(`/userPurchasedCourses/${course?.id}`)
-                        : course?.is_in_cart
-                        ? navigate("/userCart")
-                        : navigate(`/userCourses/userCourseView/${course?.id}`)
-                    }
-                    className="card-bottom-userCourseview"
-                    key={index}
-                  >
-                    <span>
-                      {" "}
-                      <img
-                        src={course?.thumbnail || cardImage}
-                        alt="Course image"
-                      />
-                    </span>
+          
+        </div>
 
-                    <div className="middle-sec-card-userCourseview">
-                      <div className="addCourse-card-userCourseview">
-                        <h6>{course?.category || "No title available"}</h6>
-                      </div>
-                      <div className="pricing-card-userCourseview">
-                        <h5>
-                          {course?.tags?.split(" ").slice(0, 2).join(" ") +
-                            "..." || "No tags available"}
-                        </h5>
-                       
-                      </div>
-                    </div>
-                    <p>{course?.name}</p>
-                    <h5>{course?.title}</h5>
+        <div className="mobile-PurchasedCourse px-1 w-100 position-relative ">
+         
+          <MobileVideoPlayer
+                videoUrl="https://videos.pexels.com/video-files/6266890/6266890-uhd_2560_1440_30fps.mp4"
+                videoType={viseo_type}
+                className="w-100 rounded-3"
+              />
+        
+        <div style={{marginBottom:"65px"}} className="app-white mx-2 p-2 px-2 rounded-3 d-flex flex-column gap-2">
+          <div className="d-flex justify-content-between">
 
-                    <div className="bottom-card-useruserCourseview">
-                      <span>
-                        <h5>${course?.price}</h5>
-                        <h5>${course?.discounted_price}</h5>
-                      </span>
-                      <div
-                        onClick={(e) =>
-                          course?.is_purchased
-                            ? navigate(`/userPurchasedCourses/${course?.id}`)
-                            : navigate(
-                                `/userCourses/userPurchasedCourse/${course?.id}`
-                              )
-                        }
+          <h3 className="fs-3 fw-medium ">Half Guard</h3>
+          <div className="p-1 px-2 app-black rounded-1 d-flex justify-content-between align-items-center">
+            <h6 className="fs-6 fw-medium app-text-white d-flex gap-2">70% <RiProgress7Line className="fs-5 fw-medium app-text-white"/></h6>
+          
+          </div>
+          </div>
+          {courseData?.courseChapters?.chapters?.map((course, index) => (
+            <CourseDropdown
+              key={index}
+              course={course}
+              placeholder="Select a course option"
+              isFirst={index === 0}
+              setVideoUrl={setVideo_url}
+              // onSelect={handleSelection}
+            />
+          ))}
+
+<div className="mt-1 p-2 rounded-1 border border-1">
+            <h5
+              style={{ width: "max-content" }}
+              className="fs-6 fw-normal app-text-white rounded-1 app-black p-1 px-2"
+            >
+              Description
+            </h5>
+            <p
+              ref={descriptionRef}
+              style={{
+                lineHeight: "1.3rem",
+                maxHeight: isExpanded ? "none" : "5.2rem", // 4 lines * 1.3rem
+                overflow: "hidden",
+                transition: "max-height 0.3s ease-in-out",
+              }}
+              className="text-start fs-6 fw-light app-text-black mt-1"
+              dangerouslySetInnerHTML={{
+                __html:
+                  courseData?.course?.description || "No description available",
+              }}
+            />
+
+            {showButton && (
+              <button
+                className="btn btn-link p-0 app-text-black"
+                style={{ fontSize: "0.9rem" }}
+                onClick={() => setIsExpanded(!isExpanded)}
+              >
+                {isExpanded ? "View Less" : "View More"}
+              </button>
+            )}
+            <span className="d-flex fw-medium gap-1 pt-1">
+              <p>Ratings:</p>{" "}
+              <p className="fw-normal">{courseData?.review?.totalReviews}</p>
+            </span>
+            <span className="d-flex fw-medium gap-1 pt-1">
+              <p>Students:</p>{" "}
+              <p className="fw-normal">{courseData?.course?.enrolled}</p>
+            </span>
+            <span className="d-flex fw-medium gap-1 pt-1">
+              <p>Duration:</p>{" "}
+              <p className="fw-normal">
+                {formatTime(courseData?.course?.total_duration)}
+              </p>
+            </span>
+
+            <div>
+              <h5
+                style={{ width: "max-content" }}
+                className="fs-6 fw-normal app-text-white rounded-1 app-black p-1 px-2 mt-2"
+              >
+                Expert
+              </h5>
+              <div className="d-flex mt-2 align-items-center gap-2">
+                <img
+                  style={{
+                    borderRadius: "50%",
+                    width: "3.5rem",
+                    height: "3.5rem",
+                    objectFit: "cover",
+                  }}
+                  className=""
+                  src={courseData?.course?.profile_picture || defaultUser}
+                  alt=""
+                  onError={(e) => {
+                    // console.log(e)
+                    e.target.onerror = null;
+                    e.target.src = defaultUser; // Fallback image
+                  }}
+                />
+                <div>
+                  <h6 className="fs-5 fw-normal app-text-black d-flex gap-2">
+                    {courseData?.course?.name}
+                  </h6>
+                  <p className="fs-6 fw-light app-text-black">Coach JiuJitsu</p>
+                </div>
+              </div>
+              <div
+                style={{ width: "max-content" }}
+                className="d-flex gap-2 p-1 px-2 align-items-center mt-1"
+              >
+                <BsTwitterX className="fs-3 app-text-white app-black p-1 rounded-1" />
+                <FaYoutube className="fs-3 app-text-white app-black p-1 rounded-1" />
+                <BiLink className="fs-3 app-text-white app-black p-1 rounded-1" />
+              </div>
+              <p className="fs-6 fw-light app-text-black">
+                I am a Jiu-Jitsu expert Jhon with years of experience mastering
+                the art of grappling, control, and submissions. My game is built
+                on precision, strategy, and adaptability, allowing me to
+                dominate opponents using technique rather than brute strength.
+                Whether it’s teaching, competing, or refining my craft, I
+                constantly push my limits to evolve as a martial artist.
+              </p>
+            </div>
+            <h5
+              style={{ width: "max-content" }}
+              className="fs-6 fw-normal app-text-white rounded-1 app-black p-1 px-2 mt-2"
+            >
+              Reviews & Ratings
+            </h5>
+
+            {courseData?.review?.userReviews?.length > 0 ? (
+              courseData?.review?.userReviews?.map((review) => (
+                <div
+                  key={review.id}
+                  className="p-1 mt-2 border border-1 rounded-2 d-flex gap-2"
+                >
+                  <img
+                    style={{
+                      width: "2.7rem",
+                      height: "2.7rem",
+                      objectFit: "cover",
+                    }}
+                    className="rounded-2"
+                    src={review.profile_picture || defaultUser}
+                    alt={review.reviewer}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = defaultUser; // Fallback image
+                    }}
+                  />
+                  <div className="w-100">
+                    <div className="d-flex justify-content-between w-100">
+                      <h6
+                        style={{ fontSize: "1rem" }}
+                        className="fw-normal app-text-black d-flex gap-2"
                       >
-                        {loadingItems === course?.id ? (
-                          <l-bouncy
-                            size="35"
-                            speed="1.2"
-                            color="white"
-                          ></l-bouncy>
-                        ) : course?.is_purchased ? (
-                          <h6>Purchased!</h6>
-                        ) : (
-                          <h6>Go to courses</h6>
-                        )}
-                      </div>
-                     
+                        {review.comment}
+                      </h6>
+                      <p
+                        style={{ fontSize: "0.8rem", color: "grey" }}
+                        className="fw-normal app-text-black align-self-start pe-1"
+                      >
+                        {review.review_date.toString().split("T")[0]}
+                      </p>
+                    </div>
+                    <div className="d-flex justify-content-between w-100">
+                      <Rating
+                        initialRating={review.rating}
+                        size="1em"
+                        disabled={true}
+                        name={`rating-${review.id}`}
+                      />
+                      <p
+                        style={{ fontSize: "0.8rem", color: "grey" }}
+                        className="fw-normal app-text-black align-self-end pe-2"
+                      >
+                        ~ {review.name}
+                      </p>
                     </div>
                   </div>
-                ))
-              ) : (
-                <p>No other courses available!</p>
-              )}
-            </div>
-          </div> */}
+                </div>
+              ))
+            ) : (
+              <Error imageSrc={reviewImage} message={"No reviews yet!"}/>
+            )}
+          </div>
         </div>
-      )}
+          
+          </div>
+</>
+      {/* )} */}
     </>
   );
 };

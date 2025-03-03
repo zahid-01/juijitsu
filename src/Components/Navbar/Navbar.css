@@ -298,8 +298,6 @@ input::placeholder {
  .learn-more-user:hover .button-text {
   color: #fff;
  }
-
-
 .navbar.collapsed .admin-cart-container{
   margin-left: 70vw;
 } 
@@ -321,6 +319,9 @@ input::placeholder {
  }
  .navbar-expand-lg .admin-cart-container {
   margin-left: 0vw !important;
+}
+.search-input{
+  margin-top: 0.5rem;
 }
  
   /* .navbar.collapsed .admin-cart-container{

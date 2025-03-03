@@ -744,7 +744,16 @@
 }
 
 
-@media (max-width: 780px) {
+@media (max-width: 768px) {
+  .wrapper-userCourseview{
+    display: none;
+  }
+  .top-userCourseview{
+    display: none;
+  }
+  .mid-userCourseview{
+    display: none;
+  }
   .pricing-right-mid-userCourseview{
     flex-direction: row;
     height: max-content;

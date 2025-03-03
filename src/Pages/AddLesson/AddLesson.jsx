@@ -399,7 +399,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
   const handleEditCourse = () => {
     setEditCourse(true);
     setCourseId(id);
-    navigate("/courses/courseCreation");
+    navigate("/courseCreation");
   };
 
   const handleYouTubeClick = (lesson) => {

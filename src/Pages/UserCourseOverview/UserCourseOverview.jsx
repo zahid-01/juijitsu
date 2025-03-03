@@ -1,7 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import "./UserCourseOverview.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import defaultUser from "../../assets/defaultUser.svg";
 import {
   faAngleDown,
   faArrowRight,
@@ -9,7 +16,7 @@ import {
   faHeart,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { FaYoutube } from "react-icons/fa";
+import { FaUnlock, FaYoutube } from "react-icons/fa";
 import cardImage from "../../assets/coursesCard.png";
 import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
@@ -25,30 +32,111 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { loadStripe } from "@stripe/stripe-js";
 import { CiHeart } from "react-icons/ci";
 import { HashLoader } from "react-spinners";
+import MobileVideoPlayer from "../../Components/VideoPlayer/MobilePlayer";
+import { BsTwitterX, BsUnlock, BsUnlockFill } from "react-icons/bs";
+import { BiLink, BiSolidLock } from "react-icons/bi";
+import { RiProgress7Line } from "react-icons/ri";
+import CourseDropdown from "../../Components/DropDown/ResponsiveDropdown";
+import Rating from "../../Components/Rating/Rating";
+import Error from "../../Components/Error/Error";
+import review from "../../assets/reviews.svg";
+import PopUp from "../../Components/PopUp/PopUp";
 // import { LineWave } from "react-spinners";
 
-const stripePromise = loadStripe(
-  import.meta.env.VITE_STRIPE_KEY
-);
-
-
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
 const UserCourseOverview = () => {
   const [loadingItems, setLoadingItems] = useState(null);
   const [openChapters, setOpenChapters] = useState({ 0: true });
-  const [responsiveOpenChapters, setResponsiveOpenChapters] = useState({ 0: true });
+  const [responsiveOpenChapters, setResponsiveOpenChapters] = useState({
+    0: true,
+  });
   const [verificationPopUp, setVerificationPopUp] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState("");
   const [video_url, setVideo_url] = useState("");
   const [video_thumb, setVideo_thumb] = useState("");
   const [viseo_type, setVideo_type] = useState("");
-  const [hearted , setHearted] = useState(null)
+  const [hearted, setHearted] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const descriptionRef = useRef(null);
+
   const { id } = useParams();
   const navigate = useNavigate();
   const { contextSafe } = useGSAP();
 
-  
+  const dummyCourseData = {
+    courses: [
+      {
+        title: "Introduction",
+        options: [
+          { name: "Introduction to Guard", duration: "5:30" },
+          { name: "Guard Basics", duration: "8:45" },
+          { name: "Understanding Guard Types", duration: "6:20" },
+        ],
+      },
+      {
+        title: "Guard Arm",
+        options: [
+          { name: "Arm Guarding", duration: "4:20" },
+          { name: "Advantages", duration: "7:10" },
+          { name: "Positioning Techniques", duration: "5:45" },
+        ],
+      },
+      {
+        title: "Aim Guard Front",
+        options: [
+          { name: "Opponent Aim", duration: "6:15" },
+          { name: "Back To Front", duration: "3:50" },
+          { name: "Perfect Front Defense", duration: "7:30" },
+        ],
+      },
+      {
+        title: "Advanced Guard Techniques",
+        options: [
+          { name: "Counter Moves", duration: "6:55" },
+          { name: "Energy Efficiency", duration: "5:40" },
+          { name: "Professional Guarding", duration: "8:20" },
+        ],
+      },
+      {
+        title: "Guard Movement",
+        options: [
+          { name: "Defensive Mobility", duration: "7:00" },
+          { name: "Agile Transitions", duration: "6:30" },
+          { name: "Evading Strategies", duration: "5:50" },
+        ],
+      },
+    ],
+  };
 
+  const reviews = [
+    {
+      id: 1,
+      title: "Worth of Money",
+      rating: 4,
+      date: "1 day ago",
+      reviewer: "Alex",
+      avatar: "https://randomuser.me/api/portraits/men/6.jpg",
+    },
+    {
+      id: 2,
+      title: "Great Experience",
+      rating: 5,
+      date: "3 days ago",
+      reviewer: "Sophia",
+      avatar: "https://randomuser.me/api/portraits/women/2.jpg",
+    },
+    {
+      id: 3,
+      title: "Could be better",
+      rating: 3,
+      date: "1 week ago",
+      reviewer: "Michael",
+      avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+    },
+  ];
 
   const handleLeftToggle = (chapterIndex) => {
     setOpenChapters((prevOpenChapters) => ({
@@ -63,6 +151,13 @@ const UserCourseOverview = () => {
       [chapterIndex]: !prevOpenChapters[chapterIndex],
     }));
   };
+
+  // useEffect(() => {
+  //   console.log("changed", video_url);
+  //   if(!video_url || video_url === "No video url" || video_url === undefined){
+  //     toast.error("Unlock to watch!")
+  //   }
+  // }, [video_url]);
 
   function formatTime(seconds) {
     if (seconds < 60) {
@@ -86,6 +181,20 @@ const UserCourseOverview = () => {
   });
 
   const courseData = useMemo(() => data?.data || [], [data]);
+  console.log(courseData);
+
+  useEffect(() => {
+    if (descriptionRef.current) {
+      // Check if content overflows beyond 4 lines
+      const lineHeight = parseFloat(
+        getComputedStyle(descriptionRef.current).lineHeight
+      );
+      const maxHeight = lineHeight * 4; // 4 lines max
+      if (descriptionRef.current.scrollHeight > maxHeight) {
+        setShowButton(true);
+      }
+    }
+  }, [courseData?.course?.description]);
 
   useEffect(() => {
     setVideo_url(
@@ -99,7 +208,7 @@ const UserCourseOverview = () => {
     setSelectedLesson(
       courseData?.courseChapters?.chapters[0]?.lessons[0]?.lesson_id
     );
-    setHearted(courseData?.course?.is_favourite)
+    setHearted(courseData?.course?.is_favourite);
   }, [courseData]);
 
   const chapters = useMemo(
@@ -131,7 +240,9 @@ const UserCourseOverview = () => {
   );
 
   const handleCoinCheckout = async () => {
-    if(!token){return navigate("/")}
+    if (!token) {
+      return navigate("/");
+    }
     try {
       const response = await axios.post(
         `${BASE_URI}/api/v1/payment/purchase/${id}`,
@@ -143,18 +254,20 @@ const UserCourseOverview = () => {
         }
       );
       setVerificationPopUp(false);
-      removePayPopUp()
+      removePayPopUp();
       toast.success(`${response?.data?.message}`);
-      navigate(`/userPurchasedCourses/${id}`)
+      navigate(`/userPurchasedCourses/${id}`);
     } catch (err) {
       setVerificationPopUp(false);
-      removePayPopUp()
+      removePayPopUp();
       toast.error(`Error: ${err?.response?.data?.message}`);
     }
   };
 
   const checkoutHandler = async () => {
-    if(!token){return navigate("/")}
+    if (!token) {
+      return navigate("/");
+    }
     try {
       const stripe = await stripePromise;
       // Fetch the session from your backend
@@ -173,44 +286,43 @@ const UserCourseOverview = () => {
     }
   };
 
- 
-
-  const handlePopUpcoinPurchase = ()=>{
-    removePayPopUp()
-    setVerificationPopUp(true)
+  const handlePopUpcoinPurchase = () => {
+    removePayPopUp();
+    setVerificationPopUp(true);
   };
 
   const handleFavrouite = async (e) => {
-        e.stopPropagation();
-        if (!token) {
-          navigate("/");
-        }
-        try {
-          setHearted(!hearted);
-          await axios({
-            method: "post",
-            url: `${BASE_URI}/api/v1/courses/favouriteCourse/${id}`,
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          });
-        } catch (err) {
-          // toast.error("Failed to add to favorites");
-        }
-      };
+    e.stopPropagation();
+    if (!token) {
+      navigate("/");
+    }
+    try {
+      setHearted(!hearted);
+      await axios({
+        method: "post",
+        url: `${BASE_URI}/api/v1/courses/favouriteCourse/${id}`,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+    } catch (err) {
+      // toast.error("Failed to add to favorites");
+    }
+  };
 
   return (
     <>
-      
-        <div style={{
-    ...(isLoading
-      && { justifyContent: 'center', alignItems: 'center', display: 'flex', height:'90vh' }
-      ) }}
-      className={`wrapper-userCourseview position-relative`}>
-        {isLoading ? (
+      <div
+        //     style={{
+        // ...(isLoading
+        //   && { justifyContent: 'center', alignItems: 'center', display: 'flex', height:'90vh' }
+        //   ) }}
+        className={`wrapper-userCourseview position-relative`}
+      >
+        {/* {isLoading ? (
         <HashLoader size="60" color="#0c243c"/>
         
-      ) : (
+      ) : ( */}
         <>
           {verificationPopUp && (
             <div className="popup">
@@ -264,14 +376,13 @@ const UserCourseOverview = () => {
             className="paymentPopUp"
           >
             <div
-            className="payment-verify-popup"
+              className="payment-verify-popup"
               style={{
                 zIndex: 101,
                 padding: "2%",
                 backgroundColor: "white",
                 borderRadius: "1rem",
                 height: "60%",
-                
               }}
             >
               <div className="flex justify-content-between pb-3 align-items-center">
@@ -284,7 +395,7 @@ const UserCourseOverview = () => {
                   icon={faXmarkCircle}
                 />
               </div>
-              <div 
+              <div
                 style={{ height: "87%" }}
                 className="rounded border flex justify-content-evenly align-items-center"
               >
@@ -297,7 +408,10 @@ const UserCourseOverview = () => {
                       <FontAwesomeIcon icon={faCoins} />{" "}
                       {courseData?.course?.coins}
                     </h2>
-                    <div onClick={handlePopUpcoinPurchase} className="rounded bg-white text-black p-2 flex justify-content-center cursor-pointer">
+                    <div
+                      onClick={handlePopUpcoinPurchase}
+                      className="rounded bg-white text-black p-2 flex justify-content-center cursor-pointer"
+                    >
                       <p>Buy</p>
                     </div>
                   </div>
@@ -307,7 +421,10 @@ const UserCourseOverview = () => {
                   <h6>UnLock by payment</h6>
                   <div className="flex flex-column gap-2">
                     <h2>${courseData?.course?.price}</h2>
-                    <div onClick={checkoutHandler} className="rounded bg-white text-black p-2 flex justify-content-center cursor-pointer">
+                    <div
+                      onClick={checkoutHandler}
+                      className="rounded bg-white text-black p-2 flex justify-content-center cursor-pointer"
+                    >
                       <p>Checkout</p>
                     </div>
                   </div>
@@ -331,6 +448,7 @@ const UserCourseOverview = () => {
               }}
             ></div>
           </div>
+
           <div className="top-userCourseview d-flex">
             <h3 className="text-uppercase">
               {courseData?.course?.title || "No title available"}
@@ -379,10 +497,7 @@ const UserCourseOverview = () => {
                   </p>
                 </div>
               </div>
-
-              
             </span>
-
           </div>
           <div className="mid-userCourseview">
             <div className="right-mid-userCourseview p-3">
@@ -397,26 +512,30 @@ const UserCourseOverview = () => {
                 className="tumbnail-userCourseview"
               />
 
-
               <div className="left-bottom-mid-userCourseview second-leftuserCourse">
-                <span style={{display:"flex", justifyContent:"space-between", width:"100%"}}>
- <h4>Course Lessons</h4> 
- {hearted ? (
-                <FontAwesomeIcon
-                  onClick={handleFavrouite}
-                  id="heart-PurchasedCourses"
-                  icon={faHeart}
-                  style={{ zIndex: "10" }}
-                />
-              ) : (
-                <CiHeart
-                  style={{ zIndex: "10", color: "black" }}
-                  onClick={handleFavrouite}
-                  id="unHeart-PurchasedCourses"
-                />
-              )}
+                <span
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <h4>Course Lessons</h4>
+                  {hearted ? (
+                    <FontAwesomeIcon
+                      onClick={handleFavrouite}
+                      id="heart-PurchasedCourses"
+                      icon={faHeart}
+                      style={{ zIndex: "10" }}
+                    />
+                  ) : (
+                    <CiHeart
+                      style={{ zIndex: "10", color: "black" }}
+                      onClick={handleFavrouite}
+                      id="unHeart-PurchasedCourses"
+                    />
+                  )}
                 </span>
-               
 
                 <div>
                   {courseData?.courseChapters?.chapters?.length > 0 ? (
@@ -427,7 +546,9 @@ const UserCourseOverview = () => {
                           (chapterIndex === 0 && true) ||
                           openChapters[chapterIndex]
                         }
-                        onToggle={() => handleResponsiveLeftToggle(chapterIndex)}
+                        onToggle={() =>
+                          handleResponsiveLeftToggle(chapterIndex)
+                        }
                       >
                         <summary>
                           <FontAwesomeIcon
@@ -458,7 +579,6 @@ const UserCourseOverview = () => {
                                 );
                               }
                             }}
-
                             style={{
                               cursor: "pointer",
                               color:
@@ -495,8 +615,8 @@ const UserCourseOverview = () => {
 
               <div className="details-right-mid-userCourseview">
                 <span>
-
-                  <div  className="overView-profile cursor-pointer"
+                  <div
+                    className="overView-profile cursor-pointer"
                     onClick={() => {
                       navigate(`/UserProfile/${courseData?.course?.expert_id}`);
                     }}
@@ -508,8 +628,6 @@ const UserCourseOverview = () => {
                     />
                     <h6>{courseData?.course?.name}</h6>
                   </div>
-
-
                 </span>
 
                 <span>
@@ -550,22 +668,28 @@ const UserCourseOverview = () => {
 
             <div className="left-mid-userCourseview">
               <div className="left-bottom-mid-userCourseview new-left">
-              <span style={{display:"flex", justifyContent:"space-between", width:"90%"}}>
- <h4>Course Lessons</h4> 
- {hearted ? (
-                <FontAwesomeIcon
-                  onClick={handleFavrouite}
-                  id="heart-PurchasedCourses"
-                  icon={faHeart}
-                  style={{ zIndex: "10" }}
-                />
-              ) : (
-                <CiHeart
-                  style={{ zIndex: "10", color: "black" }}
-                  onClick={handleFavrouite}
-                  id="unHeart-PurchasedCourses"
-                />
-              )}
+                <span
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "90%",
+                  }}
+                >
+                  <h4>Course Lessons</h4>
+                  {hearted ? (
+                    <FontAwesomeIcon
+                      onClick={handleFavrouite}
+                      id="heart-PurchasedCourses"
+                      icon={faHeart}
+                      style={{ zIndex: "10" }}
+                    />
+                  ) : (
+                    <CiHeart
+                      style={{ zIndex: "10", color: "black" }}
+                      onClick={handleFavrouite}
+                      id="unHeart-PurchasedCourses"
+                    />
+                  )}
                 </span>
                 <div>
                   {courseData?.courseChapters?.chapters?.length > 0 ? (
@@ -607,7 +731,6 @@ const UserCourseOverview = () => {
                                 );
                               }
                             }}
-
                             style={{
                               cursor: "pointer",
                               color:
@@ -760,9 +883,235 @@ const UserCourseOverview = () => {
               )}
             </div>
           </div>
-          </>)}
+        </>
+        {/* )} */}
+      </div>
+
+      <div className="mobile-PurchasedCourse px-1 w-100 position-relative ">
+      <PopUp
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        title="Unlock this Course"
+      >
+        <p>Choose how you want to unlock:</p>
+        <div className="flex flex-col gap-3 mt-3">
+          <button
+            // onClick={handleUnlockWithCoins}
+            className="px-4 py-2 app-black text-white rounded w-full"
+          >
+            Unlock with Coins (500 Coins)
+          </button>
+          <button
+            // onClick={handleBuyDirectly}
+            className="px-4 py-2 bg-blue-500 text-white rounded w-full"
+          >
+            Buy Directly
+          </button>
         </div>
-      
+      </PopUp>
+        <MobileVideoPlayer
+          videoUrl={video_url}
+          videoType={viseo_type}
+          className="w-100 rounded-3"
+        />
+
+        <div
+          style={{ marginBottom: "65px" }}
+          className="app-white position-relative mx-2 p-2 px-2 rounded-3 d-flex flex-column gap-2"
+        >
+          <div className="d-flex justify-content-between">
+            <h3 className="fs-3 fw-medium ">Half Guard</h3>
+            <div onClick={() => setIsPopupOpen(true)} style={{cursor:"pointer"}} className="p-1 px-2 app-black rounded-1 d-flex justify-content-between align-items-center">
+              <h6 className="fs-6 fw-medium app-text-white d-flex gap-2">
+                Unlock <BiSolidLock className="fs-5 fw-medium app-text-white" />
+              </h6>
+            </div>
+          </div>
+          
+          {courseData?.courseChapters?.chapters?.map((course, index) => (
+            <CourseDropdown
+              key={index}
+              course={course}
+              placeholder="Select a course option"
+              isFirst={index === 0}
+              setVideoUrl={setVideo_url}
+              // onSelect={handleSelection}
+            />
+          ))}
+
+          <div className="mt-1 p-2 rounded-1 border border-1">
+            <h5
+              style={{ width: "max-content" }}
+              className="fs-6 fw-normal app-text-white rounded-1 app-black p-1 px-2"
+            >
+              Description
+            </h5>
+            <p
+              ref={descriptionRef}
+              style={{
+                lineHeight: "1.3rem",
+                maxHeight: isExpanded ? "none" : "5.2rem", // 4 lines * 1.3rem
+                overflow: "hidden",
+                transition: "max-height 0.3s ease-in-out",
+              }}
+              className="text-start fs-6 fw-light app-text-black mt-1"
+              dangerouslySetInnerHTML={{
+                __html:
+                  courseData?.course?.description || "No description available",
+              }}
+            />
+
+            {showButton && (
+              <button
+                className="btn btn-link p-0 app-text-black"
+                style={{ fontSize: "0.9rem" }}
+                onClick={() => setIsExpanded(!isExpanded)}
+              >
+                {isExpanded ? "View Less" : "View More"}
+              </button>
+            )}
+            <span className="d-flex fw-medium gap-1 pt-1">
+              <p>Ratings:</p>{" "}
+              <p className="fw-normal">{courseData?.review?.totalReviews}</p>
+            </span>
+            <span className="d-flex fw-medium gap-1 pt-1">
+              <p>Students:</p>{" "}
+              <p className="fw-normal">{courseData?.course?.enrolled}</p>
+            </span>
+            <span className="d-flex fw-medium gap-1 pt-1">
+              <p>Duration:</p>{" "}
+              <p className="fw-normal">
+                {formatTime(courseData?.course?.total_duration)}
+              </p>
+            </span>
+
+            <div>
+              <h5
+                style={{ width: "max-content" }}
+                className="fs-6 fw-normal app-text-white rounded-1 app-black p-1 px-2 mt-2"
+              >
+                Expert
+              </h5>
+              <div className="d-flex mt-2 align-items-center gap-2">
+                <img
+                  style={{
+                    borderRadius: "50%",
+                    width: "3.5rem",
+                    height: "3.5rem",
+                    objectFit: "cover",
+                  }}
+                  className=""
+                  src={courseData?.course?.profile_picture || defaultUser}
+                  alt=""
+                  onError={(e) => {
+                    // console.log(e)
+                    e.target.onerror = null;
+                    e.target.src = defaultUser; // Fallback image
+                  }}
+                />
+                <div>
+                  <h6 className="fs-5 fw-normal app-text-black d-flex gap-2">
+                    {courseData?.course?.name}
+                  </h6>
+                  <p className="fs-6 fw-light app-text-black">Coach JiuJitsu</p>
+                </div>
+              </div>
+              <div
+                style={{ width: "max-content" }}
+                className="d-flex gap-2 p-1 px-2 align-items-center mt-1"
+              >
+                <BsTwitterX className="fs-3 app-text-white app-black p-1 rounded-1" />
+                <FaYoutube className="fs-3 app-text-white app-black p-1 rounded-1" />
+                <BiLink className="fs-3 app-text-white app-black p-1 rounded-1" />
+              </div>
+              <p className="fs-6 fw-light app-text-black">
+                I am a Jiu-Jitsu expert Jhon with years of experience mastering
+                the art of grappling, control, and submissions. My game is built
+                on precision, strategy, and adaptability, allowing me to
+                dominate opponents using technique rather than brute strength.
+                Whether it’s teaching, competing, or refining my craft, I
+                constantly push my limits to evolve as a martial artist.
+              </p>
+            </div>
+            <h5
+              style={{ width: "max-content" }}
+              className="fs-6 fw-normal app-text-white rounded-1 app-black p-1 px-2 mt-2"
+            >
+              Reviews & Ratings
+            </h5>
+
+            {courseData?.review?.userReviews?.length > 0 ? (
+              courseData?.review?.userReviews?.map((review) => (
+                <div
+                  key={review.id}
+                  className="p-1 mt-2 border border-1 rounded-2 d-flex gap-2"
+                >
+                  <img
+                    style={{
+                      width: "2.7rem",
+                      height: "2.7rem",
+                      objectFit: "cover",
+                    }}
+                    className="rounded-2"
+                    src={review.profile_picture || defaultUser}
+                    alt={review.reviewer}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = defaultUser; // Fallback image
+                    }}
+                  />
+                  <div className="w-100">
+                    <div className="d-flex justify-content-between w-100">
+                      <h6
+                        style={{ fontSize: "1rem" }}
+                        className="fw-normal app-text-black d-flex gap-2"
+                      >
+                        {review.comment}
+                      </h6>
+                      <p
+                        style={{ fontSize: "0.8rem", color: "grey" }}
+                        className="fw-normal app-text-black align-self-start pe-1"
+                      >
+                        {review.review_date.toString().split("T")[0]}
+                      </p>
+                    </div>
+                    <div className="d-flex justify-content-between w-100">
+                      <Rating
+                        initialRating={review.rating}
+                        size="1em"
+                        disabled={true}
+                        name={`rating-${review.id}`}
+                      />
+                      <p
+                        style={{ fontSize: "0.8rem", color: "grey" }}
+                        className="fw-normal app-text-black align-self-end pe-2"
+                      >
+                        ~ {review.name}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <Error imageSrc={review} message={"No reviews yet!"}/>
+            )}
+          </div>
+        </div>
+      </div>
+      {isPopupOpen && (
+  <PopUp isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title="Unlock this Course">
+    <p>Choose how you want to unlock:</p>
+    <div className="d-flex flex-column gap-1 mt-3">
+      <button onClick={handleCoinCheckout} className="px-4 py-2 app-black border-0 text-white rounded w-100">
+        Unlock with ({courseData?.course?.coins} Coins)
+      </button>
+      <p className="align-self-center">OR</p>
+      <button onClick={checkoutHandler} className="px-4 py-2 app-red border-0 text-white rounded w-100">
+        Buy Directly
+      </button>
+    </div>
+  </PopUp>
+)}
     </>
   );
 };

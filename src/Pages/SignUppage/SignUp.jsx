@@ -22,6 +22,7 @@ export const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [userType, setUserType] = useState("user");
 
   const signUpHandler = () => {
     setIsLoading(true);
@@ -33,7 +34,7 @@ export const SignUp = () => {
         email: email,
         password: password,
         confirmPassword: confirmPassword,
-        user_type: "user",
+        user_type: userType,
       },
     }).then(
       () => {
@@ -57,14 +58,14 @@ export const SignUp = () => {
   };
 
   return (
-    <div className="container-fluid signin-container ">
+    <div style={{marginBottom:"5rem"}} className="container-fluid signin-container d-flex flex-column align-items-center app-white">
       <div className="row w-100 h-100">
         <div className="signup-image w-50">
           <img src={learnImg} alt="Image" className="img-fluid" />
           <div className="signUp-text ">
             <h3 className="expertise mb-0">Get ready to start your learning
             </h3>
-            <h3 className="expertise mb-4">
+            <h3 className="expertise mb-3">
             
             journey!
             </h3>
@@ -76,8 +77,8 @@ export const SignUp = () => {
             </div>
           </div>
         </div>
-        <div className="signUp-form col-md-5 w-50 p-4">
-          <div className="signup-start mb-4">
+        <div className="signUp-form col-md-5 w-50 p-2 pb-0">
+          <div className="signup-start mb-2 mt-1">
             <h2 className="">User Sign Up</h2>
             <p>Start your Inspiring journey now!</p>
           </div>
@@ -107,7 +108,7 @@ export const SignUp = () => {
               className="mb-0"
             ></p>
           </div> */}
-          <div className="mb-3">
+          <div className="mb-2">
             <label htmlFor="fullName" className="form-label fw-bold fs-small">
               Full Name
             </label>
@@ -127,7 +128,7 @@ export const SignUp = () => {
               />
             </div>
           </div>
-          <div className="mb-3">
+          <div className="mb-2">
             <label htmlFor="email" className="form-label fw-bold fs-small">
               Email
             </label>
@@ -147,7 +148,7 @@ export const SignUp = () => {
               />
             </div>
           </div>
-          <div className="mb-3">
+          <div className="mb-2">
             <label htmlFor="password" className="form-label fw-bold fs-small">
               Password
             </label>
@@ -178,7 +179,7 @@ export const SignUp = () => {
               </button>
             </div>
           </div>
-          <div className="mb-3">
+          <div className="mb-2">
             <label
               htmlFor="Confirmpass"
               className="form-label fw-bold fs-small"
@@ -212,13 +213,19 @@ export const SignUp = () => {
               </button>
             </div>
           </div>
-          <p className="fs-small mb-4">
+          <p className="fs-small mb-0">
             Already have an account?{" "}
             <Link to="/" className="login-link text-black fw-bold">
               LOGIN
             </Link>
           </p>
-          <button className="signup-now" onClick={signUpHandler}>
+          {/* <div className="mb-2">
+            <p style={{border:"2px solid #F90815"}} className="">want to become a expert?</p>
+          </div> */}
+          <button className="custom-box border-0 mb-1 mt-2 p-2 app-text-white app-red" onClick={signUpHandler}>
+            {isLoading ? <PulseLoader size={8} color="white" /> : "Signup As Expert!"}
+          </button>
+          <button className="custom-box border-0 mb-3  p-2 app-text-white app-black" onClick={signUpHandler}>
             {isLoading ? <PulseLoader size={8} color="white" /> : "Signup Now!"}
           </button>
         </div>

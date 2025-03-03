@@ -215,6 +215,10 @@
     text-decoration-line: underline;
 }
 
+.mobile-top-myLearning{
+  display: none;
+}
+
 @media (max-width:1200px){
   .card-bottom-myLearning {
     /* height: 50vh; */
@@ -230,10 +234,47 @@
     height: 4rem !important;
   }
 }
-@media (max-width: 780px) {
+@media (max-width: 768px) {
   .bottom-myLearning{
-    grid-template-columns: repeat(2, 1fr);
+    display: none;
   }
+  .top-myLearning{
+    display: none;
+  }
+
+  .slider-myLearning{
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #17181F;
+    outline: none;
+    opacity: 0.9;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+  
+  .slider-myLearning::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid grey;
+    border-radius: 50%;
+    background-color: #ffffff;
+    /* background-image: linear-gradient(160deg, #4900f5 0%, #80D0C7 100%); */
+    cursor: pointer;
+  }
+  
+  .slider-myLearning::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    /* background-color: #0093E9;
+    background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%); */
+    cursor: pointer;
+  }
+  
   
   .middle-sec-card-myLearning div{
     height: max-content;

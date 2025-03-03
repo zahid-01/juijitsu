@@ -11,8 +11,6 @@ import Support from "../Pages/Support/Support";
 
 
 
-
-
 export default function AdminRoutes() {
   return (
     <Routes>

@@ -336,16 +336,16 @@ export default function CourseCreation({ editCourse, courseeId }) {
   };
 
   return (
-    <div className="w-100">
-      <header className="d-flex align-items-center justify-content-between py-3">
-        <h3 className="fw-bold">Course Creation</h3>
-        <button className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto">
+    <div className="w-100 mb-4">
+      <header className="d-flex align-items-center justify-content-between px-2 ps-3 py-2 mt-2 mb-2 app-white">
+        <h3 className="fw-semibold fs-5">Course Creation</h3>
+        <button className="app-black rounded-2 border-0 py-1 px-3 fw-lightBold mb-0 h-auto app-black">
           <Link to="/courses" className="text-decoration-none text-white">
             Cancel
           </Link>
         </button>
       </header>
-      <main className="custom-box p-md-5 p-3">
+      <main className="custom-box p-md-5 p-3 app-white mx-2 mb-5">
         <form action="newCourse" onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="title" className="d-block mb-1 fs-5 fw-light">
@@ -680,14 +680,14 @@ export default function CourseCreation({ editCourse, courseeId }) {
             <div className="d-flex justify-content-between align-items-center">
               <button
                 type="button"
-                className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+                className="border-0 rounded-2 app-text-white fw-normal app-black py-2 px-3 fw-light mb-0 h-auto"
                 onClick={handleCancel}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+                className="border-0 rounded-2 app-text-white fw-normal app-red py-2 px-3 fw-light mb-0 h-auto"
               >
                 {loading ? (
                   <PulseLoader size={8} color="white" />

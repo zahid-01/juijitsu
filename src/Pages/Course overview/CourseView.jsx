@@ -132,12 +132,12 @@ const userType = localStorage.getItem("userType");
     });
   });
 
-  const handleResponsiveLeftToggle = (chapterIndex) => {
-    setResponsiveOpenChapters((prevOpenChapters) => ({
-      ...prevOpenChapters,
-      [chapterIndex]: !prevOpenChapters[chapterIndex],
-    }));
-  };
+  // const handleResponsiveLeftToggle = (chapterIndex) => {
+  //   setResponsiveOpenChapters((prevOpenChapters) => ({
+  //     ...prevOpenChapters,
+  //     [chapterIndex]: !prevOpenChapters[chapterIndex],
+  //   }));
+  // };
 
   const handleVideoChange = useCallback(
     (video_url, video_thumb, lesson_id, noLesson) => {

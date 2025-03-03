@@ -18,6 +18,11 @@ const App = () => {
   const [search, setSearch] = useState("");
   // const [cartItemNumber, setCartItemNumber] = useState(0);
 
+  // localStorage.setItem("userType", "user");
+  // localStorage.setItem("token", "slkfjoiaejlakjsdf983uiwuh38iyfsuh3487ryisuy7iwy3");
+  // localStorage.setItem("user", JSON.stringify({ id: 1, name: "Jack" }));
+
+  
   // const url = `${BASE_URI}/api/v1/cart`;
   const token = localStorage.getItem("token");
   const userType = localStorage.getItem("userType")

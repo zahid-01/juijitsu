@@ -42,9 +42,9 @@ const Logout = () => {
         <div>
           <h2 className="mb-3">Confirm Logout</h2>
           <p className="mb-4">Are you sure you want to logout?</p>
-          <button size="lg" onClick={handleLogout} className="signup-now w-100">
+          <div size="lg" onClick={handleLogout} style={{cursor:"pointer"}} className="app-black p-2 app-text-white fw-regular rounded">
             {isLoading ? <PulseLoader size={8} color="white" /> : "Logout"}
-          </button>
+          </div>
         </div>
       </div>
     </div>

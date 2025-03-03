@@ -15,7 +15,7 @@
   align-items: center;
   /* padding: 0 0rem 0 0rem; */
   padding-top: 2vw;
-    padding-bottom: 3vw;
+    
 }
 .top-userCourses h4 {
   font-weight: 700;
@@ -343,6 +343,10 @@
 .card-bottom-userCourses span {
   z-index: 99;
 }
+
+.mobileUserCourses{
+  display: none;
+}
 @media (min-width:1400px){
   .shimmer-card-usercourses{
     height:25vw;
@@ -437,17 +441,42 @@
   margin-top: -1.2vw;
 }
 .card-bottom-userCourses p {
-
   margin-top: -1vw;
 }
 .middle-sec-card-userCourses {
- 
   height: 4.5vw;
 }
 }
 @media (max-width: 768px) {
-  .top-userCourses {
+  .top-userCourses{
     display: none;
+  }
+  
+  .top-mobileUserCourses {
+    
+    background: #000;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 2%;
+    color: white;
+    position: sticky;
+    top: -0.5%;
+    overflow-x: auto;
+  }
+  .mobileUserCourses{
+    display: flex;
+    flex-direction: column;
+  }
+  .top-mobileUserCourses h4{
+    font-weight: 400;
+    font-size: small;
+    white-space: nowrap;
+  }
+  .bottom-userCourses{
+    display: none;
+  }
+  .content{
+    padding: 0;
   }
   .bottom-userCourses {
     grid-template-columns: repeat(2, 1fr);
@@ -531,8 +560,7 @@
   .bottom-userCourses{
     justify-content: center;
     align-items: center;
-    padding-left: 2rem;
-    padding-right: 1rem;
+   
     
   }
  

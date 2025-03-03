@@ -579,12 +579,34 @@
 }
 
 
+.mobile-PurchasedCourse{
+  display: none;
+}
+.mobile-player {
+  /* position: absolute; */
+  height: 22.5rem;
+  border-radius: 1vw;
+  top: -5rem;
+  left: 3%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 94%;
+  background-size: auto;
+  object-fit: cover;
+}
 
-
-
-@media (max-width: 780px) {
-  .top-purchasedCourse{
-    padding: 0 2.8vw 0 1.5vw;
+@media (max-width: 768px) {
+  .wrapper-userCourseview{
+    display: none;
+  }
+  
+  .top-userCourseview{
+    display: none;
+  }
+  .mid-userCourseview{
+    display: none;
+  }
+  .bottom-purchasedCourse{
+    display: none;
   }
   .bottom-purchasedCourse span h5{
     font-size: 3vw;

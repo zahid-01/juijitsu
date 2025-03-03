@@ -14,6 +14,7 @@ import { userCartActions } from "../../Store/cartSlice";
 import { useDispatch } from "react-redux";
 import "./Login.css";
 import { socketConnect } from "../../socket";
+import Popup from "../../Components/PopUp/PopUp";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -133,10 +134,10 @@ export default function Login() {
 
   // };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setIsLoading(true);
-    axios
+    await axios
       .post(`${BASE_URI}/api/v1/auth/login`, data)
       .then((resp) => {
         localStorage.setItem("user", JSON.stringify(resp.data.Data));
@@ -147,18 +148,18 @@ export default function Login() {
           email: "",
           password: "",
         });
-        axios({
-          method: "GET",
-          url: `${BASE_URI}/api/v1/cart`,
-          headers: {
-            Authorization: "Bearer " + resp.data.token,
-          },
-        }).then(
-          (res) => {
-            dispatch(userCartActions.setCart(res.data.cart));
-          },
-          () => {}
-        );
+        // axios({
+        //   method: "GET",
+        //   url: `${BASE_URI}/api/v1/cart`,
+        //   headers: {
+        //     Authorization: "Bearer " + resp.data.token,
+        //   },
+        // }).then(
+        //   (res) => {
+        //     dispatch(userCartActions.setCart(res.data.cart));
+        //   },
+        //   () => {}
+        // );
         toast.success("Logged In Successfully!");
         if (resp.data.Data.user_type === "expert") {
           window.location.reload();
@@ -170,6 +171,7 @@ export default function Login() {
         setIsLoading(false);
       })
       .catch((err) => {
+        // console.log(err);
         setIsLoading(false);
 
         // Check for specific error message
@@ -217,14 +219,14 @@ export default function Login() {
     if (localStorage.getItem("userType") === "expert") {
       return <Navigate to="/courses" />;
     } else if (localStorage.getItem("userType") === "user") {
-      return <Navigate to="/userCourses" />;
+      return <Navigate to="/categories" />;
     } else if (localStorage.getItem("userType") === "admin") {
       return <Navigate to="/adminDashboard" />;
     }
   }
 
   return (
-    <div className="container-fluid signin-container">
+    <div className="container-fluid signin-container app-white mt-4 d-flex flex-column align-items-center p-0">  
       <div className="row w-100 h-100">
         <div className="signup-image w-50">
           <img src={learnImg} alt="Image" className="img-fluid" />
@@ -353,14 +355,14 @@ export default function Login() {
                 Forgot Password?
               </Link>
             </div>
-            <button className="signup-now w-100">
+            <button className="custom-box border-0 app-text-white p-2 app-red w-100">
               {isLoading ? <PulseLoader size={8} color="white" /> : "Sign In"}
             </button>
           </form>
-          <div className="text-center">
+          <div className="text-center mt-2">
             <p className="fs-small">
               Don’t have account yet?{" "}
-              <Link to="/signUp" className="login-link text-black fw-bold">
+              <Link to="/signUp" className="login-link text-black fw-bold ">
                 Sign Up
               </Link>
             </p>
@@ -370,22 +372,21 @@ export default function Login() {
 
       {/* Popup for unverified email */}
       {showPopup && (
-        <div className="popup-overlay">
-          <div className="popup-box custom-popup">
-            <p className="popUpMessage">{popupMessage}</p>
-            <button onClick={closePopup} className="cancel-buttonn-login ">
-            <RxCross2 />
-            </button>
+        <Popup
+        isOpen={showPopup}
+        onClose={()=> setShowPopup(false)}
+        title={"Verification Info"}
+        >
+          <p className="popUpMessage">{popupMessage}</p>
+            
             {showSendRequestButton && (
               <button
-                className="send-request-button"
+                className="custom-box border-0 app-text-white p-2 app-red w-100"
                 onClick={emailVerifyRequest}
               >
                 Send Request
-              </button>
-            )}
-          </div>
-        </div>
+              </button>)}
+        </Popup>
       )}
     </div>
   );

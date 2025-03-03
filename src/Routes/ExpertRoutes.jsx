@@ -29,7 +29,7 @@ const ExpertRoutes = ({ search }) => {
         }
       />
       <Route
-        path="/courses/courseCreation"
+        path="/courseCreation"
         element={
           <CourseCreation editCourse={editCourse} courseeId={courseId} />
         }

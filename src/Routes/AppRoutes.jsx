@@ -13,6 +13,7 @@ import UserProfile from "../Pages/UserProfile/UserProfile"
 import Support from "../Pages/Support/Support";
 import AddExpert from "../Pages/AddExpert/AddExpert";
 import { SignUpExpert } from "../Pages/SignUpExpert/SignUpExpert";
+import Categories from "../Pages/CategoriesPH/Categories";
 
 const AppRoutes = ({ search }) => {
   const userRole = localStorage.getItem("userType");
@@ -39,9 +40,9 @@ useEffect(() => {
       <Route path="/signUp" element={<SignUp />} />
       <Route path="/ExpertSignUp" element={<SignUpExpert/>} />
       <Route path="/verifyEmail" element={<VerifyEmail />} />
-      <Route path="/userCourses" element={<UserCourses search={search} />} />
+      <Route path="/userCourses/:id" element={<UserCourses search={search} />} />
       <Route path="/userWallet" element={<UserWallet/>} />
-
+      <Route path="/categories" element={<Categories search={search}/>} />
       <Route path="/support" element={<Support/>} />
      
       <Route path="/AddExperts" element={<AddExpert />} />

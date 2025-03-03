@@ -199,6 +199,9 @@
 .shimmer-content-courses.long {
   width: 100%;
 }
+.top-bottom-courses{
+  display: flex;
+}
 
 @media (max-width:1200px){
   .card-bottom-courses img {
@@ -244,12 +247,17 @@
 @media (max-width: 768px) {
   .top-courses {
     margin: 0;
+    display: none;
+  }
+  .top-bottom-courses{
+    display: none;
   }
   .top-button{
     border-radius: 0.4rem;
   }
   .bottom-courses {
     grid-template-columns: repeat(2, 1fr);
+    display: none;
   }
   .categories-courses {
     padding-inline: 0.8rem;

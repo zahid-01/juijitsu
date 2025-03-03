@@ -97,7 +97,7 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
             setExperts(result.data);
           }
         } catch (error) {
-          toast.error("Error fetching experts");
+          // toast.error("Error fetching experts");
         }
       };
 
@@ -105,22 +105,22 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
     }
   }, [token]);
 
-  useEffect(() => {
-    if (token) {
+  // useEffect(() => {
+  //   if (token) {
     
-      axios
-        .get(`${BASE_URI}/api/v1/users/profileCompletion`, {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        })
-        .then((resp) => {
+  //     axios
+  //       .get(`${BASE_URI}/api/v1/users/profileCompletion`, {
+  //         headers: {
+  //           Authorization: "Bearer " + token,
+  //         },
+  //       })
+  //       .then((resp) => {
          
           
-          setProfileCompletion(parseInt(resp.data.data.profileCompletion, 10));
-        });
-    }
-  }, [token]);
+  //         setProfileCompletion(parseInt(resp.data.data.profileCompletion, 10));
+  //       });
+  //   }
+  // }, [token]);
 
   const handleIconClick = () => {
     searchInputRef.current.focus();
@@ -186,23 +186,71 @@ export const Navbar = ({ collapsed, search, setSearch, cartItemNumber }) => {
           <div className="search-input input-group w-75">
 
            {searchBox && <>
-            <label
-              className="input-group-text search-icon border-end-0"
-              htmlFor="search"
-              onClick={handleIconClick}
-            >
-              <CiSearch />
-            </label>
-            <input
-              type="text"
-              id="search"
-              placeholder="Search here..."
-              aria-label="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              ref={searchInputRef}
-              className="navbar-input form-control border-start-0 ps-0"
-            />
+            <div style={{width:"95%"}} className="search-input bg-transparent input-group">
+          <div
+          className="w-100"
+      style={{
+        // background:"blue",
+        display: "flex",
+        alignItems: "center",
+        position: "relative",
+        lineHeight: "28px",
+        // border:"1px solid gray",
+        
+      }}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          left: "1rem",
+          fill: "#9e9ea7",
+          width: "1rem",
+          height: "1rem",
+        }}
+      >
+        <g>
+          <path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z" />
+        </g>
+      </svg>
+      
+      <input
+        type="search"
+        placeholder="Search"
+        onChange={(e) => setSearch(e.target.value)}
+        style={{
+          width: "100%",
+          height: "45px",
+          lineHeight: "28px",
+          border: "1px solid #d1d1d1",
+          padding: "0 1rem",
+          paddingLeft: "2.5rem",
+          border: "1px solid grey",
+          borderRadius: "8px",
+          outline: "none",
+          backgroundColor: "#f3f3f4",
+          color: "#0d0c22",
+          transition: "0.3s ease",
+          boxShadow: "-1px 3px 8px rgba(0, 0, 0, 0.2)", // Right & bottom shadow
+    // border: "1px solid #ccc" // Optional: Ensures a clean border
+        }}
+        // onFocus={(e) => {
+        //   e.target.style.borderColor = "rgba(234, 226, 183, 0.4)";
+        //   e.target.style.backgroundColor = "#fff";
+        //   e.target.style.boxShadow = "0 0 0 4px rgb(234 226 183 / 10%)";
+        // }}
+        // onBlur={(e) => {
+        //   e.target.style.borderColor = "transparent";
+        //   e.target.style.backgroundColor = "#f3f3f4";
+        //   e.target.style.boxShadow = "none";
+          
+        // }}
+      />
+    </div>
+        
+
+          </div>
            </>}
             {
               (signUpAs === "User" || signUpAs === "Expert") && 
